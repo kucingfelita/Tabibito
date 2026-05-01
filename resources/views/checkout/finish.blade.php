@@ -21,7 +21,7 @@
                 </div>
                 <div class="rounded-3xl bg-slate-50 p-5">
                     <p class="text-xs uppercase tracking-wide text-slate-500">Destinasi</p>
-                    <p class="mt-2 text-sm text-slate-700">{{ $transaction->ticket->destination->name }}</p>
+                    <p class="mt-2 text-sm text-slate-700">{{ $transaction->ticket ? optional($transaction->ticket->destination)->name : 'N/A' }}</p>
                 </div>
                 <div class="rounded-3xl bg-slate-50 p-5">
                     <p class="text-xs uppercase tracking-wide text-slate-500">Tanggal Kunjungan</p>
