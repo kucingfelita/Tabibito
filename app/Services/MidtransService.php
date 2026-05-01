@@ -23,11 +23,30 @@ class MidtransService
     {
         $params = [
             'enabled_payments' => [
+                // Bank Transfer (Virtual Account)
                 'bank_transfer',
                 'bca_va',
                 'bni_va',
                 'bri_va',
+                'mandiri_va',
                 'permata_va',
+                // Credit Card
+                'credit_card',
+                // E-Wallet
+                'gopay',
+                'ovo',
+                'qris',
+                // Online Banking
+                'bca_clicks',
+                'bri_epay',
+                'cimb_clicks',
+                'danamon_online',
+                // Paylater
+                'kredivo',
+                'akulaku',
+                // Convenience Store
+                'indomaret',
+                'alfamart',
             ],
             'transaction_details' => [
                 'order_id' => $orderId ?? $transaction->order_id,
