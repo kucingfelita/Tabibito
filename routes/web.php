@@ -50,9 +50,25 @@ Route::middleware('auth')->group(function () {
     Route::post('/riwayat/{transaction}/check-status', [HistoryController::class, 'checkStatus'])->name('history.checkStatus');
     Route::get('/checkout/{ticket}', [CheckoutController::class, 'show'])->name('checkout.show');
     Route::post('/checkout/{ticket}', [CheckoutController::class, 'store'])->name('checkout.store');
-    Route::get('/checkout/finish', [CheckoutController::class, 'finish'])->name('checkout.finish');
-    Route::get('/checkout/resume', [CheckoutController::class, 'resume'])->name('checkout.resume');
 });
+
+Route::get('/checkout/payment/resume', [CheckoutController::class, 'resume'])
+    ->name('checkout.resume')
+    ->middleware('auth');
+
+Route::get('/test', function () {
+    return 'test ok';
+});
+
+Route::get('/finish-test', function () {
+    return 'finish test';
+});
+
+Route::get('/test-checkout', function () {
+    return 'test checkout';
+})->withoutMiddleware(['web', 'Illuminate\Foundation\Http\Middleware\VerifyCsrfToken', 'Illuminate\Session\Middleware\StartSession', 'Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests']);
+
+Route::get('/payment/finish', [CheckoutController::class, 'finish'])->name('checkout.finish');
 
 Route::prefix('owner')
     ->name('owner.')
