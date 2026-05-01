@@ -7,5 +7,5 @@ $user = App\Models\User::find(3);
 echo $user ? 'USER=' . $user->name . "\n" : 'USER=none\n';
 $pending = App\Models\Transaction::where('user_id', 3)->where('status', 'pending')->get();
 foreach ($pending as $t) {
-    echo $t->order_id . '|' . $t->status . '|ticket_id=' . $t->ticket_id . "\n";
+   echo $t->order_id . '|' . $t->status . '|ticket_id=' . $t->ticket_id . "\n";
 }
