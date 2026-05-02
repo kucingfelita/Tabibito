@@ -12,7 +12,7 @@
 <body class="bg-slate-50 text-slate-800">
     <nav class="bg-white shadow-sm">
         <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
-            <a href="{{ route('home') }}" class="text-lg font-bold text-emerald-600">TiketWisata</a>
+            <a href="{{ route('home') }}" class="text-lg font-bold text-emerald-600">Tabibito Jateng</a>
             <div class="flex items-center gap-3">
                 <a href="{{ route('home') }}" class="text-sm text-slate-600 hover:text-emerald-600">Beranda</a>
                 <a href="{{ route('destinations.index') }}" class="text-sm text-slate-600 hover:text-emerald-600">Wisata</a>

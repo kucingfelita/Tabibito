@@ -9,9 +9,51 @@ use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class OwnerRegisterController extends Controller
 {
+   protected function jawaTengahCities(): array
+   {
+      return [
+         'Semarang',
+         'Surakarta',
+         'Kota Salatiga',
+         'Kota Magelang',
+         'Kota Pekalongan',
+         'Kota Tegal',
+         'Kota Pekalongan',
+         'Kabupaten Banjarnegara',
+         'Kabupaten Banyumas',
+         'Kabupaten Batang',
+         'Kabupaten Blora',
+         'Kabupaten Boyolali',
+         'Kabupaten Brebes',
+         'Kabupaten Cilacap',
+         'Kabupaten Demak',
+         'Kabupaten Grobogan',
+         'Kabupaten Jepara',
+         'Kabupaten Karanganyar',
+         'Kabupaten Kebumen',
+         'Kabupaten Kendal',
+         'Kabupaten Klaten',
+         'Kabupaten Kudus',
+         'Kabupaten Pati',
+         'Kabupaten Pekalongan',
+         'Kabupaten Pemalang',
+         'Kabupaten Purbalingga',
+         'Kabupaten Purworejo',
+         'Kabupaten Rembang',
+         'Kabupaten Semarang',
+         'Kabupaten Sragen',
+         'Kabupaten Sukoharjo',
+         'Kabupaten Tegal',
+         'Kabupaten Temanggung',
+         'Kabupaten Wonogiri',
+         'Kabupaten Wonosobo',
+      ];
+   }
+
    public function step1()
    {
       return view('owner.register.step1');
@@ -37,8 +79,9 @@ class OwnerRegisterController extends Controller
       }
 
       $tags = Tag::all();
+      $cities = $this->jawaTengahCities();
 
-      return view('owner.register.step2', compact('tags'));
+      return view('owner.register.step2', compact('tags', 'cities'));
    }
 
    public function storeStep2(Request $request)
@@ -51,13 +94,14 @@ class OwnerRegisterController extends Controller
          'tag_ids.*' => 'exists:tags,id',
          'custom_tags' => 'nullable|string|max:255|required_without:tag_ids',
          'domisili' => 'required|string|max:255',
-         'city' => 'required|string|max:255',
+         'city' => ['required', 'string', Rule::in($this->jawaTengahCities())],
          'open_time' => 'required|date_format:H:i',
          'close_time' => 'required|date_format:H:i',
       ], [
          'tag_ids.required_without' => 'Pilih minimal satu tag atau masukkan tag baru.',
          'custom_tags.required_without' => 'Pilih minimal satu tag atau masukkan tag baru.',
          'city.required' => 'Kota/domisi wajib diisi.',
+         'city.in' => 'Pilih kota atau kabupaten di Jawa Tengah saja.',
       ]);
 
       $step1Data = session('owner_register');

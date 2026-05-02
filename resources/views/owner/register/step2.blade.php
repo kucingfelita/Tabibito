@@ -36,11 +36,16 @@
         </div>
         <div class="mb-4">
             <label for="domisili" class="block">Alamat</label>
-            <input type="text" name="domisili" id="domisili" class="border p-2 w-full" required>
+            <input type="text" name="domisili" id="domisili" class="border p-2 w-full" required value="{{ old('domisili') }}">
         </div>
         <div class="mb-4">
-            <label for="city" class="block">Kota</label>
-            <input type="text" name="city" id="city" class="border p-2 w-full" required>
+            <label for="city" class="block">Kota / Kabupaten (Jawa Tengah)</label>
+            <select name="city" id="city" class="border p-2 w-full" required>
+                <option value="">Pilih kota atau kabupaten</option>
+                @foreach($cities as $city)
+                    <option value="{{ $city }}" @selected(old('city') === $city)>{{ $city }}</option>
+                @endforeach
+            </select>
         </div>
         <div class="mb-4 grid gap-4 md:grid-cols-2">
             <div>
