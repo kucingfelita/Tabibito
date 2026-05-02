@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? 'Tiket Wifi ata Marketplace' }}</title>
+    <title>{{ $title ?? 'Tabibito Jateng' }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -105,10 +105,10 @@
 
     <footer class="mt-12 bg-white py-8">
         <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 text-sm text-slate-500">
-            <p>&copy; {{ date('Y') }} TiketWisata</p>
+            <p>&copy; {{ date('Y') }} Tabibito Jateng</p>
             <div class="flex flex-wrap gap-4">
-                <a href="https://instagram.com" target="_blank" class="hover:text-emerald-600">Instagram</a>
-                <a href="https://facebook.com" target="_blank" class="hover:text-emerald-600">Facebook</a>
+                <a href="https://instagram.com/kucing_felita" target="_blank" class="hover:text-emerald-600">Instagram</a>
+                {{-- <a href="https://facebook.com" target="_blank" class="hover:text-emerald-600">Facebook</a> --}}
                 <a href="{{ route('destinations.index') }}" class="hover:text-emerald-600">Wisata</a>
                 <a href="{{ route('contact') }}" class="hover:text-emerald-600">Kontak</a>
             </div>
