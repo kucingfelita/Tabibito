@@ -8,25 +8,25 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        /* Mobile/Tablet Responsive Styles */
-        @media (max-width: 480px) {
+<style>
+        /* Mobile 640px | Tablet 768px | Desktop 1024px+ */
+        @media (max-width: 639px) {
             .desktop-nav { display: none !important; }
             .mobile-menu { display: block; }
             .main-content { padding: 16px 12px; }
             .card-stack { flex-direction: column; }
             .card-img { width: 100%; height: 45vw; }
             .grid-2 { grid-template-columns: 1fr; }
-            .filter-hide { display: none; }
+            .filter-side { display: none; }
             .text-responsive { font-size: 1.125rem; }
             .btn-full { width: 100%; text-align: center; }
         }
-        @media (min-width: 481px) and (max-width: 768px) {
+        @media (min-width: 640px) and (max-width: 767px) {
             .main-content { padding: 20px 16px; }
             .grid-2 { grid-template-columns: repeat(2, 1fr); }
             .card-img { width: 110px; height: 85px; }
         }
-        @media (min-width: 769px) {
+        @media (min-width: 768px) {
             .mobile-toggle { display: none; }
             .grid-2 { grid-template-columns: repeat(4, 1fr); }
         }
