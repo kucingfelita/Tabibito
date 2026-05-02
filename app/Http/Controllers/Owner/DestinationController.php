@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\OwnerDestinationRequest;
 use App\Models\Destination;
 use App\Models\DestinationImage;
+use App\Models\Tag;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
@@ -18,15 +19,22 @@ class DestinationController extends Controller
     {
         $destinations = Destination::query()
             ->where('user_id', auth()->id())
-            ->with('images')
+            ->with(['images', 'tags'])
             ->latest()
             ->paginate(10);
 
-        return view('owner.destinations.index', compact('destinations'));
+        $cities = \App\Http\Requests\OwnerDestinationRequest::jawaTengahCities();
+        $tags = Tag::all();
+
+        return view('owner.destinations.index', compact('destinations', 'cities', 'tags'));
     }
 
     public function store(OwnerDestinationRequest $request): RedirectResponse
     {
+        if (Destination::query()->where('user_id', auth()->id())->exists()) {
+            return back()->with('error', 'Hanya satu destinasi yang diizinkan untuk setiap owner.');
+        }
+
         $destination = Destination::query()->create([
             'user_id' => auth()->id(),
             'name' => $request->string('name')->toString(),
@@ -38,6 +46,8 @@ class DestinationController extends Controller
             'close_time' => $request->string('close_time')->toString(),
             'status' => 'pending',
         ]);
+
+        $this->syncTags($destination, $request);
 
         if ($request->hasFile('image')) {
             $path = $this->compressAndStoreImage($request->file('image')->getPathname());
@@ -65,6 +75,8 @@ class DestinationController extends Controller
             'status' => 'pending',
         ]);
 
+        $this->syncTags($destination, $request);
+
         if ($request->hasFile('image')) {
             $path = $this->compressAndStoreImage($request->file('image')->getPathname());
             DestinationImage::query()->create([
@@ -74,6 +86,25 @@ class DestinationController extends Controller
         }
 
         return back()->with('success', 'Destinasi berhasil diperbarui.');
+    }
+
+    private function syncTags(Destination $destination, OwnerDestinationRequest $request): void
+    {
+        $tagIds = $request->input('tag_ids', []);
+
+        if ($request->filled('custom_tags')) {
+            $customTags = collect(explode(',', $request->custom_tags))
+                ->map(fn($tag) => trim($tag))
+                ->filter()
+                ->unique();
+
+            foreach ($customTags as $tagName) {
+                $tag = Tag::firstOrCreate(['name' => $tagName]);
+                $tagIds[] = $tag->id;
+            }
+        }
+
+        $destination->tags()->sync(array_unique($tagIds));
     }
 
     public function destroy(Destination $destination): RedirectResponse
@@ -89,7 +120,7 @@ class DestinationController extends Controller
         $manager = new ImageManager(new Driver());
         $image = $manager->read($sourcePath)->scaleDown(width: 1600);
         $encoded = $image->toJpeg(75);
-        $targetPath = 'destinations/'.uniqid('img_', true).'.jpg';
+        $targetPath = 'destinations/' . uniqid('img_', true) . '.jpg';
         Storage::disk('public')->put($targetPath, (string) $encoded);
 
         return $targetPath;
