@@ -1,12 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
+    @include('owner.partials.nav')
     <h1 class="text-xl font-semibold">Owner Dashboard</h1>
-    <div class="mt-2 flex gap-2 text-sm">
-        <a href="{{ route('owner.destinations.index') }}" class="rounded-lg bg-white px-3 py-2 shadow-sm">Kelola Destinasi</a>
-        <a href="{{ route('owner.tickets.index') }}" class="rounded-lg bg-white px-3 py-2 shadow-sm">Kelola Tiket</a>
-        <a href="{{ route('owner.withdrawals.index') }}" class="rounded-lg bg-white px-3 py-2 shadow-sm">Keuangan</a>
-    </div>
     <div class="mt-4 grid gap-4 md:grid-cols-4">
         <div class="rounded-xl bg-white p-4 shadow-sm">
             <p class="text-sm text-slate-500">Total tiket terjual</p>

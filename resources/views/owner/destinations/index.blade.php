@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+    @include('owner.partials.nav')
     <h1 class="text-xl font-semibold">Manajemen Destinasi</h1>
     <form method="POST" action="{{ route('owner.destinations.store') }}" enctype="multipart/form-data" class="mt-4 grid gap-3 rounded-xl bg-white p-4 shadow-sm md:grid-cols-2">
         @csrf

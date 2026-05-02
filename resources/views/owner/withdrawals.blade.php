@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+    @include('owner.partials.nav')
     <h1 class="text-xl font-semibold">Tarik Dana</h1>
     <p class="mt-1 text-sm text-slate-500">Saldo saat ini: Rp {{ number_format(auth()->user()->balance, 0, ',', '.') }}</p>
     <form method="POST" action="{{ route('owner.withdrawals.store') }}" class="mt-4 max-w-xl space-y-3 rounded-xl bg-white p-4 shadow-sm">

@@ -23,11 +23,18 @@ class MidtransService
     {
         $params = [
             'enabled_payments' => [
+                'credit_card',
+                'gopay',
+                'shopeepay',
                 'bank_transfer',
                 'bca_va',
                 'bni_va',
                 'bri_va',
                 'permata_va',
+                'indomaret',
+                'alfamart',
+                'echannel',
+                'cimb_clicks',
             ],
             'transaction_details' => [
                 'order_id' => $transaction->order_id,

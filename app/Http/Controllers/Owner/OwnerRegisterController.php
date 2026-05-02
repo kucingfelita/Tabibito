@@ -46,8 +46,18 @@ class OwnerRegisterController extends Controller
       $request->validate([
          'nama_tempat' => 'required|string|max:255',
          'nama_pemilik' => 'required|string|max:255',
-         'tag_ids' => 'required|array',
+         'description' => 'required|string',
+         'tag_ids' => 'nullable|array|required_without:custom_tags',
+         'tag_ids.*' => 'exists:tags,id',
+         'custom_tags' => 'nullable|string|max:255|required_without:tag_ids',
          'domisili' => 'required|string|max:255',
+         'city' => 'required|string|max:255',
+         'open_time' => 'required|date_format:H:i',
+         'close_time' => 'required|date_format:H:i',
+      ], [
+         'tag_ids.required_without' => 'Pilih minimal satu tag atau masukkan tag baru.',
+         'custom_tags.required_without' => 'Pilih minimal satu tag atau masukkan tag baru.',
+         'city.required' => 'Kota/domisi wajib diisi.',
       ]);
 
       $step1Data = session('owner_register');
@@ -67,12 +77,32 @@ class OwnerRegisterController extends Controller
          $destination = Destination::create([
             'user_id' => $user->id,
             'name' => $request->nama_tempat,
+            'description' => $request->description,
             'address' => $request->domisili,
-            'city' => $request->domisili, // Assuming domisili is city
+            'city' => $request->city,
+            'open_time' => $request->open_time,
+            'close_time' => $request->close_time,
             'status' => 'pending',
          ]);
 
-         $destination->tags()->attach($request->tag_ids);
+         $tagIds = $request->input('tag_ids', []);
+
+         if ($request->filled('custom_tags')) {
+            $customTags = collect(explode(',', $request->custom_tags))
+               ->map(fn($tag) => trim($tag))
+               ->filter()
+               ->unique();
+
+            foreach ($customTags as $tagName) {
+               $tag = Tag::firstOrCreate(['name' => $tagName]);
+               $tagIds[] = $tag->id;
+            }
+         }
+
+         $tagIds = array_unique($tagIds);
+         if (!empty($tagIds)) {
+            $destination->tags()->sync($tagIds);
+         }
       });
 
       session()->forget('owner_register');
