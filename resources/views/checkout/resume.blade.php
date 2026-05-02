@@ -41,7 +41,6 @@
             <p class="text-sm text-red-600">Maaf, terjadi kesalahan dalam memuat pembayaran. Silakan coba lagi nanti atau hubungi support.</p>
         </div>
         @endif
-        @endif
     </div>
 
     @if($transaction->snap_token)

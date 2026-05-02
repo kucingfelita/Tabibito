@@ -19,7 +19,7 @@ class MidtransService
         Config::$is3ds = true;
     }
 
-    public function createSnapToken(Transaction $transaction, Ticket $ticket): string
+    public function createSnapToken(Transaction $transaction, Ticket $ticket, string $orderId = null): string
     {
         $params = [
             'enabled_payments' => [
@@ -37,7 +37,7 @@ class MidtransService
                 'cimb_clicks',
             ],
             'transaction_details' => [
-                'order_id' => $transaction->order_id,
+                'order_id' => $orderId ?? $transaction->order_id,
                 'gross_amount' => (int) $transaction->total_price,
             ],
             'item_details' => [
@@ -54,7 +54,7 @@ class MidtransService
                 'phone' => $transaction->user->phone,
             ],
             'callbacks' => [
-                'finish' => url('/checkout/finish'),
+                'finish' => url('/payment/finish'),
                 'unfinish' => url('/checkout/' . $ticket->id),
                 'error' => url('/checkout/' . $ticket->id),
             ],

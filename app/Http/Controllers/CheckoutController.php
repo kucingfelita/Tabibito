@@ -23,8 +23,12 @@ class CheckoutController extends Controller
     {
         $orderId = $request->query('order_id');
 
+        if (!$orderId || !auth()->check()) {
+            abort(404, 'Transaksi tidak ditemukan atau sudah tidak dapat dilanjutkan.');
+        }
+
         $transaction = Transaction::query()
-            ->where('order_id', $orderId)
+            ->where('order_id', trim($orderId))
             ->where('user_id', auth()->id())
             ->where('status', 'pending')
             ->with('ticket.destination')
@@ -34,13 +38,14 @@ class CheckoutController extends Controller
             abort(404, 'Transaksi tidak ditemukan atau sudah tidak dapat dilanjutkan.');
         }
 
-        // Regenerate snap token if missing
-        if (!$transaction->snap_token) {
-            $midtransService = app(MidtransService::class);
-            $transaction->load(['user', 'ticket']);
-            $snapToken = $midtransService->createSnapToken($transaction, $transaction->ticket);
-            $transaction->update(['snap_token' => $snapToken]);
-        }
+        // Always regenerate snap token to ensure it's valid
+        $midtransService = app(MidtransService::class);
+        $transaction->load(['user', 'ticket']);
+
+        // Keep the original transaction order_id in the DB, but use a temporary one for Midtrans snap re-creation.
+        $snapOrderId = $transaction->order_id . '-R' . now()->format('His');
+        $snapToken = $midtransService->createSnapToken($transaction, $transaction->ticket, $snapOrderId);
+        $transaction->update(['snap_token' => $snapToken]);
 
         return view('checkout.resume', compact('transaction'));
     }
