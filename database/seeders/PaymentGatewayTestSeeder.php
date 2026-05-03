@@ -61,7 +61,7 @@ class PaymentGatewayTestSeeder extends Seeder
                 'user_id' => $owner->id,
                 'description' => 'Destinasi dummy untuk pengujian checkout Midtrans dan webhook settlement/expire.',
                 'address' => 'Jl. Badrawati, Borobudur, Magelang',
-                'city' => 'Kabupaten Magelang',
+                'city' => 'Kota Magelang',
                 'map_link' => 'https://maps.google.com/?q=Candi+Borobudur',
                 'open_time' => '08:00:00',
                 'close_time' => '17:00:00',

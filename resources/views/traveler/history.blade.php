@@ -20,8 +20,14 @@
                         </form>
                     </div>
                 @elseif($trx->status === 'settlement')
-                    <div class="mt-3 flex justify-center md:justify-start">
-                        {!! QrCode::size(120)->generate($trx->qr_code_token) !!}
+                    <div class="mt-4 flex flex-col items-center md:items-start gap-3">
+                        <div class="rounded-lg border-2 border-dashed border-emerald-200 p-2">
+                            {!! QrCode::size(200)->generate($trx->qr_code_token) !!}
+                        </div>
+                        <div class="text-center md:text-left">
+                            <p class="text-xs text-slate-500">Atau gunakan kode tiket manual:</p>
+                            <p class="font-mono font-bold text-emerald-700 bg-emerald-50 px-3 py-1 mt-1 rounded-md border border-emerald-100 inline-block">{{ $trx->qr_code_token }}</p>
+                        </div>
                     </div>
                 @endif
             </div>

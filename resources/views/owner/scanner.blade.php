@@ -1,8 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1 class="text-xl font-semibold">Scanner Tiket Wisata</h1>
-    <p class="mt-2 text-sm text-slate-500">Arahkan kamera ke QR Code tiket pengunjung. Tiket yang berhasil discan akan otomatis hangus (berstatus used) dan QR Code akan hilang dari riwayat pengguna.</p>
+    @include('owner.partials.nav')
+    <div class="mt-6">
+        <h1 class="text-xl font-semibold">Scanner Tiket Wisata</h1>
+        <p class="mt-2 text-sm text-slate-500">Arahkan kamera ke QR Code tiket pengunjung. Tiket yang berhasil discan akan otomatis hangus (berstatus used) dan QR Code akan hilang dari riwayat pengguna.</p>
+    </div>
 
     <div class="mt-4 max-w-xl rounded-xl bg-white p-4 shadow-sm" x-data="qrScanner()">
         <div id="reader" class="w-full overflow-hidden rounded-lg border-2 border-dashed border-emerald-300"></div>
