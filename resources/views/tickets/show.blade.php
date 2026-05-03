@@ -15,8 +15,8 @@
                     <p class="mt-2 text-2xl font-semibold text-emerald-600">Rp {{ number_format($ticket->price, 0, ',', '.') }}</p>
                 </div>
                 <div class="rounded-3xl bg-slate-50 p-5">
-                    <p class="text-sm text-slate-500">Kuota Tersisa</p>
-                    <p class="mt-2 text-2xl font-semibold text-slate-700">{{ $ticket->current_quota }}</p>
+                    <p class="text-sm text-slate-500">Kuota per Hari</p>
+                    <p class="mt-2 text-2xl font-semibold text-slate-700">{{ $ticket->daily_quota }}</p>
                 </div>
             </div>
 
@@ -43,8 +43,8 @@
                     <p class="mt-1">{{ $ticket->destination->name }}</p>
                 </div>
                 <div class="rounded-2xl bg-slate-50 p-4">
-                    <p class="font-semibold">Tersisa</p>
-                    <p class="mt-1">{{ $ticket->current_quota }} tiket</p>
+                    <p class="font-semibold">Kuota Harian</p>
+                    <p class="mt-1">{{ $ticket->daily_quota }} tiket</p>
                 </div>
                 <div class="rounded-2xl bg-slate-50 p-4">
                     <p class="font-semibold">Harga</p>

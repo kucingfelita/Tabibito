@@ -33,4 +33,14 @@ class Ticket extends Model
     {
         return $this->hasMany(Transaction::class);
     }
+
+    public function getAvailableQuota(string $date): int
+    {
+        $soldQty = $this->transactions()
+            ->where('booking_date', $date)
+            ->whereIn('status', ['pending', 'settlement', 'used'])
+            ->sum('qty');
+
+        return max(0, $this->daily_quota - $soldQty);
+    }
 }

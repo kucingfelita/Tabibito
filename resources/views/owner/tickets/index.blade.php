@@ -42,7 +42,7 @@
                         <button class="rounded-lg bg-rose-600 px-4 py-2 text-white">Hapus</button>
                     </form>
                 </div>
-                <p class="mt-2 text-xs text-slate-500">Destinasi: {{ $ticket->destination->name }} | Kuota saat ini: {{ $ticket->current_quota }}</p>
+                <p class="mt-2 text-xs text-slate-500">Destinasi: {{ $ticket->destination->name }} | Kuota Maksimal per Hari: {{ $ticket->daily_quota }}</p>
             </div>
         @endforeach
     </div>

@@ -68,7 +68,6 @@ class MidtransWebhookController extends Controller
                     }
 
                     $transaction->update(['status' => 'expire']);
-                    $transaction->ticket->increment('current_quota', $transaction->qty);
                 });
 
                 Log::info('Transaction marked as expired', ['order_id' => $transaction->order_id]);

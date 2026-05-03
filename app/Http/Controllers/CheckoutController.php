@@ -19,6 +19,15 @@ class CheckoutController extends Controller
         return view('checkout.show', compact('ticket'));
     }
 
+    public function quotaCheck(Ticket $ticket, Request $request): \Illuminate\Http\JsonResponse
+    {
+        $date = $request->query('date');
+        if (!$date) {
+            return response()->json(['available' => $ticket->daily_quota]);
+        }
+        return response()->json(['available' => $ticket->getAvailableQuota($date)]);
+    }
+
     public function resume(Request $request): View
     {
         $orderId = $request->query('order_id');
@@ -56,12 +65,11 @@ class CheckoutController extends Controller
 
         $transaction = DB::transaction(function () use ($ticket, $payload) {
             $lockedTicket = Ticket::query()->lockForUpdate()->findOrFail($ticket->id);
+            $availableQuota = $lockedTicket->getAvailableQuota($payload['booking_date']);
 
-            if ($payload['qty'] > $lockedTicket->current_quota) {
-                abort(422, 'Kuota tiket tidak mencukupi.');
+            if ($payload['qty'] > $availableQuota) {
+                abort(422, 'Kuota tiket tidak mencukupi untuk tanggal tersebut.');
             }
-
-            $lockedTicket->decrement('current_quota', (int) $payload['qty']);
 
             return Transaction::query()->create([
                 'order_id' => 'ORD-' . now()->format('YmdHis') . '-' . strtoupper(str()->random(6)),
@@ -131,7 +139,6 @@ class CheckoutController extends Controller
             } elseif ($midtransStatus && in_array($midtransStatus->transaction_status, ['expire', 'cancel', 'failure'], true)) {
                 DB::transaction(function () use ($transaction) {
                     $transaction->update(['status' => 'expire']);
-                    $transaction->ticket->increment('current_quota', $transaction->qty);
                 });
             } else {
                 return redirect()->route('checkout.resume', ['order_id' => $transaction->order_id])

@@ -38,7 +38,7 @@
                     <span class="rounded-full bg-emerald-100 px-3 py-1 text-sm text-emerald-700">Rp {{ number_format($ticket->price, 0, ',', '.') }}</span>
                 </div>
                 <div class="mt-4 flex items-center justify-between gap-3 text-sm text-slate-500">
-                    <p>Kuota: {{ $ticket->current_quota }}</p>
+                    <p>Kuota: {{ $ticket->daily_quota }} per hari</p>
                     <p>{{ $destination->city }}</p>
                 </div>
                 <div class="mt-4 text-right">

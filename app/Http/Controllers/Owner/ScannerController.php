@@ -31,8 +31,16 @@ class ScannerController extends Controller
             return response()->json(['message' => 'Tiket tidak valid atau sudah digunakan.'], 422);
         }
 
+        $transaction->load(['user', 'ticket.destination']);
         $transaction->update(['status' => 'used']);
 
-        return response()->json(['message' => 'Tiket valid dan berhasil digunakan.']);
+        return response()->json([
+            'message' => 'Tiket valid!',
+            'qty' => $transaction->qty,
+            'visitor_name' => $transaction->user->name,
+            'ticket_name' => $transaction->ticket->name,
+            'destination_name' => $transaction->ticket->destination->name,
+            'booking_date' => $transaction->booking_date->format('d M Y'),
+        ]);
     }
 }

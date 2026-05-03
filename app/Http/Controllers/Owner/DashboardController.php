@@ -26,9 +26,8 @@ class DashboardController extends Controller
             ->whereIn('status', ['settlement', 'used'])
             ->sum('total_price');
 
-        $todayRemainingQuota = \App\Models\Ticket::query()
-            ->whereIn('destination_id', $destinationIds)
-            ->sum('current_quota');
+        $tickets = \App\Models\Ticket::query()->whereIn('destination_id', $destinationIds)->get();
+        $todayRemainingQuota = $tickets->sum(fn ($ticket) => $ticket->getAvailableQuota(now()->toDateString()));
 
         $pendingWithdrawal = Withdrawal::query()
             ->where('user_id', $ownerId)

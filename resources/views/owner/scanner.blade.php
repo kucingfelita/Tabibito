@@ -19,7 +19,27 @@
         </div>
 
         <template x-if="message">
-            <div :class="isError ? 'bg-red-50 text-red-600 border-red-200' : 'bg-emerald-50 text-emerald-600 border-emerald-200'" class="mt-4 p-3 rounded-lg border text-sm font-medium" x-text="message"></div>
+            <div :class="isError ? 'bg-red-50 text-red-700 border-red-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200'" class="mt-4 p-3 rounded-lg border text-sm font-medium" x-text="message"></div>
+        </template>
+
+        <template x-if="scanResult && !isError">
+            <div class="mt-4 rounded-xl border-2 border-emerald-400 bg-emerald-50 p-4">
+                <div class="flex items-center gap-3">
+                    <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white">
+                        <span class="text-3xl font-black" x-text="scanResult.qty"></span>
+                    </div>
+                    <div>
+                        <p class="text-lg font-bold text-emerald-800">✅ Tiket Valid!</p>
+                        <p class="text-sm font-semibold" x-text="scanResult.qty + ' Tiket / ' + scanResult.qty + ' Orang'"></p>
+                    </div>
+                </div>
+                <div class="mt-3 space-y-1 border-t border-emerald-200 pt-3 text-sm text-slate-700">
+                    <p><span class="font-semibold">Nama Pengunjung:</span> <span x-text="scanResult.visitor_name"></span></p>
+                    <p><span class="font-semibold">Tiket:</span> <span x-text="scanResult.ticket_name"></span></p>
+                    <p><span class="font-semibold">Destinasi:</span> <span x-text="scanResult.destination_name"></span></p>
+                    <p><span class="font-semibold">Tanggal Kunjungan:</span> <span x-text="scanResult.booking_date"></span></p>
+                </div>
+            </div>
         </template>
     </div>
 
@@ -32,6 +52,7 @@
                 message: '',
                 isError: false,
                 isScanning: true,
+                scanResult: null,
                 html5QrcodeScanner: null,
 
                 init() {
@@ -76,6 +97,11 @@
                     .then(data => {
                         this.message = data.message;
                         this.token = ''; // clear input
+                        if (!this.isError && data.qty) {
+                            this.scanResult = data;
+                        } else {
+                            this.scanResult = null;
+                        }
                         
                         // Wait a few seconds before allowing next scan to prevent duplicate scans
                         setTimeout(() => {
@@ -83,7 +109,7 @@
                             if(!this.isError) {
                                 this.message = ''; // auto clear success message after 4 seconds
                             }
-                        }, 4000);
+                        }, 5000);
                     })
                     .catch(error => {
                         this.isError = true;

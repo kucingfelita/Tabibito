@@ -50,6 +50,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/riwayat/{transaction}/check-status', [HistoryController::class, 'checkStatus'])->name('history.checkStatus');
     Route::get('/checkout/{ticket}', [CheckoutController::class, 'show'])->name('checkout.show');
     Route::post('/checkout/{ticket}', [CheckoutController::class, 'store'])->name('checkout.store');
+    Route::get('/checkout/{ticket}/quota', [CheckoutController::class, 'quotaCheck'])->name('checkout.quota');
 });
 
 Route::get('/checkout/payment/resume', [CheckoutController::class, 'resume'])
