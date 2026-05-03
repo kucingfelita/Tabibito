@@ -48,4 +48,9 @@ return [
         'snap_url' => env('MIDTRANS_SNAP_URL', 'https://app.sandbox.midtrans.com/snap/snap.js'),
     ],
 
+    'iris' => [
+        'creator_key'  => env('MIDTRANS_IRIS_CREATOR_KEY', ''),
+        'approver_key' => env('MIDTRANS_IRIS_APPROVER_KEY', ''),
+    ],
+
 ];

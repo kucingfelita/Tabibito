@@ -31,6 +31,9 @@ class User extends Authenticatable
         'google_id',
         'tipe_user',
         'balance',
+        'bank_code',
+        'bank_account_number',
+        'bank_account_name',
     ];
 
     /**

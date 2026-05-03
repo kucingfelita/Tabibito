@@ -48,8 +48,24 @@ class DashboardController extends Controller
 
     public function approveWithdrawal(Withdrawal $withdrawal): RedirectResponse
     {
+        if ($withdrawal->status !== 'pending') {
+            return back()->withErrors(['withdrawal' => 'Withdrawal ini sudah diproses.']);
+        }
+
+        // Jika Iris API Key sudah dikonfigurasi dan ada reference_no, approve via API
+        $approverKey = config('services.iris.approver_key');
+        if ($approverKey && $withdrawal->reference_no) {
+            try {
+                $iris = new \App\Services\IrisService();
+                $iris->approvePayout($withdrawal->reference_no);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Iris approvePayout error: ' . $e->getMessage());
+                return back()->withErrors(['iris' => 'Gagal memproses transfer otomatis: ' . $e->getMessage()]);
+            }
+        }
+
         $withdrawal->update(['status' => 'approved']);
 
-        return back()->with('success', 'Withdrawal ditandai selesai.');
+        return back()->with('success', 'Withdrawal berhasil disetujui' . ($approverKey && $withdrawal->reference_no ? ' dan transfer otomatis telah dieksekusi.' : '. Jangan lupa transfer manual ke rekening Owner.'));
     }
 }

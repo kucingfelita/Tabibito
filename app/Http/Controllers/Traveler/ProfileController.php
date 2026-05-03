@@ -27,6 +27,12 @@ class ProfileController extends Controller
             $user->password = Hash::make($data['password']);
         }
 
+        if ($user->tipe_user == \App\Models\User::TYPE_OWNER) {
+            $user->bank_code = $request->input('bank_code');
+            $user->bank_account_number = $request->input('bank_account_number');
+            $user->bank_account_name = $request->input('bank_account_name');
+        }
+
         $user->save();
 
         return back()->with('success', 'Profil berhasil diperbarui.');
