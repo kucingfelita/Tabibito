@@ -90,6 +90,9 @@
                 @auth
                     <a href="{{ route('profile') }}" class="block py-2 text-sm text-slate-600 hover:bg-slate-100">Profile</a>
                     <a href="{{ route('history.index') }}" class="block py-2 text-sm text-slate-600 hover:bg-slate-100">Riwayat</a>
+                    @if(in_array(auth()->user()->tipe_user, [1,3], true))
+                        <a href="{{ auth()->user()->tipe_user === 1 ? route('admin.dashboard') : route('owner.dashboard') }}" class="block py-2 text-sm text-slate-600 hover:bg-slate-100">Dashboard</a>
+                    @endif
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button class="w-full text-left py-2 text-sm text-rose-600 hover:bg-rose-50">Logout</button>
