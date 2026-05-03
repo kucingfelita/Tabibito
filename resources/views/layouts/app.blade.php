@@ -121,5 +121,6 @@
     @if($errors->any())
         <script>Swal.fire({icon:'error',title:'Oops',text:@json($errors->first())});</script>
     @endif
+    @stack('scripts')
 </body>
 </html>

@@ -83,19 +83,63 @@ class CheckoutController extends Controller
         return back()->with('success', 'Token pembayaran berhasil dibuat.')->with('snap_token', $snapToken);
     }
 
-    public function finish(Request $request): View
+    public function finish(Request $request): RedirectResponse|View
     {
         $orderId = $request->query('order_id');
-        $status = $request->query('transaction_status', $request->query('status', 'pending'));
+        $status = $request->query('transaction_status', $request->query('status', ''));
 
-        $transaction = null;
-        if ($orderId) {
+        // If no order_id, show not found
+        if (!$orderId) {
+            return view('checkout.finish', ['transaction' => null, 'status' => 'not_found']);
+        }
+
+        $transaction = Transaction::query()
+            ->where('order_id', $orderId)
+            ->with('ticket.destination')
+            ->first();
+
+        // If not found, try searching without the -R suffix (for resumed transactions)
+        if (!$transaction && str_contains($orderId, '-R')) {
+            $originalOrderId = explode('-R', $orderId)[0];
             $transaction = Transaction::query()
-                ->where('order_id', $orderId)
+                ->where('order_id', 'like', $originalOrderId . '%')
                 ->with('ticket.destination')
                 ->first();
         }
 
-        return view('checkout.finish', compact('transaction', 'status'));
+        // If transaction doesn't exist, show not found
+        if (!$transaction) {
+            return view('checkout.finish', ['transaction' => null, 'status' => 'not_found']);
+        }
+
+        // If payment is still pending, double check with Midtrans API directly.
+        // This is crucial for local testing where webhooks can't reach localhost.
+        if ($transaction->status === 'pending') {
+            $midtransService = app(MidtransService::class);
+            $midtransStatus = $midtransService->checkTransactionStatus($orderId);
+
+            if ($midtransStatus && in_array($midtransStatus->transaction_status, ['settlement', 'success', 'capture'], true)) {
+                DB::transaction(function () use ($transaction) {
+                    $transaction->update(['status' => 'settlement']);
+                    if ($transaction->ticket && $transaction->ticket->destination && $transaction->ticket->destination->owner) {
+                        $owner = $transaction->ticket->destination->owner;
+                        $owner->increment('balance', $transaction->total_price);
+                    }
+                });
+                
+                \App\Jobs\SendETicketMailJob::dispatch($transaction->fresh(['user', 'ticket.destination']));
+            } elseif ($midtransStatus && in_array($midtransStatus->transaction_status, ['expire', 'cancel', 'failure'], true)) {
+                DB::transaction(function () use ($transaction) {
+                    $transaction->update(['status' => 'expire']);
+                    $transaction->ticket->increment('current_quota', $transaction->qty);
+                });
+            } else {
+                return redirect()->route('checkout.resume', ['order_id' => $transaction->order_id])
+                    ->with('warning', 'Silakan lanjutkan pembayaran Anda.');
+            }
+        }
+
+        // For successful or failed payments, show the appropriate finish page
+        return view('checkout.finish', ['transaction' => $transaction, 'status' => $transaction->status]);
     }
 }
