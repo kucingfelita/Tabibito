@@ -32,61 +32,69 @@ class DestinationController extends Controller
 
     public function store(OwnerDestinationRequest $request): RedirectResponse
     {
-        if (Destination::query()->where('user_id', auth()->id())->exists()) {
-            return back()->with('error', 'Hanya satu destinasi yang diizinkan untuk setiap owner.');
-        }
+        try {
+            if (Destination::query()->where('user_id', auth()->id())->exists()) {
+                return back()->with('error', 'Hanya satu destinasi yang diizinkan untuk setiap owner.');
+            }
 
-        $destination = Destination::query()->create([
-            'user_id' => auth()->id(),
-            'name' => $request->input('name'),
-            'description' => $request->input('description'),
-            'address' => $request->input('address'),
-            'city' => $request->input('city'),
-            'map_link' => $request->input('map_link'),
-            'open_time' => $request->input('open_time'),
-            'close_time' => $request->input('close_time'),
-            'status' => 'pending',
-        ]);
-
-        $this->syncTags($destination, $request);
-
-        if ($request->hasFile('image')) {
-            $path = $this->compressAndStoreImage($request->file('image'));
-            DestinationImage::query()->create([
-                'destination_id' => $destination->id,
-                'image_path' => $path,
+            $destination = Destination::query()->create([
+                'user_id' => auth()->id(),
+                'name' => $request->input('name'),
+                'description' => $request->input('description'),
+                'address' => $request->input('address'),
+                'city' => $request->input('city'),
+                'map_link' => $request->input('map_link'),
+                'open_time' => $request->input('open_time'),
+                'close_time' => $request->input('close_time'),
+                'status' => 'pending',
             ]);
-        }
 
-        return back()->with('success', 'Destinasi berhasil ditambahkan dan menunggu verifikasi admin.');
+            $this->syncTags($destination, $request);
+
+            if ($request->hasFile('image')) {
+                $path = $this->compressAndStoreImage($request->file('image'));
+                DestinationImage::query()->create([
+                    'destination_id' => $destination->id,
+                    'image_path' => $path,
+                ]);
+            }
+
+            return back()->with('success', 'Destinasi berhasil ditambahkan dan menunggu verifikasi admin.');
+        } catch (\Throwable $e) {
+            return back()->withInput()->withErrors(['error' => 'Gagal tambah: ' . $e->getMessage()]);
+        }
     }
 
     public function update(OwnerDestinationRequest $request, Destination $destination): RedirectResponse
     {
-        abort_unless((int) $destination->user_id === (int) auth()->id(), 403);
+        try {
+            abort_unless((int) $destination->user_id === (int) auth()->id(), 403);
 
-        $destination->update([
-            'name' => $request->input('name'),
-            'description' => $request->input('description'),
-            'address' => $request->input('address'),
-            'city' => $request->input('city'),
-            'map_link' => $request->input('map_link'),
-            'open_time' => $request->input('open_time'),
-            'close_time' => $request->input('close_time'),
-            'status' => 'pending',
-        ]);
-
-        $this->syncTags($destination, $request);
-
-        if ($request->hasFile('image')) {
-            $path = $this->compressAndStoreImage($request->file('image'));
-            DestinationImage::query()->create([
-                'destination_id' => $destination->id,
-                'image_path' => $path,
+            $destination->update([
+                'name' => $request->input('name'),
+                'description' => $request->input('description'),
+                'address' => $request->input('address'),
+                'city' => $request->input('city'),
+                'map_link' => $request->input('map_link'),
+                'open_time' => $request->input('open_time'),
+                'close_time' => $request->input('close_time'),
+                'status' => 'pending',
             ]);
-        }
 
-        return back()->with('success', 'Destinasi berhasil diperbarui.');
+            $this->syncTags($destination, $request);
+
+            if ($request->hasFile('image')) {
+                $path = $this->compressAndStoreImage($request->file('image'));
+                DestinationImage::query()->create([
+                    'destination_id' => $destination->id,
+                    'image_path' => $path,
+                ]);
+            }
+
+            return back()->with('success', 'Destinasi berhasil diperbarui.');
+        } catch (\Throwable $e) {
+            return back()->withInput()->withErrors(['error' => 'Gagal simpan: ' . $e->getMessage()]);
+        }
     }
 
     private function syncTags(Destination $destination, OwnerDestinationRequest $request): void
