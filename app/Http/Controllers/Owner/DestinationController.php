@@ -10,6 +10,7 @@ use App\Models\Tag;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Illuminate\Http\UploadedFile;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager;
 
@@ -50,7 +51,7 @@ class DestinationController extends Controller
         $this->syncTags($destination, $request);
 
         if ($request->hasFile('image')) {
-            $path = $this->compressAndStoreImage($request->file('image')->getPathname());
+            $path = $this->compressAndStoreImage($request->file('image'));
             DestinationImage::query()->create([
                 'destination_id' => $destination->id,
                 'image_path' => $path,
@@ -78,7 +79,7 @@ class DestinationController extends Controller
         $this->syncTags($destination, $request);
 
         if ($request->hasFile('image')) {
-            $path = $this->compressAndStoreImage($request->file('image')->getPathname());
+            $path = $this->compressAndStoreImage($request->file('image'));
             DestinationImage::query()->create([
                 'destination_id' => $destination->id,
                 'image_path' => $path,
@@ -115,14 +116,19 @@ class DestinationController extends Controller
         return back()->with('success', 'Destinasi berhasil dihapus.');
     }
 
-    private function compressAndStoreImage(string $sourcePath): string
+    private function compressAndStoreImage(UploadedFile $file): string
     {
-        $manager = new ImageManager(new Driver());
-        $image = $manager->read($sourcePath)->scaleDown(width: 1600);
-        $encoded = $image->toJpeg(75);
-        $targetPath = 'destinations/' . uniqid('img_', true) . '.jpg';
-        Storage::disk('public')->put($targetPath, (string) $encoded);
+        try {
+            $manager = new ImageManager(new Driver());
+            $image = $manager->read($file->getPathname())->scaleDown(width: 1600);
+            $encoded = $image->toJpeg(75);
+            $targetPath = 'destinations/' . uniqid('img_', true) . '.jpg';
+            Storage::disk('public')->put($targetPath, (string) $encoded);
 
-        return $targetPath;
+            return $targetPath;
+        } catch (\Throwable $e) {
+            // Fallback to standard upload if processing fails
+            return $file->store('destinations', 'public');
+        }
     }
 }

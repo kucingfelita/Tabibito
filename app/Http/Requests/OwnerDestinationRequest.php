@@ -74,7 +74,7 @@ class OwnerDestinationRequest extends FormRequest
             'map_link' => ['nullable', 'url', 'max:255'],
             'open_time' => ['required', 'date_format:H:i'],
             'close_time' => ['required', 'date_format:H:i', 'after:open_time'],
-            'image' => ['nullable', 'image', 'max:1024'],
+            'image' => ['nullable', 'image', 'max:5120'],
         ];
     }
 }
