@@ -14,7 +14,6 @@ class Ticket extends Model
         'price',
         'benefit',
         'daily_quota',
-        'current_quota',
     ];
 
     protected function casts(): array

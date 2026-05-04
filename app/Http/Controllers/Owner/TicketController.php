@@ -39,7 +39,6 @@ class TicketController extends Controller
             'price' => $request->input('price'),
             'benefit' => $request->input('benefit'),
             'daily_quota' => $dailyQuota,
-            'current_quota' => $dailyQuota,
         ]);
 
         return back()->with('success', 'Tiket berhasil ditambahkan.');
@@ -57,7 +56,6 @@ class TicketController extends Controller
             'price' => $request->input('price'),
             'benefit' => $request->input('benefit'),
             'daily_quota' => $dailyQuota,
-            'current_quota' => min((int) $ticket->current_quota, $dailyQuota),
         ]);
 
         return back()->with('success', 'Tiket berhasil diperbarui.');

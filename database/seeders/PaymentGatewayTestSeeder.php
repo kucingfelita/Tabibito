@@ -82,7 +82,6 @@ class PaymentGatewayTestSeeder extends Seeder
                 'price' => 50000,
                 'benefit' => 'Akses area utama Candi Borobudur + area taman wisata',
                 'daily_quota' => 200,
-                'current_quota' => 200,
             ]
         );
 
@@ -95,7 +94,6 @@ class PaymentGatewayTestSeeder extends Seeder
                 'price' => 150000,
                 'benefit' => 'Akses sunrise spot + pemandu lokal + welcome drink',
                 'daily_quota' => 50,
-                'current_quota' => 50,
             ]
         );
 
