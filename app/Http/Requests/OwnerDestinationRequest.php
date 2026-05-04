@@ -72,8 +72,8 @@ class OwnerDestinationRequest extends FormRequest
             'tag_ids.*' => ['exists:tags,id'],
             'custom_tags' => ['nullable', 'string', 'max:255'],
             'map_link' => ['nullable', 'url', 'max:255'],
-            'open_time' => ['required', 'date_format:H:i'],
-            'close_time' => ['required', 'date_format:H:i', 'after:open_time'],
+            'open_time' => ['required'],
+            'close_time' => ['required', 'after:open_time'],
             'image' => ['nullable', 'image', 'max:5120'],
         ];
     }

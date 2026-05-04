@@ -38,13 +38,13 @@ class DestinationController extends Controller
 
         $destination = Destination::query()->create([
             'user_id' => auth()->id(),
-            'name' => $request->string('name')->toString(),
-            'description' => $request->string('description')->toString(),
-            'address' => $request->string('address')->toString(),
-            'city' => $request->string('city')->toString(),
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
+            'address' => $request->input('address'),
+            'city' => $request->input('city'),
             'map_link' => $request->input('map_link'),
-            'open_time' => $request->string('open_time')->toString(),
-            'close_time' => $request->string('close_time')->toString(),
+            'open_time' => $request->input('open_time'),
+            'close_time' => $request->input('close_time'),
             'status' => 'pending',
         ]);
 
@@ -66,13 +66,13 @@ class DestinationController extends Controller
         abort_unless((int) $destination->user_id === (int) auth()->id(), 403);
 
         $destination->update([
-            'name' => $request->string('name')->toString(),
-            'description' => $request->string('description')->toString(),
-            'address' => $request->string('address')->toString(),
-            'city' => $request->string('city')->toString(),
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
+            'address' => $request->input('address'),
+            'city' => $request->input('city'),
             'map_link' => $request->input('map_link'),
-            'open_time' => $request->string('open_time')->toString(),
-            'close_time' => $request->string('close_time')->toString(),
+            'open_time' => $request->input('open_time'),
+            'close_time' => $request->input('close_time'),
             'status' => 'pending',
         ]);
 
@@ -118,16 +118,22 @@ class DestinationController extends Controller
 
     private function compressAndStoreImage(UploadedFile $file): string
     {
+        $targetPath = 'destinations/' . uniqid('img_', true) . '.jpg';
+
         try {
+            if (!class_exists(ImageManager::class) || !class_exists(Driver::class)) {
+                throw new \Exception('Intervention Image classes missing');
+            }
+
             $manager = new ImageManager(new Driver());
-            $image = $manager->read($file->getPathname())->scaleDown(width: 1600);
+            $image = $manager->read($file->getRealPath())->scaleDown(width: 1600);
             $encoded = $image->toJpeg(75);
-            $targetPath = 'destinations/' . uniqid('img_', true) . '.jpg';
-            Storage::disk('public')->put($targetPath, (string) $encoded);
+            
+            Storage::disk('public')->put($targetPath, $encoded->toStream());
 
             return $targetPath;
         } catch (\Throwable $e) {
-            // Fallback to standard upload if processing fails
+            // Fallback to standard upload
             return $file->store('destinations', 'public');
         }
     }
