@@ -57,18 +57,6 @@ Route::get('/checkout/payment/resume', [CheckoutController::class, 'resume'])
     ->name('checkout.resume')
     ->middleware('auth');
 
-Route::get('/test', function () {
-    return 'test ok';
-});
-
-Route::get('/finish-test', function () {
-    return 'finish test';
-});
-
-Route::get('/test-checkout', function () {
-    return 'test checkout';
-})->withoutMiddleware(['web', 'Illuminate\Foundation\Http\Middleware\VerifyCsrfToken', 'Illuminate\Session\Middleware\StartSession', 'Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests']);
-
 Route::get('/payment/finish', [CheckoutController::class, 'finish'])->name('checkout.finish');
 
 Route::prefix('owner')

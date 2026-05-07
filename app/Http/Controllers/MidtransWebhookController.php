@@ -30,7 +30,7 @@ class MidtransWebhookController extends Controller
 
             // If not found, try searching without the -R suffix
             if (!$transaction && str_contains($orderId, '-R')) {
-                $originalOrderId = str_replace('-R' . substr($orderId, strpos($orderId, '-R') + 2), '', $orderId);
+                $originalOrderId = explode('-R', $orderId)[0];
                 $transaction = Transaction::query()
                     ->where('order_id', 'like', $originalOrderId . '%')
                     ->with('ticket.destination.owner')
