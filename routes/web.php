@@ -20,6 +20,11 @@ use App\Http\Controllers\Traveler\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+Route::get('/owner/register/step1', [OwnerRegisterController::class, 'step1'])->name('owner.register.step1');
+Route::post('/owner/register/step1', [OwnerRegisterController::class, 'storeStep1'])->name('owner.register.step1.store');
+Route::get('/owner/register/step2', [OwnerRegisterController::class, 'step2'])->name('owner.register.step2');
+Route::post('/owner/register/step2', [OwnerRegisterController::class, 'storeStep2'])->name('owner.register.step2.store');
 Route::get('/wisata', [DestinationController::class, 'index'])->name('destinations.index');
 Route::get('/wisata/{destination}', [DestinationController::class, 'show'])->name('destinations.show');
 Route::get('/tiket/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
@@ -34,10 +39,6 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->name('register.store');
     Route::get('/auth/google', [SocialAuthController::class, 'redirectToGoogle'])->name('google.redirect');
     Route::get('/auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback'])->name('google.callback');
-    Route::get('/owner/register/step1', [OwnerRegisterController::class, 'step1'])->name('owner.register.step1');
-    Route::post('/owner/register/step1', [OwnerRegisterController::class, 'storeStep1'])->name('owner.register.step1.store');
-    Route::get('/owner/register/step2', [OwnerRegisterController::class, 'step2'])->name('owner.register.step2');
-    Route::post('/owner/register/step2', [OwnerRegisterController::class, 'storeStep2'])->name('owner.register.step2.store');
 });
 
 Route::post('/midtrans/webhook', [MidtransWebhookController::class, 'handle'])->name('midtrans.webhook');

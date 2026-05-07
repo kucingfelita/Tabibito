@@ -239,7 +239,7 @@
             <div class="pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4">
                 <p class="text-slate-400 text-xs tracking-wide">© {{ date('Y') }} Tabibito Jateng. All rights reserved.</p>
                 <div class="flex gap-6">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/Midtrans_Logo.png" alt="Midtrans" class="h-4 grayscale opacity-50 hover:opacity-100 transition-opacity">
+                    <!-- <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/Midtrans_Logo.png" alt="Midtrans" class="h-4 grayscale opacity-50 hover:opacity-100 transition-opacity"> -->
                 </div>
             </div>
         </div>
