@@ -27,7 +27,7 @@ class WelcomeMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Selamat datang di Marketplace Wisata',
+            subject: 'Selamat datang di Tabibito Jateng',
         );
     }
 
