@@ -1,37 +1,76 @@
 @extends('layouts.app')
 
 @section('content')
-    <nav class="mb-4 text-sm text-slate-500">Beranda > Wisata</nav>
-    <div class="grid gap-6 lg:grid-cols-4">
-        <!-- Filter Sidebar - Desktop -->
-        <aside class="rounded-xl bg-white p-4 shadow-sm lg:col-span-1 filter-hide">
-            <h2 class="font-semibold text-responsive">Filter</h2>
-            <form class="mt-4 space-y-3">
-                <select name="tag" class="w-full rounded-lg border px-3 py-2 text-sm">
-                    <option value="">Semua Tag</option>
-                    @foreach($tags as $tag)
-                        <option value="{{ $tag->id }}" @selected(request('tag') == $tag->id)>{{ $tag->name }}</option>
-                    @endforeach
-                </select>
-                <select name="city" class="w-full rounded-lg border px-3 py-2 text-sm">
-                    <option value="">Semua Kota</option>
-                    @foreach($cities as $city)
-                        <option value="{{ $city }}" @selected(request('city') == $city)>{{ $city }}</option>
-                    @endforeach
-                </select>
-                <button class="w-full rounded-lg bg-emerald-600 py-2 text-sm font-medium text-white">Terapkan</button>
-            </form>
+    <!-- Breadcrumbs -->
+    <nav class="mb-8 flex items-center gap-2 text-sm">
+        <a href="{{ route('home') }}" class="text-slate-400 hover:text-primary-600 transition-colors">Beranda</a>
+        <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-slate-900 font-bold">Eksplor Wisata</span>
+    </nav>
+
+    <div class="grid gap-10 lg:grid-cols-4">
+        <!-- Filter Sidebar -->
+        <aside class="lg:col-span-1">
+            <div class="sticky top-24 bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="text-xl font-bold text-slate-900">Filter</h2>
+                    <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+                </div>
+
+                <form class="space-y-8" action="{{ route('destinations.index') }}" method="GET">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Kategori</label>
+                        <select name="tag" class="w-full bg-slate-50 border-none rounded-2xl px-4 py-3.5 text-sm font-medium focus:ring-2 focus:ring-primary-500/20 transition-all">
+                            <option value="">Semua Kategori</option>
+                            @foreach($tags as $tag)
+                                <option value="{{ $tag->id }}" @selected(request('tag') == $tag->id)>{{ $tag->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Lokasi</label>
+                        <select name="city" class="w-full bg-slate-50 border-none rounded-2xl px-4 py-3.5 text-sm font-medium focus:ring-2 focus:ring-primary-500/20 transition-all">
+                            <option value="">Semua Kota</option>
+                            @foreach($cities as $city)
+                                <option value="{{ $city }}" @selected(request('city') == $city)>{{ $city }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <button class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-primary-600/20 transition-all transform hover:-translate-y-0.5">
+                        Terapkan Filter
+                    </button>
+                    
+                    @if(request()->anyFilled(['tag', 'city']))
+                        <a href="{{ route('destinations.index') }}" class="block text-center text-xs font-bold text-rose-500 hover:text-rose-600 uppercase tracking-widest mt-4">Reset Filter</a>
+                    @endif
+                </form>
+            </div>
         </aside>
         
-        <!-- Destinations Grid - Responsive -->
-        <section class="grid-2 space-y-4 lg:col-span-3" id="destinations-container">
-            @include('destinations.partials.cards', ['destinations' => $destinations])
-        </section>
-        @if($destinations->hasPages())
-            <div class="col-span-full text-center mt-4">
-                <button id="load-more" class="bg-emerald-600 text-white px-4 py-2 rounded-lg btn-full" data-page="2">Lebih Banyak</button>
+        <!-- Destinations Grid -->
+        <div class="lg:col-span-3">
+            <div class="flex items-center justify-between mb-8">
+                <h1 class="text-2xl font-bold text-slate-900">Menampilkan Destinasi</h1>
+                <p class="text-sm text-slate-400 font-medium">{{ $destinations->total() }} wisata ditemukan</p>
             </div>
-        @endif
+
+            <div class="space-y-6" id="destinations-container">
+                @include('destinations.partials.cards', ['destinations' => $destinations])
+            </div>
+
+            @if($destinations->hasPages())
+                <div class="text-center mt-12">
+                    <button id="load-more" 
+                            class="inline-flex items-center gap-3 bg-white border border-slate-200 px-8 py-4 rounded-2xl font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-all group shadow-sm" 
+                            data-page="2">
+                        Muat Lebih Banyak
+                        <svg class="w-5 h-5 text-slate-400 group-hover:translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                </div>
+            @endif
+        </div>
     </div>
 
     <script>
