@@ -34,7 +34,7 @@
                     </div>
                     <div>
                         <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Kantor Pusat</p>
-                        <p class="font-bold text-slate-900">Semarang, Jawa Tengah</p>
+                        <p class="font-bold text-slate-900">Banjarnegara, Jawa Tengah</p>
                     </div>
                 </div>
             </div>
