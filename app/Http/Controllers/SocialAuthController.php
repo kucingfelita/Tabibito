@@ -24,15 +24,8 @@ class SocialAuthController extends Controller
             ->first();
 
         if (! $user) {
-            $username = str($googleUser->nickname ?: $googleUser->name)->slug('_')->limit(30, '')->toString();
-            $username = $username !== '' ? $username : 'user_google';
-
-            $baseUsername = $username;
-            $counter = 1;
-            while (User::query()->where('username', $username)->exists()) {
-                $username = "{$baseUsername}_{$counter}";
-                $counter++;
-            }
+            // Gunakan email sebagai username agar user bisa login manual nantinya
+            $username = $googleUser->email;
 
             $user = User::query()->create([
                 'name' => $googleUser->name,

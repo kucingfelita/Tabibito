@@ -2,6 +2,7 @@
 
 @section('content')
     <h1 class="text-xl font-semibold">Riwayat Pembelian</h1>
+    <p class="text-gray-500 mt-5">Gunakan tiket sebaik mungkin, tidak ada pengembalian dana untuk tiket yang sudah melewati tanggal kunjungan/expired!</p>
     
     <!-- Responsive Transaction List -->
     <div class="mt-4 space-y-3">

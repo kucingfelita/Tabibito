@@ -42,6 +42,8 @@ class AuthController extends Controller
             $redirectTo = '/admin/dashboard';
         } elseif ($user->tipe_user == 3) {
             $redirectTo = '/owner/dashboard';
+        } elseif ($user->tipe_user == 4) {
+            $redirectTo = '/owner/scanner';
         }
 
         return redirect($redirectTo)->with('success', 'Login berhasil.');
