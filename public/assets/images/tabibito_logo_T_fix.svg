@@ -1,0 +1,26 @@
+<svg width="100%" viewBox="0 0 690 690" role="img" xmlns="http://www.w3.org/2000/svg" style="">
+  <title style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">Tabibito Logo</title>
+  <desc style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">Logo bulat Tabibito huruf T gradasi biru</desc>
+
+  <defs>
+    <linearGradient id="gT" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="45%" stop-color="#1A56DB"/>
+      <stop offset="100%" stop-color="#4F46E5"/>
+    </linearGradient>
+    <clipPath id="tshape">
+      <path d="&#10;        M 170,220 L 510,220 L 510,278 L 369,278 L 369,458 L 311,458 L 311,278 L 170,278 Z&#10;      "/>
+    </clipPath>
+  </defs>
+
+  <circle cx="340" cy="340" r="308" fill="#ffffff" style="fill:rgb(255, 255, 255);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <circle cx="340" cy="340" r="308" fill="none" stroke="#1A56DB" stroke-width="6" style="fill:none;stroke:rgb(26, 86, 219);color:rgb(255, 255, 255);stroke-width:6px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- T shape filled with gradient via clipPath -->
+  <rect x="0" y="0" width="680" height="680" fill="url(#gT)" clip-path="url(#tshape)" style="stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <text x="340" y="558" text-anchor="middle" font-family="'Trebuchet MS', Arial, sans-serif" font-size="52" font-weight="700" fill="#1A56DB" letter-spacing="8" style="fill:rgb(26, 86, 219);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Trebuchet MS&quot;, Arial, sans-serif;font-size:52px;font-weight:700;text-anchor:middle;dominant-baseline:auto">TABIBITO</text>
+
+  <text x="340" y="594" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" fill="#6B9FE4" letter-spacing="4" style="fill:rgb(107, 159, 228);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Arial, sans-serif;font-size:17px;font-weight:400;text-anchor:middle;dominant-baseline:auto">travel &amp; explore</text>
+
+</svg>

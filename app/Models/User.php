@@ -16,6 +16,7 @@ class User extends Authenticatable
     public const TYPE_ADMIN = 1;
     public const TYPE_USER = 2;
     public const TYPE_OWNER = 3;
+    public const TYPE_EMPLOYEE = 4;
 
     /**
      * The attributes that are mass assignable.
@@ -30,6 +31,7 @@ class User extends Authenticatable
         'phone',
         'google_id',
         'tipe_user',
+        'owner_id',
         'balance',
         'bank_code',
         'bank_account_number',
@@ -73,5 +75,23 @@ class User extends Authenticatable
     public function withdrawals(): HasMany
     {
         return $this->hasMany(Withdrawal::class);
+    }
+
+    /** Karyawan yang dimiliki oleh owner ini */
+    public function employees(): HasMany
+    {
+        return $this->hasMany(User::class, 'owner_id');
+    }
+
+    /** Owner dari karyawan ini */
+    public function ownerUser(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class, 'owner_id');
+    }
+
+    /** Helper: dapatkan ID owner yg sesungguhnya (owner sendiri atau owner dari karyawan) */
+    public function resolveOwnerId(): int
+    {
+        return $this->tipe_user === self::TYPE_EMPLOYEE ? $this->owner_id : $this->id;
     }
 }

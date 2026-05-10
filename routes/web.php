@@ -9,7 +9,9 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MidtransWebhookController;
 use App\Http\Controllers\Owner\DashboardController as OwnerDashboardController;
 use App\Http\Controllers\Owner\DestinationController as OwnerDestinationController;
+use App\Http\Controllers\Owner\EmployeeController;
 use App\Http\Controllers\Owner\OwnerRegisterController;
+use App\Http\Controllers\Owner\ScanHistoryController;
 use App\Http\Controllers\Owner\ScannerController;
 use App\Http\Controllers\Owner\TicketController as OwnerTicketController;
 use App\Http\Controllers\Owner\WithdrawalController;
@@ -62,21 +64,30 @@ Route::get('/payment/finish', [CheckoutController::class, 'finish'])->name('chec
 
 Route::prefix('owner')
     ->name('owner.')
-    ->middleware(['auth', 'user.type:3,1'])
+    ->middleware(['auth', 'user.type:3,4'])
     ->group(function () {
-        Route::get('/dashboard', [OwnerDashboardController::class, 'index'])->name('dashboard');
-        Route::get('/destinations', [OwnerDestinationController::class, 'index'])->name('destinations.index');
-        Route::post('/destinations', [OwnerDestinationController::class, 'store'])->name('destinations.store');
-        Route::put('/destinations/{destination}', [OwnerDestinationController::class, 'update'])->name('destinations.update');
-        Route::delete('/destinations/{destination}', [OwnerDestinationController::class, 'destroy'])->name('destinations.destroy');
-        Route::get('/tickets', [OwnerTicketController::class, 'index'])->name('tickets.index');
-        Route::post('/tickets', [OwnerTicketController::class, 'store'])->name('tickets.store');
-        Route::put('/tickets/{ticket}', [OwnerTicketController::class, 'update'])->name('tickets.update');
-        Route::delete('/tickets/{ticket}', [OwnerTicketController::class, 'destroy'])->name('tickets.destroy');
-        Route::get('/withdrawals', [WithdrawalController::class, 'index'])->name('withdrawals.index');
-        Route::post('/withdrawals', [WithdrawalController::class, 'store'])->name('withdrawals.store');
+        // Akses scanner & riwayat scan: owner (3) + karyawan (4)
         Route::get('/scanner', [ScannerController::class, 'index'])->name('scanner');
         Route::post('/scanner/verify', [ScannerController::class, 'verify'])->name('scanner.verify');
+        Route::get('/scan-history', [ScanHistoryController::class, 'index'])->name('scan-history');
+
+        // Hanya owner (3) yang bisa akses fitur berikut
+        Route::middleware('user.type:3,1')->group(function () {
+            Route::get('/dashboard', [OwnerDashboardController::class, 'index'])->name('dashboard');
+            Route::get('/destinations', [OwnerDestinationController::class, 'index'])->name('destinations.index');
+            Route::post('/destinations', [OwnerDestinationController::class, 'store'])->name('destinations.store');
+            Route::put('/destinations/{destination}', [OwnerDestinationController::class, 'update'])->name('destinations.update');
+            Route::delete('/destinations/{destination}', [OwnerDestinationController::class, 'destroy'])->name('destinations.destroy');
+            Route::get('/tickets', [OwnerTicketController::class, 'index'])->name('tickets.index');
+            Route::post('/tickets', [OwnerTicketController::class, 'store'])->name('tickets.store');
+            Route::put('/tickets/{ticket}', [OwnerTicketController::class, 'update'])->name('tickets.update');
+            Route::delete('/tickets/{ticket}', [OwnerTicketController::class, 'destroy'])->name('tickets.destroy');
+            Route::get('/withdrawals', [WithdrawalController::class, 'index'])->name('withdrawals.index');
+            Route::post('/withdrawals', [WithdrawalController::class, 'store'])->name('withdrawals.store');
+            Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
+            Route::post('/employees', [EmployeeController::class, 'store'])->name('employees.store');
+            Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
+        });
     });
 
 Route::prefix('admin')
