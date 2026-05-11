@@ -120,24 +120,46 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                             </svg>
                         </button>
-                        <div x-show="open" x-cloak @click.outside="open=false" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" class="absolute right-0 z-10 mt-3 w-56 rounded-2xl border border-slate-100 bg-white p-2 shadow-xl ring-1 ring-black/5">
+                        <div x-show="open" x-cloak @click.outside="open=false" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" class="absolute right-0 z-10 mt-3 w-60 rounded-2xl border border-slate-100 bg-white p-2 shadow-xl ring-1 ring-black/5">
                             <div class="px-3 py-2 mb-2 border-b border-slate-50">
-                                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Menu User</p>
+                                <p class="text-xs font-black text-slate-800 truncate">{{ auth()->user()->name }}</p>
+                                @if(auth()->user()->tipe_user === \App\Models\User::TYPE_EMPLOYEE)
+                                    <p class="text-[10px] text-violet-500 font-bold uppercase tracking-widest mt-0.5">Karyawan</p>
+                                @elseif(auth()->user()->tipe_user === \App\Models\User::TYPE_OWNER)
+                                    <p class="text-[10px] text-primary-500 font-bold uppercase tracking-widest mt-0.5">Owner</p>
+                                @elseif(auth()->user()->tipe_user === \App\Models\User::TYPE_ADMIN)
+                                    <p class="text-[10px] text-amber-500 font-bold uppercase tracking-widest mt-0.5">Admin</p>
+                                @endif
                             </div>
-                            <a href="{{ route('profile') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-primary-600 transition-colors">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                                Profile Saya
-                            </a>
-                            <a href="{{ route('history.index') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-primary-600 transition-colors">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                Riwayat Pesanan
-                            </a>
-                            @if(in_array(auth()->user()->tipe_user, [1,3], true))
-                                <a href="{{ auth()->user()->tipe_user === 1 ? route('admin.dashboard') : route('owner.dashboard') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 hover:bg-primary-50 hover:text-primary-700 transition-colors">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                                    Dashboard {{ auth()->user()->tipe_user === 1 ? 'Admin' : 'Owner' }}
+
+                            @if(auth()->user()->tipe_user === \App\Models\User::TYPE_EMPLOYEE)
+                                {{-- Karyawan: hanya scanner & riwayat scan --}}
+                                <a href="{{ route('owner.scanner') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 hover:bg-violet-50 hover:text-violet-700 transition-colors font-medium">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+                                    Scanner Tiket
                                 </a>
+                                <a href="{{ route('owner.scan-history') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 hover:bg-violet-50 hover:text-violet-700 transition-colors font-medium">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                                    Riwayat Scan
+                                </a>
+                            @else
+                                {{-- Owner & Admin & User biasa --}}
+                                <a href="{{ route('profile') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-primary-600 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                    Profile Saya
+                                </a>
+                                <a href="{{ route('history.index') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-primary-600 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    Riwayat Pesanan
+                                </a>
+                                @if(in_array(auth()->user()->tipe_user, [1,3], true))
+                                    <a href="{{ auth()->user()->tipe_user === 1 ? route('admin.dashboard') : route('owner.dashboard') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 hover:bg-primary-50 hover:text-primary-700 transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                                        Dashboard {{ auth()->user()->tipe_user === 1 ? 'Admin' : 'Owner' }}
+                                    </a>
+                                @endif
                             @endif
+
                             <div class="my-2 border-t border-slate-50"></div>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
@@ -176,8 +198,28 @@
                     @endguest
                     @auth
                         <div class="space-y-1">
-                            <a href="{{ route('profile') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-slate-50">Profile Saya</a>
-                            <a href="{{ route('history.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-slate-50">Riwayat Pesanan</a>
+                            @if(auth()->user()->tipe_user === \App\Models\User::TYPE_EMPLOYEE)
+                                {{-- Karyawan: langsung ke scanner & riwayat --}}
+                                <div class="px-4 py-2">
+                                    <span class="text-[10px] font-black text-violet-500 uppercase tracking-widest">Karyawan</span>
+                                </div>
+                                <a href="{{ route('owner.scanner') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-violet-50 hover:text-violet-700 font-medium">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+                                    Scanner Tiket
+                                </a>
+                                <a href="{{ route('owner.scan-history') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-violet-50 hover:text-violet-700 font-medium">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                                    Riwayat Scan
+                                </a>
+                            @else
+                                <a href="{{ route('profile') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-slate-50">Profile Saya</a>
+                                <a href="{{ route('history.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-slate-50">Riwayat Pesanan</a>
+                                @if(in_array(auth()->user()->tipe_user, [1,3], true))
+                                    <a href="{{ auth()->user()->tipe_user === 1 ? route('admin.dashboard') : route('owner.dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-primary-600 hover:bg-primary-50 font-bold">
+                                        Dashboard {{ auth()->user()->tipe_user === 1 ? 'Admin' : 'Owner' }}
+                                    </a>
+                                @endif
+                            @endif
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button class="w-full text-left px-4 py-3 rounded-xl text-rose-600 hover:bg-rose-50 font-bold">Keluar</button>
