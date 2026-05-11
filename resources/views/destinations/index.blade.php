@@ -19,6 +19,14 @@
 
                 <form class="space-y-8" action="{{ route('destinations.index') }}" method="GET">
                     <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Pencarian</label>
+                        <div class="relative">
+                            <svg class="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                            <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari wisata..." class="w-full bg-slate-50 border-none rounded-2xl pl-11 pr-4 py-3.5 text-sm font-medium focus:ring-2 focus:ring-primary-500/20 transition-all">
+                        </div>
+                    </div>
+
+                    <div>
                         <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Kategori</label>
                         <select name="tag" class="w-full bg-slate-50 border-none rounded-2xl px-4 py-3.5 text-sm font-medium focus:ring-2 focus:ring-primary-500/20 transition-all">
                             <option value="">Semua Kategori</option>
@@ -42,7 +50,7 @@
                         Terapkan Filter
                     </button>
                     
-                    @if(request()->anyFilled(['tag', 'city']))
+                    @if(request()->anyFilled(['q', 'tag', 'city']))
                         <a href="{{ route('destinations.index') }}" class="block text-center text-xs font-bold text-rose-500 hover:text-rose-600 uppercase tracking-widest mt-4">Reset Filter</a>
                     @endif
                 </form>
@@ -80,7 +88,7 @@
             button.textContent = 'Memuat...';
             button.disabled = true;
 
-            fetch(`/destinations/load-more?page=${page}&tag={{ request('tag') }}&city={{ request('city') }}`)
+            fetch(`/destinations/load-more?page=${page}&q={{ request('q') }}&tag={{ request('tag') }}&city={{ request('city') }}`)
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('destinations-container').insertAdjacentHTML('beforeend', data.html);

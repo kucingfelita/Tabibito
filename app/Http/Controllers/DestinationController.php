@@ -29,6 +29,7 @@ class DestinationController extends Controller
                 $query->whereHas('tags', fn($q) => $q->where('tags.id', $request->integer('tag')));
             })
             ->when($request->filled('city'), fn($query) => $query->where('city', $request->string('city')->toString()))
+            ->when($request->filled('q'), fn($query) => $query->where('name', 'like', '%' . $request->string('q')->toString() . '%'))
             ->paginate(20);
 
         $tags = Tag::query()->orderBy('name')->get(['id', 'name']);
@@ -53,6 +54,7 @@ class DestinationController extends Controller
                 $query->whereHas('tags', fn($q) => $q->where('tags.id', $request->integer('tag')));
             })
             ->when($request->filled('city'), fn($query) => $query->where('city', $request->string('city')->toString()))
+            ->when($request->filled('q'), fn($query) => $query->where('name', 'like', '%' . $request->string('q')->toString() . '%'))
             ->paginate(20, ['*'], 'page', $request->page);
 
         $html = view('destinations.partials.cards', compact('destinations'))->render();

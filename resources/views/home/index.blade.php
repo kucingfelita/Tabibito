@@ -24,7 +24,7 @@
                 <form action="{{ route('destinations.index') }}" class="flex items-center gap-2 p-2 bg-white/10 backdrop-blur-2xl border border-white/20 rounded-2xl md:rounded-3xl shadow-2xl transition-all focus-within:bg-white focus-within:border-white focus-within:ring-4 focus-within:ring-primary-500/20">
                     <div class="flex-1 flex items-center gap-3 px-4">
                         <svg class="w-6 h-6 text-primary-400 group-focus-within:text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                        <input type="text" name="city" placeholder="Mau liburan ke mana hari ini?" class="w-full bg-transparent border-0 focus:ring-0 text-white placeholder-slate-400 group-focus-within:text-slate-900 group-focus-within:placeholder-slate-500 font-medium py-3">
+                        <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari nama tempat wisata..." class="w-full bg-transparent border-0 focus:ring-0 text-white placeholder-slate-400 group-focus-within:text-slate-900 group-focus-within:placeholder-slate-500 font-medium py-3">
                     </div>
                     <button class="bg-primary-600 hover:bg-primary-700 text-white px-8 py-3.5 rounded-xl md:rounded-2xl font-bold transition-all shadow-lg shadow-primary-600/30 whitespace-nowrap">Cari Wisata</button>
                 </form>
