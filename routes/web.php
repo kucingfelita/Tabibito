@@ -39,6 +39,8 @@ Route::post('/midtrans/webhook', [MidtransWebhookController::class, 'handle'])->
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/auth/google/set-password', [AuthController::class, 'showSetGooglePassword'])->name('google.set-password');
+    Route::post('/auth/google/set-password', [AuthController::class, 'storeGooglePassword'])->name('google.set-password.store');
 });
 
 Route::middleware('redirect.staff')->group(function () {

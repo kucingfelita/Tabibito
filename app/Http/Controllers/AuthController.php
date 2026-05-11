@@ -75,4 +75,23 @@ class AuthController extends Controller
 
         return redirect('/')->with('success', 'Logout berhasil.');
     }
+
+    public function showSetGooglePassword(): View
+    {
+        return view('auth.google-password');
+    }
+
+    public function storeGooglePassword(\Illuminate\Http\Request $request): RedirectResponse
+    {
+        $request->validate([
+            'password' => ['required', 'confirmed', \Illuminate\Validation\Rules\Password::min(8)],
+        ]);
+
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return redirect('/')->with('success', 'Registrasi berhasil. Silakan nikmati layanan kami.');
+    }
 }

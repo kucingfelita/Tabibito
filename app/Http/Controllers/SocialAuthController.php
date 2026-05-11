@@ -23,7 +23,10 @@ class SocialAuthController extends Controller
             ->orWhere('email', $googleUser->email)
             ->first();
 
+        $isNewUser = false;
+
         if (! $user) {
+            $isNewUser = true;
             // Gunakan email sebagai username agar user bisa login manual nantinya
             $username = $googleUser->email;
 
@@ -44,10 +47,10 @@ class SocialAuthController extends Controller
         Auth::login($user);
         request()->session()->regenerate();
 
-        $message = (! $user->phone || str_ends_with($user->email, '@local.user'))
-            ? 'Login berhasil. Lengkapi profil Anda terlebih dahulu.'
-            : 'Login Google berhasil.';
+        if ($isNewUser) {
+            return redirect()->route('google.set-password');
+        }
 
-        return redirect('/')->with('success', $message);
+        return redirect('/')->with('success', 'Login berhasil.');
     }
 }
