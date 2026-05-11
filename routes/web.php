@@ -58,6 +58,7 @@ Route::middleware('redirect.staff')->group(function () {
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::get('/riwayat', [HistoryController::class, 'index'])->name('history.index');
         Route::post('/riwayat/{transaction}/check-status', [HistoryController::class, 'checkStatus'])->name('history.checkStatus');
+        Route::post('/riwayat/{transaction}/rating', [HistoryController::class, 'submitRating'])->name('history.rating');
         Route::get('/checkout/{ticket}', [CheckoutController::class, 'show'])->name('checkout.show');
         Route::post('/checkout/{ticket}', [CheckoutController::class, 'store'])->name('checkout.store');
         Route::get('/checkout/{ticket}/quota', [CheckoutController::class, 'quotaCheck'])->name('checkout.quota');

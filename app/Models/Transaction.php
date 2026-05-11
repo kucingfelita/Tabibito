@@ -17,6 +17,7 @@ class Transaction extends Model
         'status',
         'snap_token',
         'qr_code_token',
+        'rating',
     ];
 
     protected function casts(): array

@@ -45,4 +45,23 @@ class HistoryController extends Controller
 
         return back()->with('success', 'Status transaksi telah diperbarui.');
     }
+
+    public function submitRating(\Illuminate\Http\Request $request, Transaction $transaction): RedirectResponse
+    {
+        if ($transaction->user_id !== auth()->id() || $transaction->status !== 'used') {
+            abort(403);
+        }
+
+        if ($transaction->rating !== null) {
+            return back()->with('error', 'Anda sudah memberikan penilaian untuk tiket ini.');
+        }
+
+        $request->validate([
+            'rating' => ['required', 'integer', 'min:1', 'max:5'],
+        ]);
+
+        $transaction->update(['rating' => $request->integer('rating')]);
+
+        return back()->with('success', 'Terima kasih atas penilaian Anda!');
+    }
 }

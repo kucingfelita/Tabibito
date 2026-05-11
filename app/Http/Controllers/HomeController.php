@@ -16,6 +16,7 @@ class HomeController extends Controller
             $recommendations = Destination::query()
                 ->where('status', 'active')
                 ->with('tickets:id,destination_id,price')
+                ->withAvg('transactions', 'rating')
                 ->latest()
                 ->take(3)
                 ->get();
