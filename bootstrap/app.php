@@ -13,6 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'user.type' => \App\Http\Middleware\EnsureUserType::class,
+            'redirect.staff' => \App\Http\Middleware\RedirectStaffToDashboard::class,
         ]);
         $middleware->validateCsrfTokens(except: [
             'midtrans/webhook',

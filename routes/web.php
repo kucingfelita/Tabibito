@@ -21,18 +21,10 @@ use App\Http\Controllers\Traveler\HistoryController;
 use App\Http\Controllers\Traveler\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
-
 Route::get('/owner/register/step1', [OwnerRegisterController::class, 'step1'])->name('owner.register.step1');
 Route::post('/owner/register/step1', [OwnerRegisterController::class, 'storeStep1'])->name('owner.register.step1.store');
 Route::get('/owner/register/step2', [OwnerRegisterController::class, 'step2'])->name('owner.register.step2');
 Route::post('/owner/register/step2', [OwnerRegisterController::class, 'storeStep2'])->name('owner.register.step2.store');
-Route::get('/wisata', [DestinationController::class, 'index'])->name('destinations.index');
-Route::get('/wisata/{destination}', [DestinationController::class, 'show'])->name('destinations.show');
-Route::get('/tiket/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
-Route::get('/destinations/load-more', [DestinationController::class, 'loadMore'])->name('destinations.loadMore');
-Route::get('/contact', [ContactController::class, 'index'])->name('contact');
-Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -47,20 +39,34 @@ Route::post('/midtrans/webhook', [MidtransWebhookController::class, 'handle'])->
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
-    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::get('/riwayat', [HistoryController::class, 'index'])->name('history.index');
-    Route::post('/riwayat/{transaction}/check-status', [HistoryController::class, 'checkStatus'])->name('history.checkStatus');
-    Route::get('/checkout/{ticket}', [CheckoutController::class, 'show'])->name('checkout.show');
-    Route::post('/checkout/{ticket}', [CheckoutController::class, 'store'])->name('checkout.store');
-    Route::get('/checkout/{ticket}/quota', [CheckoutController::class, 'quotaCheck'])->name('checkout.quota');
 });
 
-Route::get('/checkout/payment/resume', [CheckoutController::class, 'resume'])
-    ->name('checkout.resume')
-    ->middleware('auth');
+Route::middleware('redirect.staff')->group(function () {
+    Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/payment/finish', [CheckoutController::class, 'finish'])->name('checkout.finish');
+    Route::get('/wisata', [DestinationController::class, 'index'])->name('destinations.index');
+    Route::get('/wisata/{destination}', [DestinationController::class, 'show'])->name('destinations.show');
+    Route::get('/tiket/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
+    Route::get('/destinations/load-more', [DestinationController::class, 'loadMore'])->name('destinations.loadMore');
+    Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+    Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+
+    Route::middleware('auth')->group(function () {
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
+        Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::get('/riwayat', [HistoryController::class, 'index'])->name('history.index');
+        Route::post('/riwayat/{transaction}/check-status', [HistoryController::class, 'checkStatus'])->name('history.checkStatus');
+        Route::get('/checkout/{ticket}', [CheckoutController::class, 'show'])->name('checkout.show');
+        Route::post('/checkout/{ticket}', [CheckoutController::class, 'store'])->name('checkout.store');
+        Route::get('/checkout/{ticket}/quota', [CheckoutController::class, 'quotaCheck'])->name('checkout.quota');
+    });
+
+    Route::get('/checkout/payment/resume', [CheckoutController::class, 'resume'])
+        ->name('checkout.resume')
+        ->middleware('auth');
+
+    Route::get('/payment/finish', [CheckoutController::class, 'finish'])->name('checkout.finish');
+});
 
 Route::prefix('owner')
     ->name('owner.')

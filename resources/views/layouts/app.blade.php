@@ -95,11 +95,24 @@
             
             <!-- Desktop Menu -->
             <div class="hidden md:flex items-center gap-8">
+                @if(auth()->guest() || auth()->user()->tipe_user === \App\Models\User::TYPE_USER)
                 <div class="flex items-center gap-6">
                     <a href="{{ route('home') }}" class="text-[15px] font-medium {{ request()->routeIs('home') ? 'text-primary-600' : 'text-slate-600 hover:text-primary-600' }} transition-colors">Beranda</a>
                     <a href="{{ route('destinations.index') }}" class="text-[15px] font-medium {{ request()->routeIs('destinations.*') ? 'text-primary-600' : 'text-slate-600 hover:text-primary-600' }} transition-colors">Wisata</a>
                     <a href="{{ route('contact') }}" class="text-[15px] font-medium {{ request()->routeIs('contact') ? 'text-primary-600' : 'text-slate-600 hover:text-primary-600' }} transition-colors">Kontak</a>
                 </div>
+                @else
+                <div class="flex items-center gap-6">
+                    @if(auth()->user()->tipe_user === \App\Models\User::TYPE_ADMIN)
+                        <a href="{{ route('admin.dashboard') }}" class="text-[15px] font-medium {{ request()->routeIs('admin.dashboard') ? 'text-primary-600' : 'text-slate-600 hover:text-primary-600' }} transition-colors">Dashboard Admin</a>
+                    @elseif(auth()->user()->tipe_user === \App\Models\User::TYPE_OWNER)
+                        <a href="{{ route('owner.dashboard') }}" class="text-[15px] font-medium {{ request()->routeIs('owner.dashboard') ? 'text-primary-600' : 'text-slate-600 hover:text-primary-600' }} transition-colors">Dashboard Owner</a>
+                    @elseif(auth()->user()->tipe_user === \App\Models\User::TYPE_EMPLOYEE)
+                        <a href="{{ route('owner.scanner') }}" class="text-[15px] font-medium {{ request()->routeIs('owner.scanner') ? 'text-primary-600' : 'text-slate-600 hover:text-primary-600' }} transition-colors">Scanner Tiket</a>
+                        <a href="{{ route('owner.scan-history') }}" class="text-[15px] font-medium {{ request()->routeIs('owner.scan-history') ? 'text-primary-600' : 'text-slate-600 hover:text-primary-600' }} transition-colors">Riwayat Scan</a>
+                    @endif
+                </div>
+                @endif
 
                 <div class="h-6 w-px bg-slate-200"></div>
 
@@ -133,29 +146,18 @@
                             </div>
 
                             @if(auth()->user()->tipe_user === \App\Models\User::TYPE_EMPLOYEE)
-                                {{-- Karyawan: hanya scanner & riwayat scan --}}
-                                <a href="{{ route('owner.scanner') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 hover:bg-violet-50 hover:text-violet-700 transition-colors font-medium">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
-                                    Scanner Tiket
-                                </a>
-                                <a href="{{ route('owner.scan-history') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 hover:bg-violet-50 hover:text-violet-700 transition-colors font-medium">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                                    Riwayat Scan
-                                </a>
+                                {{-- Karyawan: link pindah ke navbar utama, dropdown cukup info profil & logout saja --}}
+                                <div class="px-3 py-2 text-xs text-slate-500 font-medium">Menu Karyawan</div>
                             @else
-                                {{-- Owner & Admin & User biasa --}}
-                                <a href="{{ route('profile') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-primary-600 transition-colors">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                                    Profile Saya
-                                </a>
-                                <a href="{{ route('history.index') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-primary-600 transition-colors">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                    Riwayat Pesanan
-                                </a>
-                                @if(in_array(auth()->user()->tipe_user, [1,3], true))
-                                    <a href="{{ auth()->user()->tipe_user === 1 ? route('admin.dashboard') : route('owner.dashboard') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 hover:bg-primary-50 hover:text-primary-700 transition-colors">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                                        Dashboard {{ auth()->user()->tipe_user === 1 ? 'Admin' : 'Owner' }}
+                                {{-- User biasa --}}
+                                @if(auth()->user()->tipe_user === \App\Models\User::TYPE_USER)
+                                    <a href="{{ route('profile') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-primary-600 transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                        Profile Saya
+                                    </a>
+                                    <a href="{{ route('history.index') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-primary-600 transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        Riwayat Pesanan
                                     </a>
                                 @endif
                             @endif
@@ -183,13 +185,15 @@
         <!-- Mobile Menu -->
         <div x-show="navOpen" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" class="md:hidden bg-white border-t border-slate-100 shadow-xl overflow-hidden">
             <div class="px-4 py-6 space-y-4">
-                <div class="grid gap-2">
+                @if(auth()->guest() || auth()->user()->tipe_user === \App\Models\User::TYPE_USER)
+                <div class="grid gap-2 pb-4 border-b border-slate-100">
                     <a href="{{ route('home') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl {{ request()->routeIs('home') ? 'bg-primary-50 text-primary-700 font-bold' : 'text-slate-600 hover:bg-slate-50' }}">Beranda</a>
                     <a href="{{ route('destinations.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl {{ request()->routeIs('destinations.*') ? 'bg-primary-50 text-primary-700 font-bold' : 'text-slate-600 hover:bg-slate-50' }}">Wisata</a>
                     <a href="{{ route('contact') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl {{ request()->routeIs('contact') ? 'bg-primary-50 text-primary-700 font-bold' : 'text-slate-600 hover:bg-slate-50' }}">Kontak</a>
                 </div>
+                @endif
                 
-                <div class="pt-4 border-t border-slate-100">
+                <div>
                     @guest
                         <div class="grid grid-cols-2 gap-3">
                             <a href="{{ route('login') }}" class="flex items-center justify-center px-4 py-3 rounded-xl border border-primary-200 text-primary-600 font-bold">Masuk</a>
