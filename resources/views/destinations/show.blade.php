@@ -82,8 +82,8 @@
             <div>
                 <h2 class="text-2xl font-bold text-slate-900 mb-8">Pilihan Tiket</h2>
                 <div class="grid gap-6">
-                    @foreach($destination->tickets as $ticket)
-                        <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    @foreach($destination->tickets as $index => $ticket)
+                        <div class="ticket-card {{ $index >= 5 ? 'hidden' : '' }} bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                             <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
                                 <div class="flex-1">
                                     <div class="flex items-center gap-3 mb-4">
@@ -115,6 +115,22 @@
                         </div>
                     @endforeach
                 </div>
+
+                @if($destination->tickets->count() > 5)
+                    <div class="mt-8 text-center">
+                        <button onclick="showAllTickets(this)" class="inline-flex items-center gap-3 bg-white border border-slate-200 px-8 py-4 rounded-2xl font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-all group shadow-sm">
+                            Lihat {{ $destination->tickets->count() - 5 }} Tiket Lainnya
+                            <svg class="w-5 h-5 text-slate-400 group-hover:translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                    </div>
+
+                    <script>
+                        function showAllTickets(btn) {
+                            document.querySelectorAll('.ticket-card.hidden').forEach(el => el.classList.remove('hidden'));
+                            btn.parentElement.remove();
+                        }
+                    </script>
+                @endif
             </div>
         </div>
 

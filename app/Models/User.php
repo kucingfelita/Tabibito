@@ -77,6 +77,16 @@ class User extends Authenticatable
         return $this->hasMany(Withdrawal::class);
     }
 
+    public function wishlists(): HasMany
+    {
+        return $this->hasMany(Wishlist::class);
+    }
+
+    public function wishlistedDestinations(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Destination::class, 'wishlists');
+    }
+
     /** Karyawan yang dimiliki oleh owner ini */
     public function employees(): HasMany
     {

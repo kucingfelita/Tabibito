@@ -151,8 +151,12 @@
                             @else
                                 {{-- User, Owner, Admin --}}
                                 <a href="{{ route('profile') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-primary-600 transition-colors">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                                     Profile Saya
+                                </a>
+                                <a href="{{ route('wishlist.index') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-primary-600 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                                    Wishlist Saya
                                 </a>
                                 @if(auth()->user()->tipe_user === \App\Models\User::TYPE_USER)
                                     <a href="{{ route('history.index') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-primary-600 transition-colors">
@@ -217,6 +221,7 @@
                                 </a>
                             @else
                                 <a href="{{ route('profile') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-slate-50">Profile Saya</a>
+                                <a href="{{ route('wishlist.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-slate-50">Wishlist Saya</a>
                                 @if(auth()->user()->tipe_user === \App\Models\User::TYPE_USER)
                                     <a href="{{ route('history.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-slate-50">Riwayat Pesanan</a>
                                 @endif
@@ -301,6 +306,47 @@
         <script>Swal.fire({icon:'error',title:'Oops',text:@json($errors->first()),customClass:{popup:'rounded-3xl'}});</script>
     @endif
     @stack('scripts')
+    @auth
+    <script>
+        function toggleWishlist(event, destinationId) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            const btn = document.getElementById('wishlist-btn-' + destinationId);
+            const svg = btn.querySelector('svg');
+            
+            fetch('/wishlist/' + destinationId + '/toggle', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'added') {
+                    btn.className = 'absolute -top-2 -right-2 w-10 h-10 rounded-xl flex items-center justify-center transition-all shadow-lg z-10 bg-primary-600 text-white shadow-primary-200';
+                    svg.classList.replace('fill-none', 'fill-current');
+                } else {
+                    btn.className = 'absolute -top-2 -right-2 w-10 h-10 rounded-xl flex items-center justify-center transition-all shadow-lg z-10 bg-white text-slate-400 hover:text-primary-600 shadow-slate-200';
+                    svg.classList.replace('fill-current', 'fill-none');
+                }
+                
+                // If we are on the wishlist page, and it's removed, hide the card
+                if (window.location.pathname === '/wishlist' && data.status === 'removed') {
+                    btn.closest('.group').remove();
+                    if (document.querySelectorAll('#destination-container > div').length === 0) {
+                        location.reload();
+                    }
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                Swal.fire({icon:'error',title:'Gagal',text:'Terjadi kesalahan saat memproses wishlist.'});
+            });
+        }
+    </script>
+    @endauth
 </body>
 </html>
 

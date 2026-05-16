@@ -23,15 +23,35 @@ class DestinationController extends Controller
         }
 
         $destinations = Destination::query()
-            ->with(['tags', 'images'])
+            ->with(['tags', 'images', 'tickets'])
             ->withAvg('transactions', 'rating')
+            ->when(auth()->check(), fn($q) => $q->with(['wishlists' => fn($qw) => $qw->where('user_id', auth()->id())]))
             ->where('status', 'active')
-            ->when($request->filled('tag'), function ($query) use ($request) {
-                $query->whereHas('tags', fn($q) => $q->where('tags.id', $request->integer('tag')));
+            // Multi-tag support (OR logic)
+            ->when($request->filled('tags'), function ($query) use ($request) {
+                $tags = is_array($request->tags) ? $request->tags : [$request->tags];
+                $query->whereHas('tags', fn($q) => $q->whereIn('tags.id', $tags));
+            })
+            // Price range support
+            ->when($request->filled('min_price'), function ($query) use ($request) {
+                $query->whereHas('tickets', fn($q) => $q->where('price', '>=', $request->min_price));
+            })
+            ->when($request->filled('max_price'), function ($query) use ($request) {
+                $query->whereHas('tickets', fn($q) => $q->where('price', '<=', $request->max_price));
             })
             ->when($request->filled('city'), fn($query) => $query->where('city', $request->string('city')->toString()))
-            ->when($request->filled('q'), fn($query) => $query->where('name', 'like', '%' . $request->string('q')->toString() . '%'))
-            ->paginate(20);
+            ->when($request->filled('q'), fn($query) => $query->where('name', 'like', '%' . $request->string('q')->toString() . '%'));
+
+        // Sorting
+        $sort = $request->get('sort', 'latest');
+        $destinations = match ($sort) {
+            'price_asc' => $destinations->addSelect(['min_price' => \App\Models\Ticket::select('price')->whereColumn('destination_id', 'destinations.id')->orderBy('price')->limit(1)])->orderBy('min_price', 'asc'),
+            'price_desc' => $destinations->addSelect(['min_price' => \App\Models\Ticket::select('price')->whereColumn('destination_id', 'destinations.id')->orderBy('price')->limit(1)])->orderBy('min_price', 'desc'),
+            'rating_desc' => $destinations->orderBy('transactions_avg_rating', 'desc'),
+            default => $destinations->latest(),
+        };
+
+        $destinations = $destinations->paginate(20)->withQueryString();
 
         $tags = Tag::query()->orderBy('name')->get(['id', 'name']);
         $cities = Destination::query()->where('status', 'active')->distinct()->pluck('city');
@@ -50,15 +70,35 @@ class DestinationController extends Controller
     public function loadMore(Request $request)
     {
         $destinations = Destination::query()
-            ->with(['tags', 'images'])
+            ->with(['tags', 'images', 'tickets'])
             ->withAvg('transactions', 'rating')
+            ->when(auth()->check(), fn($q) => $q->with(['wishlists' => fn($qw) => $qw->where('user_id', auth()->id())]))
             ->where('status', 'active')
-            ->when($request->filled('tag'), function ($query) use ($request) {
-                $query->whereHas('tags', fn($q) => $q->where('tags.id', $request->integer('tag')));
+            // Multi-tag support (OR logic)
+            ->when($request->filled('tags'), function ($query) use ($request) {
+                $tags = is_array($request->tags) ? $request->tags : [$request->tags];
+                $query->whereHas('tags', fn($q) => $q->whereIn('tags.id', $tags));
+            })
+            // Price range support
+            ->when($request->filled('min_price'), function ($query) use ($request) {
+                $query->whereHas('tickets', fn($q) => $q->where('price', '>=', $request->min_price));
+            })
+            ->when($request->filled('max_price'), function ($query) use ($request) {
+                $query->whereHas('tickets', fn($q) => $q->where('price', '<=', $request->max_price));
             })
             ->when($request->filled('city'), fn($query) => $query->where('city', $request->string('city')->toString()))
-            ->when($request->filled('q'), fn($query) => $query->where('name', 'like', '%' . $request->string('q')->toString() . '%'))
-            ->paginate(20, ['*'], 'page', $request->page);
+            ->when($request->filled('q'), fn($query) => $query->where('name', 'like', '%' . $request->string('q')->toString() . '%'));
+
+        // Sorting
+        $sort = $request->get('sort', 'latest');
+        $destinations = match ($sort) {
+            'price_asc' => $destinations->addSelect(['min_price' => \App\Models\Ticket::select('price')->whereColumn('destination_id', 'destinations.id')->orderBy('price')->limit(1)])->orderBy('min_price', 'asc'),
+            'price_desc' => $destinations->addSelect(['min_price' => \App\Models\Ticket::select('price')->whereColumn('destination_id', 'destinations.id')->orderBy('price')->limit(1)])->orderBy('min_price', 'desc'),
+            'rating_desc' => $destinations->orderBy('transactions_avg_rating', 'desc'),
+            default => $destinations->latest(),
+        };
+
+        $destinations = $destinations->paginate(20, ['*'], 'page', $request->page);
 
         $html = view('destinations.partials.cards', compact('destinations'))->render();
 

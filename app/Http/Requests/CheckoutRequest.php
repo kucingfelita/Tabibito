@@ -24,7 +24,7 @@ class CheckoutRequest extends FormRequest
     {
         return [
             'booking_date' => ['required', 'date', 'after_or_equal:today'],
-            'qty' => ['required', 'integer', 'min:1'],
+            'qty' => ['required', 'integer', 'min:1', 'max:20'],
         ];
     }
 }

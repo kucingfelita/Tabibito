@@ -25,9 +25,9 @@ class OwnerTicketRequest extends FormRequest
         return [
             'destination_id' => ['required', 'exists:destinations,id'],
             'name' => ['required', 'string', 'max:120'],
-            'price' => ['required', 'numeric', 'min:1000'],
+            'price' => ['required', 'numeric', 'min:1000', 'max:999999999'],
             'benefit' => ['nullable', 'string'],
-            'daily_quota' => ['required', 'integer', 'min:1'],
+            'daily_quota' => ['required', 'integer', 'min:1', 'max:1000000'],
         ];
     }
 }

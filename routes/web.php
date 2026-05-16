@@ -19,6 +19,7 @@ use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\Traveler\HistoryController;
 use App\Http\Controllers\Traveler\ProfileController;
+use App\Http\Controllers\Traveler\WishlistController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/owner/register/step1', [OwnerRegisterController::class, 'step1'])->name('owner.register.step1');
@@ -44,6 +45,9 @@ Route::middleware('auth')->group(function () {
     
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+    Route::post('/wishlist/{destination}/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
 });
 
 Route::middleware('redirect.staff')->group(function () {

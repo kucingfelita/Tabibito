@@ -42,6 +42,11 @@ class Destination extends Model
         return $this->hasMany(Ticket::class);
     }
 
+    public function wishlists(): HasMany
+    {
+        return $this->hasMany(Wishlist::class);
+    }
+
     public function transactions(): HasManyThrough
     {
         return $this->hasManyThrough(Transaction::class, Ticket::class);
