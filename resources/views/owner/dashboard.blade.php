@@ -47,30 +47,84 @@
     </div>
 
     <!-- Revenue Chart -->
-    <div x-data='{chart:@json($chart)}' class="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm">
-        <div class="flex items-center justify-between mb-12">
+    <div class="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
             <div>
                 <h2 class="text-xl font-bold text-slate-900">Grafik Pendapatan</h2>
                 <p class="text-sm text-slate-400 font-medium">Data 6 bulan terakhir</p>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-3 px-4 py-2 bg-primary-50 rounded-xl">
                 <div class="w-3 h-3 rounded-full bg-primary-500"></div>
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Pendapatan (IDR)</span>
+                <span class="text-xs font-bold text-primary-700 uppercase tracking-widest">Total IDR</span>
             </div>
         </div>
 
-        <div class="flex items-end gap-4 h-64">
-            <template x-for="item in chart" :key="item.label">
-                <div class="flex-1 flex flex-col items-center group h-full justify-end">
-                    <div class="relative w-full flex justify-center items-end h-full">
-                        <div class="absolute -top-10 scale-0 group-hover:scale-100 transition-transform bg-slate-900 text-white text-[10px] font-bold py-1 px-2 rounded-lg whitespace-nowrap z-10 shadow-xl">
-                            Rp <span x-text="new Intl.NumberFormat('id-ID').format(item.amount)"></span>
-                        </div>
-                        <div class="w-full max-w-[40px] rounded-t-xl bg-primary-100 group-hover:bg-primary-600 transition-all duration-500" :style="`height:${Math.max(10, (item.amount / Math.max(...chart.map(i => i.amount || 1))) * 100)}%`" :title="item.amount"></div>
-                    </div>
-                    <p class="mt-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest" x-text="item.label"></p>
-                </div>
-            </template>
+        <div class="relative h-[300px]">
+            <canvas id="revenueChart"></canvas>
         </div>
     </div>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+            const chartData = @json($chart);
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartData.map(item => item.label),
+                    datasets: [{
+                        label: 'Pendapatan',
+                        data: chartData.map(item => item.amount),
+                        backgroundColor: '#0ea5e9',
+                        borderRadius: 12,
+                        borderSkipped: false,
+                        barPercentage: 0.6,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#0f172a',
+                            padding: 12,
+                            titleFont: { size: 12, weight: 'bold' },
+                            bodyFont: { size: 14, weight: 'bold' },
+                            callbacks: {
+                                label: function(context) {
+                                    return ' Rp ' + new Intl.NumberFormat('id-ID').format(context.raw);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { display: false },
+                            ticks: {
+                                font: { size: 10, weight: '600' },
+                                color: '#94a3b8',
+                                callback: function(value) {
+                                    if (value >= 1000000) return (value / 1000000) + 'jt';
+                                    if (value >= 1000) return (value / 1000) + 'rb';
+                                    return value;
+                                }
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                font: { size: 10, weight: 'bold' },
+                                color: '#94a3b8'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+    @endpush
 @endsection

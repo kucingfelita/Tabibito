@@ -30,7 +30,10 @@
             <input name="map_link" placeholder="Google map link" class="rounded-lg border px-3 py-2 md:col-span-2" value="{{ old('map_link') }}">
             <input type="time" name="open_time" class="rounded-lg border px-3 py-2" value="{{ old('open_time') }}">
             <input type="time" name="close_time" class="rounded-lg border px-3 py-2" value="{{ old('close_time') }}">
-            <input type="file" name="image" class="rounded-lg border px-3 py-2 md:col-span-2">
+            <label class="md:col-span-2">
+                <span class="block text-sm font-medium text-slate-700 mb-1">Foto Wisata (Bisa pilih banyak)</span>
+                <input type="file" name="images[]" multiple class="w-full rounded-lg border px-3 py-2">
+            </label>
             <button class="rounded-lg bg-emerald-600 px-4 py-2 text-white md:col-span-2">Tambah Destinasi</button>
         </form>
     @else
@@ -68,7 +71,10 @@
                     <input name="map_link" value="{{ $destination->map_link }}" class="rounded-lg border px-3 py-2 md:col-span-2">
                     <input type="time" name="open_time" value="{{ \Illuminate\Support\Str::of($destination->open_time)->substr(0, 5) }}" class="rounded-lg border px-3 py-2">
                     <input type="time" name="close_time" value="{{ \Illuminate\Support\Str::of($destination->close_time)->substr(0, 5) }}" class="rounded-lg border px-3 py-2">
-                    <input type="file" name="image" class="rounded-lg border px-3 py-2 md:col-span-2">
+                    <label class="md:col-span-2">
+                        <span class="block text-sm font-medium text-slate-700 mb-1">Tambah Foto (Bisa pilih banyak)</span>
+                        <input type="file" name="images[]" multiple class="w-full rounded-lg border px-3 py-2">
+                    </label>
                     <button class="rounded-lg bg-cyan-600 px-4 py-2 text-white md:col-span-2">Simpan</button>
                 </form>
                 <div class="mt-2">

@@ -1,36 +1,74 @@
 @extends('layouts.app')
 
 @section('content')
+    @push('styles')
+    <style>
+        /* Safety CSS: Prevent overflow even if JS fails */
+        .hero-swiper { overflow: hidden !important; position: relative !important; }
+        .swiper-wrapper { display: flex !important; }
+        .swiper-slide { flex-shrink: 0 !important; width: 100% !important; height: 100% !important; }
+        
+        .swiper-button-next, .swiper-button-prev { color: #fff; background: rgba(0,0,0,0.3); width: 44px; height: 44px; border-radius: 50%; backdrop-filter: blur(4px); }
+        .swiper-button-next:after, .swiper-button-prev:after { font-size: 18px; font-weight: bold; }
+        .swiper-pagination-bullet-active { background: #0ea5e9 !important; }
+    </style>
+    @endpush
+
     <!-- Breadcrumbs -->
-    <nav class="mb-8 flex items-center gap-2 text-sm">
-        <a href="{{ route('home') }}" class="text-slate-400 hover:text-primary-600 transition-colors">Beranda</a>
-        <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-        <a href="{{ route('destinations.index') }}" class="text-slate-400 hover:text-primary-600 transition-colors">Eksplor Wisata</a>
-        <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-        <span class="text-slate-900 font-bold truncate">{{ $destination->name }}</span>
-    </nav>
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <nav class="flex items-center gap-2 text-sm">
+            <a href="{{ route('home') }}" class="text-slate-400 hover:text-primary-600 transition-colors">Beranda</a>
+            <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <a href="{{ route('destinations.index') }}" class="text-slate-400 hover:text-primary-600 transition-colors">Eksplor Wisata</a>
+            <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <span class="text-slate-900 font-bold truncate">{{ $destination->name }}</span>
+        </nav>
+
+        <a href="https://wa.me/?text={{ urlencode('Cek tempat wisata keren ini: ' . $destination->name . ' - ' . request()->url()) }}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-colors font-bold text-sm">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-2.135 0-3.998 1.063-5.11 2.67l-.233.344-1.291-.473 1.258 3.426.305.83-.541.691c-.482.616-.763 1.391-.763 2.23 0 1.954 1.583 3.541 3.535 3.541 1.066 0 2.029-.475 2.684-1.229l.345-.398.508.156c.241.074.492.112.75.112.716 0 1.365-.3 1.833-.787l.375-.389.516.14c.248.067.505.102.768.102 1.488 0 2.697-1.211 2.697-2.698 0-.962-.511-1.801-1.272-2.278l-.396-.248.14-.445c.162-.517.248-1.063.248-1.63 0-3.057-2.482-5.541-5.539-5.541zM22 12c0 5.523-4.477 10-10 10-1.785 0-3.456-.468-4.903-1.286l-5.097 1.286 1.306-4.992c-.837-1.47-1.306-3.175-1.306-4.992 0-5.523 4.477-10 10-10s10 4.477 10 10zm-14.724-2.215c-.463-.672-.724-1.481-.724-2.355 0-2.316 1.879-4.195 4.195-4.195 2.316 0 4.195 1.879 4.195 4.195 0 .584-.118 1.139-.333 1.644.821.579 1.359 1.543 1.359 2.632 0 1.402-.916 2.585-2.186 2.99.014.09.022.181.022.274 0 1.127-.69 2.091-1.666 2.483.473.541.761 1.25.761 2.023 0 1.706-1.388 3.095-3.095 3.095-.918 0-1.745-.401-2.311-1.037-.566.636-1.393 1.037-2.311 1.037-1.706 0-3.095-1.388-3.095-3.095 0-.877.366-1.667.954-2.226-1.125-.327-1.954-1.365-1.954-2.603 0-.87.411-1.644 1.05-2.146l.001.001z"/></svg>
+            Bagikan ke WA
+        </a>
+    </div>
 
     <div class="grid gap-10 lg:grid-cols-[1.8fr_1fr]">
         <!-- Main Content -->
         <div class="space-y-10">
-            <!-- Hero Section -->
-            <div class="relative bg-white rounded-[2.5rem] overflow-hidden shadow-sm border border-slate-100">
-                <div class="h-80 md:h-[450px] overflow-hidden relative">
-                    @if($destination->images->first()?->image_path)
-                        <img src="{{ asset('storage/' . $destination->images->first()->image_path) }}" alt="{{ $destination->name }}" class="h-full w-full object-cover">
-                    @else
-                        <div class="w-full h-full bg-slate-100 flex items-center justify-center">
-                            <svg class="w-20 h-20 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <!-- Hero Section / Slider -->
+            <div class="bg-white rounded-[2.5rem] overflow-hidden shadow-sm border border-slate-100">
+                <div class="relative">
+                    <div class="swiper hero-swiper h-80 md:h-[450px]">
+                        <div class="swiper-wrapper">
+                            @forelse($destination->images as $image)
+                                <div class="swiper-slide bg-slate-100">
+                                    <img src="{{ asset('storage/' . $image->image_path) }}" 
+                                         alt="{{ $destination->name }}" 
+                                         class="h-full w-full object-cover"
+                                         loading="lazy">
+                                </div>
+                            @empty
+                                <div class="swiper-slide">
+                                    <div class="w-full h-full bg-slate-50 flex items-center justify-center">
+                                        <svg class="w-20 h-20 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    </div>
+                                </div>
+                            @endforelse
                         </div>
-                    @endif
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-                    <div class="absolute bottom-8 left-8 right-8">
+                        @if($destination->images->count() > 1)
+                            <div class="swiper-pagination !bottom-24"></div>
+                            <div class="swiper-button-next"></div>
+                            <div class="swiper-button-prev"></div>
+                        @endif
+                    </div>
+                    
+                    <!-- Gradient & Overlay -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none z-[5]"></div>
+                    <div class="absolute bottom-8 left-8 right-8 z-10 pointer-events-none">
                         <div class="flex flex-wrap gap-2 mb-4">
                             @foreach($destination->tags as $tag)
                                 <span class="px-3 py-1 rounded-lg bg-white/20 backdrop-blur-md border border-white/30 text-xs font-bold text-white uppercase tracking-widest">{{ $tag->name }}</span>
                             @endforeach
                         </div>
-                        <h1 class="text-3xl md:text-5xl font-black text-white">{{ $destination->name }}</h1>
+                        <h1 class="text-3xl md:text-5xl font-black text-white leading-tight">{{ $destination->name }}</h1>
                     </div>
                 </div>
                 
@@ -174,4 +212,16 @@
             </div>
         </aside>
     </div>
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            new Swiper('.hero-swiper', {
+                loop: true,
+                pagination: { el: '.swiper-pagination', clickable: true },
+                navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+                autoplay: { delay: 5000, disableOnInteraction: false },
+            });
+        });
+    </script>
+    @endpush
 @endsection

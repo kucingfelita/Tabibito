@@ -51,12 +51,14 @@ class DestinationController extends Controller
 
             $this->syncTags($destination, $request);
 
-            if ($request->hasFile('image')) {
-                $path = $this->compressAndStoreImage($request->file('image'));
-                DestinationImage::query()->create([
-                    'destination_id' => $destination->id,
-                    'image_path' => $path,
-                ]);
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $path = $this->compressAndStoreImage($image);
+                    DestinationImage::query()->create([
+                        'destination_id' => $destination->id,
+                        'image_path' => $path,
+                    ]);
+                }
             }
 
             return back()->with('success', 'Destinasi berhasil ditambahkan dan menunggu verifikasi admin.');
@@ -83,12 +85,14 @@ class DestinationController extends Controller
 
             $this->syncTags($destination, $request);
 
-            if ($request->hasFile('image')) {
-                $path = $this->compressAndStoreImage($request->file('image'));
-                DestinationImage::query()->create([
-                    'destination_id' => $destination->id,
-                    'image_path' => $path,
-                ]);
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $path = $this->compressAndStoreImage($image);
+                    DestinationImage::query()->create([
+                        'destination_id' => $destination->id,
+                        'image_path' => $path,
+                    ]);
+                }
             }
 
             return back()->with('success', 'Destinasi berhasil diperbarui.');
