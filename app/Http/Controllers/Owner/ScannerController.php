@@ -32,6 +32,12 @@ class ScannerController extends Controller
             return response()->json(['message' => 'Tiket tidak valid atau sudah digunakan.'], 422);
         }
 
+        if (! now()->isSameDay($transaction->booking_date)) {
+            return response()->json([
+                'message' => 'Tiket ini tidak berlaku untuk hari ini. Tanggal kunjungan tiket adalah ' . $transaction->booking_date->translatedFormat('d F Y') . '.'
+            ], 422);
+        }
+
         // Validasi ownership: pastikan tiket ini milik destinasi owner yang login (atau karyawannya)
         $user    = auth()->user();
         $ownerId = $user->resolveOwnerId();

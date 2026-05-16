@@ -149,12 +149,12 @@
                                 {{-- Karyawan: link pindah ke navbar utama, dropdown cukup info profil & logout saja --}}
                                 <div class="px-3 py-2 text-xs text-slate-500 font-medium">Menu Karyawan</div>
                             @else
-                                {{-- User biasa --}}
+                                {{-- User, Owner, Admin --}}
+                                <a href="{{ route('profile') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-primary-600 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                    Profile Saya
+                                </a>
                                 @if(auth()->user()->tipe_user === \App\Models\User::TYPE_USER)
-                                    <a href="{{ route('profile') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-primary-600 transition-colors">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                                        Profile Saya
-                                    </a>
                                     <a href="{{ route('history.index') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-primary-600 transition-colors">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                         Riwayat Pesanan
@@ -217,7 +217,9 @@
                                 </a>
                             @else
                                 <a href="{{ route('profile') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-slate-50">Profile Saya</a>
-                                <a href="{{ route('history.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-slate-50">Riwayat Pesanan</a>
+                                @if(auth()->user()->tipe_user === \App\Models\User::TYPE_USER)
+                                    <a href="{{ route('history.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-slate-50">Riwayat Pesanan</a>
+                                @endif
                                 @if(in_array(auth()->user()->tipe_user, [1,3], true))
                                     <a href="{{ auth()->user()->tipe_user === 1 ? route('admin.dashboard') : route('owner.dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-primary-600 hover:bg-primary-50 font-bold">
                                         Dashboard {{ auth()->user()->tipe_user === 1 ? 'Admin' : 'Owner' }}
@@ -264,9 +266,9 @@
                 <div>
                     <h4 class="font-bold text-slate-900 mb-6 uppercase text-xs tracking-widest">Dukungan</h4>
                     <ul class="space-y-4 text-sm">
-                        <li><a href="#" class="text-slate-500 hover:text-primary-600 transition-colors">Pusat Bantuan</a></li>
-                        <li><a href="#" class="text-slate-500 hover:text-primary-600 transition-colors">Syarat & Ketentuan</a></li>
-                        <li><a href="#" class="text-slate-500 hover:text-primary-600 transition-colors">Kebijakan Privasi</a></li>
+                        <li><a href="{{ route('contact') }}" class="text-slate-500 hover:text-primary-600 transition-colors">Pusat Bantuan</a></li>
+                        <li><a href="{{ route('terms') }}" class="text-slate-500 hover:text-primary-600 transition-colors">Syarat & Ketentuan</a></li>
+                        <li><a href="{{ route('privacy') }}" class="text-slate-500 hover:text-primary-600 transition-colors">Kebijakan Privasi</a></li>
                     </ul>
                 </div>
 

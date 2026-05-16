@@ -20,6 +20,14 @@
                             @csrf
                             <button type="submit" class="rounded-lg bg-orange-600 px-4 py-2 text-sm font-medium text-white">Periksa Status</button>
                         </form>
+                        <form method="POST" action="{{ route('history.cancel', $trx) }}" class="inline cancel-form">
+                            @csrf
+                            <button type="button"
+                                onclick="confirmCancel(this)"
+                                class="rounded-lg bg-rose-600 hover:bg-rose-700 px-4 py-2 text-sm font-medium text-white transition-colors">
+                                Batalkan Pesanan
+                            </button>
+                        </form>
                     </div>
                 @elseif($trx->status === 'settlement')
                     <div class="mt-4 flex flex-col items-center md:items-start gap-3">
@@ -75,4 +83,28 @@
     
     <!-- Responsive Pagination -->
     <div class="mt-4 overflow-x-auto">{{ $transactions->links() }}</div>
+
+    @push('scripts')
+    <script>
+        function confirmCancel(button) {
+            Swal.fire({
+                title: 'Batalkan Pesanan?',
+                text: "Pesanan yang dibatalkan tidak dapat dikembalikan. Kuota tiket akan dikembalikan untuk orang lain.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#e11d48',
+                cancelButtonColor: '#475569',
+                confirmButtonText: 'Ya, Batalkan!',
+                cancelButtonText: 'Kembali',
+                customClass: {
+                    popup: 'rounded-3xl'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    button.closest('form').submit();
+                }
+            })
+        }
+    </script>
+    @endpush
 @endsection

@@ -69,14 +69,20 @@
                     </div>
 
                     <div class="pt-8 border-t border-slate-50">
-                        <div class="flex items-center justify-between mb-8 p-6 bg-primary-50 rounded-3xl border border-primary-100">
-                            <div>
+                        <div class="flex flex-col items-center justify-center mb-8 p-6 bg-primary-50 rounded-3xl border border-primary-100 text-center">
+                            <div class="mb-6">
                                 <p class="text-xs text-primary-700 font-bold uppercase tracking-widest mb-1">Total Pembayaran</p>
-                                <p id="total-display" class="text-3xl font-black text-primary-700">Rp {{ number_format($ticket->price, 0, ',', '.') }}</p>
+                                <p id="total-display" class="text-4xl font-black text-primary-700">Rp {{ number_format($ticket->price, 0, ',', '.') }}</p>
                             </div>
-                            <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white px-10 py-4 rounded-2xl font-bold shadow-xl shadow-primary-600/30 transition-all transform hover:-translate-y-1">
-                                Bayar Sekarang
-                            </button>
+                            @if(session('snap_token'))
+                                <button type="button" disabled class="w-full sm:w-auto bg-slate-300 text-white px-12 py-4 rounded-2xl font-bold transition-all cursor-not-allowed">
+                                    Menunggu Pembayaran
+                                </button>
+                            @else
+                                <button type="submit" id="submit-btn" class="w-full sm:w-auto bg-primary-600 hover:bg-primary-700 text-white px-12 py-4 rounded-2xl font-bold shadow-xl shadow-primary-600/30 transition-all transform hover:-translate-y-1 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none">
+                                    Bayar Sekarang
+                                </button>
+                            @endif
                         </div>
                         <p class="text-center text-[10px] text-slate-400 font-medium">Dengan melanjutkan, Anda menyetujui kebijakan pembatalan dan ketentuan layanan kami.</p>
                     </div>
@@ -229,6 +235,13 @@
 
         document.getElementById('checkout-form').addEventListener('submit', function() {
             saveToStorage();
+            const submitBtn = document.getElementById('submit-btn');
+            if (submitBtn) {
+                setTimeout(() => {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<svg class="w-5 h-5 animate-spin mx-auto inline-block mr-2" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Memproses...';
+                }, 10);
+            }
         });
 
         qtyInput.addEventListener('input', function() {
@@ -247,6 +260,13 @@
     @if(session('snap_token'))
         <script src="{{ config('services.midtrans.snap_url') }}" data-client-key="{{ config('services.midtrans.client_key') }}"></script>
         <script>
+            window.onload = function() {
+                const payBtn = document.getElementById('pay-button');
+                if (payBtn) {
+                    payBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            };
+
             const payButton = document.getElementById('pay-button');
             payButton?.addEventListener('click', function (event) {
                 event.preventDefault();

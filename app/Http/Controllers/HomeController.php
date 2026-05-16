@@ -24,4 +24,14 @@ class HomeController extends Controller
 
         return view('home.index', compact('recommendations'));
     }
+
+    public function terms(): View
+    {
+        return view('home.terms');
+    }
+
+    public function privacy(): View
+    {
+        return view('home.privacy');
+    }
 }

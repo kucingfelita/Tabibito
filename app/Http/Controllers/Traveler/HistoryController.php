@@ -64,4 +64,22 @@ class HistoryController extends Controller
 
         return back()->with('success', 'Terima kasih atas penilaian Anda!');
     }
+
+    public function cancel(Transaction $transaction): RedirectResponse
+    {
+        // Pastikan transaksi milik user yang login
+        if ($transaction->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        // Hanya transaksi pending yang bisa dibatalkan
+        if ($transaction->status !== 'pending') {
+            return back()->with('error', 'Hanya pesanan dengan status pending yang bisa dibatalkan. Tidak ada pengembalian dana.');
+        }
+
+        // Update status ke 'cancelled' — kuota otomatis kembali karena getAvailableQuota tidak menghitung 'cancelled'
+        $transaction->update(['status' => 'cancelled']);
+
+        return back()->with('success', 'Pesanan berhasil dibatalkan. Kuota tiket telah dikembalikan.');
+    }
 }

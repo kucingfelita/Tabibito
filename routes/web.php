@@ -41,10 +41,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/auth/google/set-password', [AuthController::class, 'showSetGooglePassword'])->name('google.set-password');
     Route::post('/auth/google/set-password', [AuthController::class, 'storeGooglePassword'])->name('google.set-password.store');
+    
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
 
 Route::middleware('redirect.staff')->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
+    Route::get('/terms', [HomeController::class, 'terms'])->name('terms');
+    Route::get('/privacy', [HomeController::class, 'privacy'])->name('privacy');
 
     Route::get('/wisata', [DestinationController::class, 'index'])->name('destinations.index');
     Route::get('/wisata/{destination}', [DestinationController::class, 'show'])->name('destinations.show');
@@ -54,11 +59,10 @@ Route::middleware('redirect.staff')->group(function () {
     Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
     Route::middleware('auth')->group(function () {
-        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
-        Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::get('/riwayat', [HistoryController::class, 'index'])->name('history.index');
         Route::post('/riwayat/{transaction}/check-status', [HistoryController::class, 'checkStatus'])->name('history.checkStatus');
         Route::post('/riwayat/{transaction}/rating', [HistoryController::class, 'submitRating'])->name('history.rating');
+        Route::post('/riwayat/{transaction}/cancel', [HistoryController::class, 'cancel'])->name('history.cancel');
         Route::get('/checkout/{ticket}', [CheckoutController::class, 'show'])->name('checkout.show');
         Route::post('/checkout/{ticket}', [CheckoutController::class, 'store'])->name('checkout.store');
         Route::get('/checkout/{ticket}/quota', [CheckoutController::class, 'quotaCheck'])->name('checkout.quota');
