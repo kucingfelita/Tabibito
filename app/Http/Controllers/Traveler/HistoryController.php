@@ -56,25 +56,88 @@ class HistoryController extends Controller
             return back()->with('error', 'Anda sudah memberikan penilaian untuk tiket ini.');
         }
 
-        $request->validate([
+        $validationRules = [
             'rating' => ['required', 'integer', 'min:1', 'max:5'],
             'review_comment' => ['nullable', 'string', 'max:1000'],
-            'review_image' => ['nullable', 'image', 'max:3072'], // 3MB limit
-        ]);
-
-        $updateData = [
-            'rating' => $request->integer('rating'),
-            'review_comment' => $request->input('review_comment'),
         ];
 
-        if ($request->hasFile('review_image')) {
-            $path = $request->file('review_image')->store('reviews', 'public');
-            $updateData['review_image'] = $path;
+        if (extension_loaded('fileinfo')) {
+            $validationRules['review_image'] = ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:5120']; // 5MB limit
+        } else {
+            $validationRules['review_image'] = ['nullable', 'file', 'max:5120'];
         }
 
-        $transaction->update($updateData);
+        try {
+            $request->validate($validationRules);
 
-        return back()->with('success', 'Terima kasih atas penilaian dan ulasan Anda!');
+            // Manual extension validation if fileinfo is missing
+            if ($request->hasFile('review_image') && !extension_loaded('fileinfo')) {
+                $file = $request->file('review_image');
+                $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+                $ext = strtolower($file->getClientOriginalExtension());
+                if (!in_array($ext, $allowedExtensions)) {
+                    return back()->withErrors(['review_image' => 'Format file gambar harus berupa: jpg, jpeg, png, webp.'])->withInput();
+                }
+            }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors())->withInput();
+        } catch (\Throwable $e) {
+            return back()->with('error', 'Gagal memvalidasi file: ' . $e->getMessage());
+        }
+
+        try {
+            $updateData = [
+                'rating' => $request->integer('rating'),
+                'review_comment' => $request->input('review_comment'),
+            ];
+
+            if ($request->hasFile('review_image')) {
+                $file = $request->file('review_image');
+                if ($file->isValid()) {
+                    $updateData['review_image'] = $this->compressAndStoreReviewImage($file);
+                } else {
+                    return back()->with('error', 'File gambar yang diunggah tidak valid atau rusak.');
+                }
+            }
+
+            $transaction->update($updateData);
+
+            return back()->with('success', 'Terima kasih atas penilaian dan ulasan Anda!');
+        } catch (\Throwable $e) {
+            \Log::error('Error submit rating: ' . $e->getMessage());
+            return back()->with('error', 'Gagal menyimpan ulasan: ' . $e->getMessage());
+        }
+    }
+
+    private function compressAndStoreReviewImage(\Illuminate\Http\UploadedFile $file): string
+    {
+        $ext = strtolower($file->getClientOriginalExtension());
+        if (!in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) {
+            $ext = 'jpg';
+        }
+        $targetPath = 'reviews/' . uniqid('rev_', true) . '.' . $ext;
+
+        try {
+            if (extension_loaded('fileinfo') && class_exists(\Intervention\Image\ImageManager::class) && class_exists(\Intervention\Image\Drivers\Gd\Driver::class)) {
+                $manager = new \Intervention\Image\ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
+                $image = $manager->read($file->getRealPath())->scaleDown(width: 1200);
+                $encoded = $image->toJpeg(75);
+                
+                \Storage::disk('public')->put($targetPath, $encoded->toStream());
+
+                return $targetPath;
+            }
+        } catch (\Throwable $e) {
+            \Log::warning('Review image compression failed: ' . $e->getMessage());
+        }
+
+        // Fallback to direct stream upload (does not require fileinfo extension)
+        try {
+            \Storage::disk('public')->put($targetPath, fopen($file->getRealPath(), 'r'));
+            return $targetPath;
+        } catch (\Throwable $e) {
+            return $file->store('reviews', 'public');
+        }
     }
 
     public function cancel(Transaction $transaction): RedirectResponse
