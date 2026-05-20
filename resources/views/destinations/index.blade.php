@@ -8,13 +8,28 @@
         <span class="text-slate-900 font-bold">Eksplor Wisata</span>
     </nav>
 
-    <div class="grid gap-10 lg:grid-cols-4">
+    <div class="grid gap-10 lg:grid-cols-4" x-data="{ filterOpen: false }">
         <!-- Filter Sidebar -->
-        <aside class="lg:col-span-1">
-            <div class="sticky top-24 bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
-                <div class="flex items-center justify-between mb-8">
+        <aside :class="filterOpen ? 'fixed inset-0 z-50 flex justify-end lg:static lg:block lg:col-span-1' : 'hidden lg:block lg:col-span-1'" class="transition-all duration-300">
+            <!-- Backdrop for mobile -->
+            <div x-show="filterOpen" @click="filterOpen = false" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm lg:hidden z-40"></div>
+            
+            <!-- Filter Card -->
+            <div :class="filterOpen ? 'fixed right-0 top-0 bottom-0 w-full max-w-md bg-white p-6 shadow-2xl z-50 flex flex-col h-full overflow-y-auto' : 'sticky top-24 bg-white rounded-3xl border border-slate-100 p-6 shadow-sm'" 
+                 x-show="filterOpen || window.innerWidth >= 1024"
+                 x-transition:enter="transition ease-out duration-300 transform"
+                 x-transition:enter-start="translate-x-full"
+                 x-transition:enter-end="translate-x-0"
+                 x-transition:leave="transition ease-in duration-200 transform"
+                 x-transition:leave-start="translate-x-0"
+                 x-transition:leave-end="translate-x-full">
+                 
+                <div class="flex items-center justify-between mb-8 pb-4 border-b border-slate-100 lg:border-none lg:pb-0">
                     <h2 class="text-xl font-bold text-slate-900">Filter</h2>
-                    <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+                    <button type="button" @click="filterOpen = false" class="lg:hidden p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-xl transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                    <svg class="w-5 h-5 text-slate-400 hidden lg:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
                 </div>
 
                 <form class="space-y-8" action="{{ route('destinations.index') }}" method="GET">
@@ -79,13 +94,21 @@
         <!-- Destinations Grid -->
         <div class="lg:col-span-3">
             <div class="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
-                <div>
-                    <h1 class="text-2xl font-bold text-slate-900">Menampilkan Destinasi</h1>
-                    <p class="text-sm text-slate-400 font-medium">{{ $destinations->total() }} wisata ditemukan</p>
+                <div class="flex items-center justify-between w-full sm:w-auto">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-900">Menampilkan Destinasi</h1>
+                        <p class="text-sm text-slate-400 font-medium">{{ $destinations->total() }} wisata ditemukan</p>
+                    </div>
                 </div>
                 
-                <div class="flex items-center gap-4 w-full sm:w-auto">
-                    <select onchange="window.location.href = this.value" class="w-full sm:w-48 bg-white border border-slate-100 rounded-2xl px-4 py-3 text-sm font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-primary-500/20 transition-all cursor-pointer">
+                <div class="flex items-center gap-3 w-full sm:w-auto">
+                    <!-- Mobile Filter Trigger Button -->
+                    <button type="button" @click="filterOpen = true" class="lg:hidden flex items-center justify-center gap-2 w-full sm:w-auto bg-white border border-slate-200/80 rounded-2xl px-5 py-3 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
+                        <svg class="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+                        Filter
+                    </button>
+
+                    <select onchange="window.location.href = this.value" class="w-full sm:w-48 bg-white border border-slate-200/80 rounded-2xl px-4 py-3 text-sm font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-primary-500/20 transition-all cursor-pointer">
                         <option value="{{ request()->fullUrlWithQuery(['sort' => 'latest']) }}" @selected(request('sort') == 'latest')>Terbaru</option>
                         <option value="{{ request()->fullUrlWithQuery(['sort' => 'rating_desc']) }}" @selected(request('sort') == 'rating_desc')>Rating Tertinggi</option>
                         <option value="{{ request()->fullUrlWithQuery(['sort' => 'price_asc']) }}" @selected(request('sort') == 'price_asc')>Harga Terendah</option>

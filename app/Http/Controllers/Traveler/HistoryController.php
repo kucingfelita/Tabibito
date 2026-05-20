@@ -58,11 +58,23 @@ class HistoryController extends Controller
 
         $request->validate([
             'rating' => ['required', 'integer', 'min:1', 'max:5'],
+            'review_comment' => ['nullable', 'string', 'max:1000'],
+            'review_image' => ['nullable', 'image', 'max:3072'], // 3MB limit
         ]);
 
-        $transaction->update(['rating' => $request->integer('rating')]);
+        $updateData = [
+            'rating' => $request->integer('rating'),
+            'review_comment' => $request->input('review_comment'),
+        ];
 
-        return back()->with('success', 'Terima kasih atas penilaian Anda!');
+        if ($request->hasFile('review_image')) {
+            $path = $request->file('review_image')->store('reviews', 'public');
+            $updateData['review_image'] = $path;
+        }
+
+        $transaction->update($updateData);
+
+        return back()->with('success', 'Terima kasih atas penilaian dan ulasan Anda!');
     }
 
     public function cancel(Transaction $transaction): RedirectResponse

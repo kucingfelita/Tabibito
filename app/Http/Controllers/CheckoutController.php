@@ -28,6 +28,48 @@ class CheckoutController extends Controller
         return response()->json(['available' => $ticket->getAvailableQuota($date)]);
     }
 
+    public function quotasMonth(Ticket $ticket, Request $request): \Illuminate\Http\JsonResponse
+    {
+        $year = $request->integer('year', now()->year);
+        $month = $request->integer('month', now()->month);
+
+        $start = \Illuminate\Support\Carbon::createFromDate($year, $month, 1)->startOfMonth()->toDateString();
+        $end = \Illuminate\Support\Carbon::createFromDate($year, $month, 1)->endOfMonth()->toDateString();
+
+        $sold = $ticket->transactions()
+            ->whereBetween('booking_date', [$start, $end])
+            ->whereIn('status', ['pending', 'settlement', 'used'])
+            ->groupBy('booking_date')
+            ->select('booking_date', DB::raw('SUM(qty) as sold_qty'))
+            ->get()
+            ->pluck('sold_qty', 'booking_date')
+            ->toArray();
+
+        $dailyQuota = $ticket->daily_quota;
+        $quotas = [];
+        $daysInMonth = \Illuminate\Support\Carbon::createFromDate($year, $month, 1)->daysInMonth;
+
+        for ($day = 1; $day <= $daysInMonth; $day++) {
+            $dateStr = sprintf('%04d-%02d-%02d', $year, $month, $day);
+            $soldQty = 0;
+            foreach ($sold as $dateKey => $qty) {
+                $formattedKey = $dateKey;
+                if ($dateKey instanceof \DateTimeInterface) {
+                    $formattedKey = $dateKey->format('Y-m-d');
+                } else {
+                    $formattedKey = date('Y-m-d', strtotime($dateKey));
+                }
+                if ($formattedKey === $dateStr) {
+                    $soldQty = (int)$qty;
+                    break;
+                }
+            }
+            $quotas[$dateStr] = max(0, $dailyQuota - $soldQty);
+        }
+
+        return response()->json($quotas);
+    }
+
     public function resume(Request $request): View
     {
         $orderId = $request->query('order_id');

@@ -1,5 +1,73 @@
 @extends('layouts.app')
 
+@push('styles')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<style>
+    /* Custom Flatpickr styles to look super premium */
+    .flatpickr-calendar {
+        background: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02) !important;
+        border-radius: 1.5rem !important;
+        padding: 0.5rem !important;
+        font-family: inherit !important;
+        width: 100% !important;
+    }
+    .flatpickr-calendar.inline {
+        width: 100% !important;
+        box-sizing: border-box !important;
+        display: block !important;
+    }
+    .flatpickr-days {
+        width: 100% !important;
+    }
+    .dayContainer {
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+    }
+    .flatpickr-day {
+        border-radius: 0.75rem !important;
+        font-weight: 600 !important;
+        margin: 2px auto !important;
+        max-width: 38px !important;
+        height: 38px !important;
+        line-height: 38px !important;
+        transition: all 0.2s ease;
+    }
+    .flatpickr-day.selected {
+        background: #0e8ce9 !important;
+        border-color: #0e8ce9 !important;
+        color: #ffffff !important;
+    }
+    .day-quota-safe {
+        background-color: #f0fdf4 !important;
+        color: #166534 !important;
+    }
+    .day-quota-safe:hover {
+        background-color: #dcfce7 !important;
+    }
+    .day-quota-warning {
+        background-color: #fff7ed !important;
+        color: #9a3412 !important;
+    }
+    .day-quota-warning:hover {
+        background-color: #ffedd5 !important;
+    }
+    .day-quota-danger {
+        background-color: #fef2f2 !important;
+        color: #991b1b !important;
+        cursor: not-allowed !important;
+    }
+    .flatpickr-day.disabled, .flatpickr-day.flatpickr-disabled {
+        background-color: #f1f5f9 !important;
+        color: #cbd5e1 !important;
+        cursor: not-allowed !important;
+        text-decoration: line-through;
+    }
+</style>
+@endpush
+
 @section('content')
     <!-- Breadcrumbs -->
     <nav class="mb-8 flex items-center gap-2 text-sm">
@@ -41,17 +109,12 @@
                         <div class="grid md:grid-cols-2 gap-8">
                             <div>
                                 <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Tanggal Kunjungan</label>
-                                <div class="relative group">
-                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary-600 transition-colors">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                    </div>
-                                    <input type="date" id="booking_date" name="booking_date"
-                                           min="{{ now()->toDateString() }}" required
-                                           class="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-4 py-4 text-slate-800 font-bold focus:ring-2 focus:ring-primary-500/20 transition-all">
+                                <div class="bg-white rounded-3xl border border-slate-100 overflow-hidden p-2">
+                                    <input type="text" id="booking_date" name="booking_date" required class="hidden">
                                 </div>
                                 <p class="mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                    Status Kuota: <span id="quota-info" class="text-slate-400">Pilih tanggal</span>
+                                    Status Kuota: <span id="quota-info" class="text-slate-400">Pilih tanggal pada kalender</span>
                                 </p>
                             </div>
 
@@ -153,6 +216,7 @@
         </aside>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         const price = {{ $ticket->price }};
         const ticketId = {{ $ticket->id }};
@@ -165,13 +229,14 @@
         const summaryTotal = document.getElementById('summary-total');
 
         const quotaUrl = '/checkout/' + ticketId + '/quota';
+        let monthlyQuotas = {};
 
         function formatRupiah(number) {
             return 'Rp ' + Math.round(number).toLocaleString('id-ID');
         }
 
         function updateTotal() {
-            const qty = parseInt(qtyInput.value) || 1;
+            const qty = parseInt(qtyInput.value) || 0;
             const total = price * qty;
             totalDisplay.textContent = formatRupiah(total);
             summaryTotal.textContent = formatRupiah(total);
@@ -196,8 +261,8 @@
                 qtyInput.max = avail > 0 ? avail : 1;
                 if (avail <= 0) {
                     qtyInput.value = 0;
-                } else if (parseInt(qtyInput.value) > avail) {
-                    qtyInput.value = avail;
+                } else if (parseInt(qtyInput.value) > avail || parseInt(qtyInput.value) === 0) {
+                    qtyInput.value = avail > 0 ? 1 : 0;
                 }
                 updateTotal();
                 saveToStorage();
@@ -209,6 +274,24 @@
             });
         }
 
+        function fetchMonthlyQuotas(year, month) {
+            const quotasUrl = '/checkout/' + ticketId + '/quotas-month?year=' + year + '&month=' + month;
+            return fetch(quotasUrl, {
+                headers: { 'Accept': 'application/json' }
+            })
+            .then(function(r) {
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                return r.json();
+            })
+            .then(function(data) {
+                monthlyQuotas = data;
+                fp.redraw();
+            })
+            .catch(function(err) {
+                console.error('Error fetching monthly quotas:', err);
+            });
+        }
+
         function saveToStorage() {
             localStorage.setItem(storageKey, JSON.stringify({
                 date: dateInput.value,
@@ -216,13 +299,60 @@
             }));
         }
 
+        // Initialize Flatpickr inline calendar
+        const fp = flatpickr(dateInput, {
+            inline: true,
+            minDate: "today",
+            dateFormat: "Y-m-d",
+            onMonthChange: function(selectedDates, dateStr, instance) {
+                const currentMonth = instance.currentMonth + 1;
+                const currentYear = instance.currentYear;
+                fetchMonthlyQuotas(currentYear, currentMonth);
+            },
+            onYearChange: function(selectedDates, dateStr, instance) {
+                const currentMonth = instance.currentMonth + 1;
+                const currentYear = instance.currentYear;
+                fetchMonthlyQuotas(currentYear, currentMonth);
+            },
+            onReady: function(selectedDates, dateStr, instance) {
+                const currentMonth = instance.currentMonth + 1;
+                const currentYear = instance.currentYear;
+                fetchMonthlyQuotas(currentYear, currentMonth);
+            },
+            onChange: function(selectedDates, dateStr, instance) {
+                if (dateStr) {
+                    dateInput.value = dateStr;
+                    updateQuota(dateStr);
+                }
+            },
+            onDayCreate: function(dObj, dEl, fpInstance, dayElem) {
+                const year = dayElem.dateObj.getFullYear();
+                const month = String(dayElem.dateObj.getMonth() + 1).padStart(2, '0');
+                const date = String(dayElem.dateObj.getDate()).padStart(2, '0');
+                const dateStr = year + '-' + month + '-' + date;
+                
+                if (monthlyQuotas[dateStr] !== undefined) {
+                    const quota = monthlyQuotas[dateStr];
+                    if (quota === 0) {
+                        dayElem.classList.add('flatpickr-disabled', 'disabled', 'day-quota-danger');
+                        dayElem.title = 'Tiket Habis';
+                    } else if (quota < 10) {
+                        dayElem.classList.add('day-quota-warning');
+                        dayElem.title = quota + ' tiket tersisa';
+                    } else {
+                        dayElem.classList.add('day-quota-safe');
+                        dayElem.title = quota + ' tiket tersisa';
+                    }
+                }
+            }
+        });
+
         function restoreFromStorage() {
             try {
                 const saved = JSON.parse(localStorage.getItem(storageKey));
                 if (!saved) return;
                 if (saved.date) {
-                    dateInput.value = saved.date;
-                    updateQuota(saved.date);
+                    fp.setDate(saved.date, true);
                 }
                 if (saved.qty) {
                     qtyInput.value = saved.qty;
@@ -247,10 +377,6 @@
         qtyInput.addEventListener('input', function() {
             updateTotal();
             saveToStorage();
-        });
-
-        dateInput.addEventListener('change', function() {
-            updateQuota(this.value);
         });
 
         restoreFromStorage();

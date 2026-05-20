@@ -70,6 +70,7 @@ Route::middleware('redirect.staff')->group(function () {
         Route::get('/checkout/{ticket}', [CheckoutController::class, 'show'])->name('checkout.show');
         Route::post('/checkout/{ticket}', [CheckoutController::class, 'store'])->name('checkout.store');
         Route::get('/checkout/{ticket}/quota', [CheckoutController::class, 'quotaCheck'])->name('checkout.quota');
+        Route::get('/checkout/{ticket}/quotas-month', [CheckoutController::class, 'quotasMonth'])->name('checkout.quotas-month');
     });
 
     Route::get('/checkout/payment/resume', [CheckoutController::class, 'resume'])

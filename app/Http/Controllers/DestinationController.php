@@ -64,7 +64,14 @@ class DestinationController extends Controller
         $destination->load(['tags', 'images', 'tickets']);
         $destination->loadAvg('transactions', 'rating');
 
-        return view('destinations.show', compact('destination'));
+        $reviews = $destination->transactions()
+            ->whereNotNull('rating')
+            ->with('user')
+            ->latest()
+            ->take(10)
+            ->get();
+
+        return view('destinations.show', compact('destination', 'reviews'));
     }
 
     public function loadMore(Request $request)

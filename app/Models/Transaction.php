@@ -18,7 +18,14 @@ class Transaction extends Model
         'snap_token',
         'qr_code_token',
         'rating',
+        'review_comment',
+        'review_image',
     ];
+
+    public function getReviewImageUrlAttribute(): ?string
+    {
+        return $this->review_image ? asset('storage/' . $this->review_image) : null;
+    }
 
     protected function casts(): array
     {

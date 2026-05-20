@@ -57,10 +57,6 @@ class OwnerDestinationRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
@@ -74,8 +70,26 @@ class OwnerDestinationRequest extends FormRequest
             'map_link' => ['nullable', 'url', 'max:255'],
             'open_time' => ['required'],
             'close_time' => ['required', 'after:open_time'],
-            'images' => ['nullable', 'array'],
+            'images' => ['nullable', 'array', 'max:8'],
             'images.*' => ['image', 'max:5120'],
         ];
+    }
+
+    /**
+     * Configure the validator instance.
+     */
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            if ($this->hasFile('images')) {
+                $destination = $this->route('destination');
+                $existingCount = $destination ? $destination->images()->count() : 0;
+                $newCount = count($this->file('images', []));
+
+                if ($existingCount + $newCount > 8) {
+                    $validator->errors()->add('images', "Total foto destinasi tidak boleh melebihi 8 foto. Saat ini destinasi memiliki {$existingCount} foto, dan Anda mencoba mengunggah {$newCount} foto baru.");
+                }
+            }
+        });
     }
 }
