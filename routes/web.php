@@ -57,6 +57,7 @@ Route::middleware('redirect.staff')->group(function () {
 
     Route::get('/wisata', [DestinationController::class, 'index'])->name('destinations.index');
     Route::get('/wisata/{destination}', [DestinationController::class, 'show'])->name('destinations.show');
+    Route::get('/destinations/{destination}/reviews/load-more', [DestinationController::class, 'loadMoreReviews'])->name('destinations.reviews.loadMore');
     Route::get('/tiket/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
     Route::get('/destinations/load-more', [DestinationController::class, 'loadMore'])->name('destinations.loadMore');
     Route::get('/contact', [ContactController::class, 'index'])->name('contact');

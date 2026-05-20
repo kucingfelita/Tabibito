@@ -68,11 +68,11 @@
                                 
                                 <div>
                                     <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Tulis Ulasan (Opsional)</label>
-                                    <textarea name="review_comment" rows="3" placeholder="Ceritakan pengalaman menyenangkan Anda di destinasi ini..." class="w-full bg-slate-50 border-none rounded-2xl p-4 text-sm text-slate-800 focus:ring-2 focus:ring-primary-500/20 transition-all placeholder:text-slate-400"></textarea>
+                                    <textarea name="review_comment" rows="3" maxlength="1000" placeholder="Ceritakan pengalaman menyenangkan Anda di destinasi ini..." class="w-full bg-slate-50 border-none rounded-2xl p-4 text-sm text-slate-800 focus:ring-2 focus:ring-primary-500/20 transition-all placeholder:text-slate-400"></textarea>
                                 </div>
 
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Unggah Foto Wisata (Opsional, Max 3MB)</label>
+                                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Unggah Foto Wisata (Opsional, Max 5MB)</label>
                                     <div class="flex items-center gap-4">
                                         <label class="flex flex-col items-center justify-center border-2 border-dashed border-slate-200 hover:border-primary-500 rounded-2xl p-4 cursor-pointer transition-colors bg-slate-50 hover:bg-slate-100/50 w-32 h-32 shrink-0">
                                             <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
