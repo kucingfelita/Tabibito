@@ -20,6 +20,7 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\Traveler\HistoryController;
 use App\Http\Controllers\Traveler\ProfileController;
 use App\Http\Controllers\Traveler\WishlistController;
+use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/owner/register/step1', [OwnerRegisterController::class, 'step1'])->name('owner.register.step1');
@@ -80,6 +81,8 @@ Route::middleware('redirect.staff')->group(function () {
 
     Route::get('/payment/finish', [CheckoutController::class, 'finish'])->name('checkout.finish');
 });
+
+Route::get('/sitemap.xml', [SitemapController::class, 'index']);
 
 Route::prefix('owner')
     ->name('owner.')
