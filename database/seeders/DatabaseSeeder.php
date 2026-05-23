@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             PaymentGatewayTestSeeder::class,
+            TourDestinationSeeder::class,
         ]);
     }
 }
