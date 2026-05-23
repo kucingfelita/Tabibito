@@ -33,7 +33,7 @@
     @foreach ($destinations as $destination)
         <url>
             <loc>{{ route('destinations.show', $destination) }}</loc>
-            <lastmod>{{ $destination->updated_at->toAtomString() }}</lastmod>
+            <lastmod>{{ $destination->updated_at ? $destination->updated_at->toAtomString() : now()->startOfDay()->toAtomString() }}</lastmod>
             <changefreq>weekly</changefreq>
             <priority>0.7</priority>
         </url>
