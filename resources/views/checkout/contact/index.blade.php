@@ -24,7 +24,7 @@
                     </div>
                     <div>
                         <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Email Resmi</p>
-                        <p class="font-bold text-slate-900">support@tabibito.id</p>
+                        <p class="font-bold text-slate-900">hariansyahegie@gmail.com</p>
                     </div>
                 </div>
                 
@@ -69,12 +69,12 @@
             @csrf
             <div>
                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 ml-1">Nama Anda</label>
-                <input type="text" name="name" id="name" placeholder="John Doe" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-slate-800 font-bold focus:ring-2 focus:ring-primary-500/20 transition-all" required>
+                <input type="text" name="name" id="name" value="{{ auth()->check() ? auth()->user()->name : '' }}" placeholder="John Doe" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-slate-800 font-bold focus:ring-2 focus:ring-primary-500/20 transition-all" required>
             </div>
             
             <div>
                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 ml-1">Email</label>
-                <input type="email" name="email" id="email" placeholder="john@example.com" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-slate-800 font-bold focus:ring-2 focus:ring-primary-500/20 transition-all" required>
+                <input type="email" name="email" id="email" value="{{ auth()->check() ? auth()->user()->email : '' }}" placeholder="john@example.com" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-slate-800 font-bold focus:ring-2 focus:ring-primary-500/20 transition-all" required>
             </div>
             
             <div>
