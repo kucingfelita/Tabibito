@@ -12,6 +12,12 @@ class HistoryController extends Controller
 {
     public function index(): View
     {
+        // Auto-expire unpaid pending transactions whose booking date has passed
+        Transaction::query()
+            ->where('status', 'pending')
+            ->where('booking_date', '<', now()->toDateString())
+            ->update(['status' => 'expire']);
+
         $transactions = Transaction::query()
             ->where('user_id', auth()->id())
             ->with('ticket.destination')

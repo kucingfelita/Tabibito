@@ -9,7 +9,7 @@
         @foreach($transactions as $trx)
             <div class="rounded-xl bg-white p-4 shadow-sm">
                 <p class="font-semibold text-base md:text-lg">{{ $trx->ticket->destination->name }} - {{ $trx->ticket->name }}</p>
-                <p class="text-sm text-slate-500 mt-1">Status: {{ strtoupper($trx->status) }} | Tanggal booking: {{ $trx->booking_date->format('d M Y') }}</p>
+                <p class="text-sm text-slate-500 mt-1">Status: {{ strtoupper($trx->display_status) }} | Tanggal booking: {{ $trx->booking_date->format('d M Y') }}</p>
                 <p class="text-sm text-slate-600 mt-1 font-medium">Jumlah Tiket: <span class="text-emerald-700 font-bold">{{ $trx->qty }} orang</span></p>
                 <p class="text-base md:text-lg font-medium mt-1">Total: Rp {{ number_format($trx->total_price, 0, ',', '.') }}</p>
                 
@@ -30,22 +30,36 @@
                         </form>
                     </div>
                 @elseif($trx->status === 'settlement')
-                    <div class="mt-4 flex flex-col items-center md:items-start gap-3">
-                        <div class="w-full rounded-lg bg-emerald-50 border border-emerald-200 px-4 py-3 flex items-center gap-3">
-                            <span class="text-3xl font-black text-emerald-700">{{ $trx->qty }}</span>
+                    @if($trx->is_expired)
+                        <div class="mt-4 rounded-xl bg-rose-50 border border-rose-100 p-4 text-sm text-rose-800 flex items-start gap-3">
+                            <svg class="w-5 h-5 text-rose-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                            </svg>
                             <div>
-                                <p class="font-semibold text-emerald-800">{{ $trx->qty == 1 ? '1 Tiket / 1 Orang' : $trx->qty . ' Tiket / ' . $trx->qty . ' Orang' }}</p>
-                                <p class="text-xs text-slate-500">Tunjukkan 1 QR code ini kepada petugas untuk {{ $trx->qty }} orang</p>
+                                <p class="font-bold">Tiket Telah Kedaluwarsa</p>
+                                <p class="mt-1 text-rose-700 leading-relaxed">
+                                    Tiket ini sudah tidak berlaku karena telah melewati batas tanggal kunjungan ({{ $trx->booking_date->format('d M Y') }}) dan tidak digunakan. Sesuai kebijakan kami, tiket yang kedaluwarsa tidak dapat dikembalikan dana (non-refundable).
+                                </p>
                             </div>
                         </div>
-                        <div class="rounded-lg border-2 border-dashed border-emerald-200 p-2">
-                            {!! QrCode::size(200)->generate($trx->qr_code_token) !!}
+                    @else
+                        <div class="mt-4 flex flex-col items-center md:items-start gap-3">
+                            <div class="w-full rounded-lg bg-emerald-50 border border-emerald-200 px-4 py-3 flex items-center gap-3">
+                                <span class="text-3xl font-black text-emerald-700">{{ $trx->qty }}</span>
+                                <div>
+                                    <p class="font-semibold text-emerald-800">{{ $trx->qty == 1 ? '1 Tiket / 1 Orang' : $trx->qty . ' Tiket / ' . $trx->qty . ' Orang' }}</p>
+                                    <p class="text-xs text-slate-500">Tunjukkan 1 QR code ini kepada petugas untuk {{ $trx->qty }} orang</p>
+                                </div>
+                            </div>
+                            <div class="rounded-lg border-2 border-dashed border-emerald-200 p-2">
+                                {!! QrCode::size(200)->generate($trx->qr_code_token) !!}
+                            </div>
+                            <div class="text-center md:text-left">
+                                <p class="text-xs text-slate-500">Atau gunakan kode tiket manual:</p>
+                                <p class="font-mono font-bold text-emerald-700 bg-emerald-50 px-3 py-1 mt-1 rounded-md border border-emerald-100 inline-block">{{ $trx->qr_code_token }}</p>
+                            </div>
                         </div>
-                        <div class="text-center md:text-left">
-                            <p class="text-xs text-slate-500">Atau gunakan kode tiket manual:</p>
-                            <p class="font-mono font-bold text-emerald-700 bg-emerald-50 px-3 py-1 mt-1 rounded-md border border-emerald-100 inline-block">{{ $trx->qr_code_token }}</p>
-                        </div>
-                    </div>
+                    @endif
                 @elseif($trx->status === 'used')
                     @if(is_null($trx->rating))
                         <div class="mt-4 pt-4 border-t border-slate-100">
