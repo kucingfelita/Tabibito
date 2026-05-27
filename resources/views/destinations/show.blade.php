@@ -41,7 +41,7 @@
                             @forelse($destination->images->take(8) as $image)
                                 <div class="swiper-slide bg-slate-100">
                                     <img src="{{ asset('storage/' . $image->image_path) }}" 
-                                         alt="{{ $destination->name }}" 
+                                         alt="Foto Keindahan {{ $destination->name }} di {{ $destination->city }} - Tabibito Jateng" 
                                          class="h-full w-full object-cover"
                                          loading="lazy">
                                 </div>
@@ -214,7 +214,7 @@
             <div class="sticky top-24 space-y-8">
                 <!-- Owner Info -->
                 <div class="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
-                    <h3 class="text-lg font-bold text-slate-900 mb-6">Informasi Kontak</h3>
+                    <h2 class="text-lg font-bold text-slate-900 mb-6">Informasi Kontak</h2>
                     <div class="flex items-center gap-4 mb-8">
                         <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500 uppercase">
                             {{ substr($destination->owner?->name ?? 'A', 0, 1) }}
@@ -249,6 +249,41 @@
             </div>
         </aside>
     </div>
+
+    <!-- Schema Markup JSON-LD untuk SEO Rich Snippets -->
+    <script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@type": "TouristAttraction",
+      "name": "{{ $destination->name }}",
+      "description": "{{ \Illuminate\Support\Str::limit(strip_tags($destination->description), 160) }}",
+      "image": "{{ $destination->images->first()?->image_path ? asset('storage/' . $destination->images->first()->image_path) : asset('assets/images/hero.png') }}",
+      "address": {
+        "@@type": "PostalAddress",
+        "streetAddress": "{{ $destination->address }}",
+        "addressLocality": "{{ $destination->city }}",
+        "addressRegion": "Jawa Tengah",
+        "addressCountry": "ID"
+      },
+      "telephone": "{{ $destination->owner?->phone ?? 'info@tabibito.id' }}",
+      @if($destination->transactions_avg_rating > 0)
+      "aggregateRating": {
+        "@@type": "AggregateRating",
+        "ratingValue": "{{ number_format($destination->transactions_avg_rating, 1) }}",
+        "bestRating": "5",
+        "worstRating": "1",
+        "reviewCount": "{{ max($reviews->total(), 1) }}"
+      },
+      @endif
+      "offers": {
+        "@@type": "AggregateOffer",
+        "priceCurrency": "IDR",
+        "lowPrice": "{{ optional($destination->tickets->sortBy('price')->first())->price ?? 0 }}",
+        "highPrice": "{{ optional($destination->tickets->sortByDesc('price')->first())->price ?? 0 }}",
+        "offerCount": "{{ $destination->tickets->count() }}"
+      }
+    }
+    </script>
     @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {

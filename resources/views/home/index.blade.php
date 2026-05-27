@@ -6,7 +6,7 @@
     <section class="relative rounded-[2rem] md:rounded-[3rem] overflow-hidden bg-slate-900 min-h-[400px] md:min-h-[500px] flex items-center px-6 md:px-16 py-20">
         <!-- Background Image with Overlay -->
         <div class="absolute inset-0 z-0">
-            <img src="{{ asset('assets/images/hero.png') }}" alt="Hero Background" class="w-full h-full object-cover opacity-60">
+            <img src="{{ asset('assets/images/hero.png') }}" alt="Keindahan Alam dan Pariwisata Jawa Tengah - Tabibito Jateng" class="w-full h-full object-cover opacity-60">
             <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
         </div>
 
@@ -14,8 +14,8 @@
         <div class="relative z-10 w-full max-w-2xl">
             <span class="inline-block px-4 py-1.5 rounded-full bg-primary-500/20 backdrop-blur-md border border-primary-400/30 text-primary-200 text-xs font-bold uppercase tracking-widest mb-6">Explore Central Java</span>
             <h1 class="text-4xl md:text-6xl font-bold text-white leading-tight mb-6">
-                Petualangan Seru <br>
-                <span class="text-primary-400">Dimulai dari Sini.</span>
+                Pemesanan Tiket Wisata <br>
+                <span class="text-primary-400">Jawa Tengah Online</span>
             </h1>
             <p class="text-lg text-slate-200 mb-10 leading-relaxed opacity-90">Jelajahi keindahan Jawa Tengah dengan kemudahan pemesanan tiket online dan konfirmasi instan.</p>
             
@@ -49,7 +49,7 @@
                 <div class="group relative bg-white rounded-[2rem] border border-slate-100 p-3 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500">
                     <a href="{{ route('destinations.show', $destination) }}" class="block overflow-hidden rounded-[1.5rem] aspect-[4/3] relative">
                         @if($destination->images->first()?->image_path)
-                            <img src="{{ asset('storage/' . $destination->images->first()->image_path) }}" alt="{{ $destination->name }}" class="h-full w-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            <img src="{{ asset('storage/' . $destination->images->first()->image_path) }}" alt="Destinasi Wisata {{ $destination->name }} di {{ $destination->city }} - Tabibito Jateng" class="h-full w-full object-cover group-hover:scale-110 transition-transform duration-700">
                         @else
                             <div class="w-full h-full bg-slate-100 flex items-center justify-center">
                                 <svg class="w-12 h-12 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
