@@ -51,19 +51,10 @@
                                 }
                             @endphp
                             @forelse($allImages as $image)
-                                <div class="swiper-slide bg-slate-100 relative group" x-data="{ loaded: false, error: false }">
-                                     <div x-show="!loaded" class="absolute inset-0 shimmer bg-slate-200 z-10"></div>
-                                     <img x-show="!error"
-                                          src="{{ asset('storage/' . $image->image_path) }}" 
+                                <div class="swiper-slide bg-slate-100 relative group">
+                                     <img src="{{ asset('storage/' . $image->image_path) }}" 
                                           alt="Foto Keindahan {{ $destination->name }} di {{ $destination->city }} - Tabibito Jateng" 
-                                          class="h-full w-full object-cover"
-                                          x-on:load="loaded = true"
-                                          x-on:error="loaded = true; error = true"
-                                          loading="lazy">
-                                     <div x-show="error" class="w-full h-full bg-slate-100 flex flex-col items-center justify-center text-slate-300">
-                                         <i class="fa-regular fa-image text-4xl"></i>
-                                         <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 mt-2">Gambar Tidak Ditemukan</span>
-                                     </div>
+                                          class="h-full w-full object-cover">
                                  </div>
                             @empty
                                 <div class="swiper-slide">

@@ -26,20 +26,12 @@
 
                 @if($review->review_image)
                     <div class="mt-3 flex gap-2">
-                        <div class="w-24 h-24 rounded-2xl overflow-hidden border border-slate-100 shadow-sm bg-slate-50 relative group" x-data="{ loaded: false, error: false }">
-                            <div x-show="!loaded" class="absolute inset-0 shimmer bg-slate-200 z-10"></div>
-                            <a href="{{ asset('storage/' . $review->review_image) }}" target="_blank" x-show="!error">
+                        <div class="w-24 h-24 rounded-2xl overflow-hidden border border-slate-100 shadow-sm bg-slate-50">
+                            <a href="{{ asset('storage/' . $review->review_image) }}" target="_blank">
                                 <img src="{{ asset('storage/' . $review->review_image) }}" 
-                                     x-on:load="loaded = true"
-                                     x-on:error="loaded = true; error = true"
-                                     loading="lazy"
-                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                     :class="loaded && !error ? 'opacity-100' : 'opacity-0'">
+                                     alt="Foto ulasan oleh {{ $review->user->name }}"
+                                     class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
                             </a>
-                            <div x-show="error" class="w-full h-full flex flex-col items-center justify-center text-slate-300 text-xs">
-                                <i class="fa-regular fa-image text-lg"></i>
-                                <span class="text-[8px] font-black uppercase tracking-wider text-slate-400 mt-1">Error</span>
-                            </div>
                         </div>
                     </div>
                 @endif

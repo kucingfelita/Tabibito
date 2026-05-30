@@ -294,7 +294,7 @@
                  x-transition:leave="transition ease-in duration-200"
                  x-transition:leave-start="opacity-100"
                  x-transition:leave-end="opacity-0"
-                 @click.away="showZoomModal = false"
+                 @click.self="showZoomModal = false"
                  x-cloak>
                 
                 <div class="bg-white rounded-[2.5rem] p-6 md:p-8 max-w-sm w-full border border-slate-100 shadow-2xl relative transform transition-all"

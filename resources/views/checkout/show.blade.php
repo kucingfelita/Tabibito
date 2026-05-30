@@ -244,11 +244,11 @@
                             
                             <div class="w-full sm:w-auto relative z-10">
                                 @if(session('snap_token'))
-                                    <button type="button" disabled class="w-full bg-slate-700 text-slate-400 px-6 sm:px-12 py-4.5 md:py-5 rounded-2xl font-extrabold text-sm md:text-base transition-all cursor-not-allowed border border-slate-600 flex items-center justify-center gap-2.5">
+                                    <button type="button" disabled class="w-full bg-slate-700 text-slate-400 px-6 sm:px-12 py-4 md:py-5 rounded-2xl font-extrabold text-sm md:text-base transition-all cursor-not-allowed border border-slate-600 flex items-center justify-center gap-2.5">
                                         <i class="fa-solid fa-spinner animate-spin text-base"></i> Menunggu Pembayaran
                                     </button>
                                 @else
-                                    <button type="submit" id="submit-btn" class="w-full sm:w-auto bg-primary-500 hover:bg-primary-600 text-white px-6 sm:px-12 py-4.5 md:py-5 rounded-2xl font-extrabold shadow-lg shadow-primary-500/20 transition-all transform hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2.5 text-sm md:text-base tracking-wide">
+                                    <button type="submit" id="submit-btn" class="w-full bg-primary-500 hover:bg-primary-600 text-white px-6 py-4 md:py-5 rounded-2xl font-extrabold shadow-lg shadow-primary-500/20 transition-all transform hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2.5 text-sm md:text-base tracking-wide">
                                         Bayar Sekarang <i class="fa-solid fa-arrow-right"></i>
                                     </button>
                                 @endif

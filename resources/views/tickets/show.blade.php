@@ -88,23 +88,16 @@
                 
                 <div class="space-y-6 mb-8">
                     <div class="flex items-start gap-4">
-                        <div class="shrink-0 w-16 h-12 rounded-xl overflow-hidden bg-slate-100 relative group" x-data="{ loaded: false, error: false }">
-                            <div x-show="!loaded" class="absolute inset-0 shimmer bg-slate-200 z-10"></div>
+                        <div class="shrink-0 w-16 h-12 rounded-xl overflow-hidden bg-slate-100">
                              @php
                                  $coverImg = $ticket->destination->coverImage ?? $ticket->destination->images->first();
                              @endphp
                              @if($coverImg?->image_path)
-                                 <img x-show="!error"
-                                      src="{{ asset('storage/' . $coverImg->image_path) }}" 
-                                      x-on:load="loaded = true"
-                                      x-on:error="loaded = true; error = true"
-                                      loading="lazy"
+                                 <img src="{{ asset('storage/' . $coverImg->image_path) }}" 
+                                      alt="{{ $ticket->destination->name }}"
                                       class="w-full h-full object-cover">
-                                 <div x-show="error" class="w-full h-full bg-slate-100 flex items-center justify-center text-slate-300">
-                                     <i class="fa-regular fa-image text-lg"></i>
-                                 </div>
                              @else
-                                 <div class="w-full h-full bg-slate-100 flex items-center justify-center" x-init="loaded = true">
+                                 <div class="w-full h-full bg-slate-100 flex items-center justify-center">
                                      <i class="fa-regular fa-image text-slate-300"></i>
                                  </div>
                              @endif
