@@ -1,5 +1,5 @@
 {{-- Owner Navigation — horizontal scrollable pill tabs (mobile & desktop) --}}
-<nav id="owner-nav" class="mb-10 overflow-x-auto flex gap-2 pb-2.5 border-b border-slate-100 cursor-grab active:cursor-grabbing select-none" style="-ms-overflow-style: none; scrollbar-width: none;">
+<nav id="owner-nav" class="mb-10 overflow-x-auto custom-scrollbar flex gap-2 pb-2.5 border-b border-slate-100 cursor-grab active:cursor-grabbing select-none">
 
     @if(auth()->user()->tipe_user !== \App\Models\User::TYPE_EMPLOYEE)
         {{-- Dashboard --}}
