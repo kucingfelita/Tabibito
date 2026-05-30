@@ -41,7 +41,7 @@
                             @forelse($destination->images->take(8) as $image)
                                 <div class="swiper-slide bg-slate-100">
                                     <img src="{{ asset('storage/' . $image->image_path) }}" 
-                                         alt="{{ $destination->name }}" 
+                                         alt="Foto Keindahan {{ $destination->name }} di {{ $destination->city }} - Tabibito Jateng" 
                                          class="h-full w-full object-cover"
                                          loading="lazy">
                                 </div>
@@ -177,7 +177,7 @@
                     <h2 class="text-2xl font-bold text-slate-900">Ulasan Pengunjung</h2>
                     <span class="px-4 py-1.5 rounded-full bg-slate-50 border border-slate-100 text-xs font-bold text-slate-500 flex items-center gap-1.5">
                         <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        {{ $reviews->count() }} Ulasan
+                        {{ $reviews->total() }} Ulasan
                     </span>
                 </div>
 
@@ -190,44 +190,21 @@
                         <p class="text-xs text-slate-400 mt-1">Jadilah yang pertama memberikan ulasan setelah melakukan kunjungan wisata!</p>
                     </div>
                 @else
-                    <div class="divide-y divide-slate-100">
-                        @foreach($reviews as $review)
-                            <div class="py-6 first:pt-0 last:pb-0">
-                                <div class="flex gap-4">
-                                    <div class="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center font-bold text-slate-500 uppercase shrink-0 text-sm">
-                                        {{ substr($review->user->name, 0, 1) }}
-                                    </div>
-                                    <div class="flex-1 min-w-0">
-                                        <div class="flex items-start justify-between gap-4">
-                                            <div>
-                                                <p class="text-sm font-bold text-slate-800">{{ $review->user->name }}</p>
-                                                <p class="text-[10px] text-slate-400 font-semibold">{{ $review->updated_at->diffForHumans() }}</p>
-                                            </div>
-                                            <div class="flex items-center gap-0.5">
-                                                @for($i = 1; $i <= 5; $i++)
-                                                    <svg class="w-4 h-4 {{ $i <= $review->rating ? 'text-amber-400' : 'text-slate-200' }}" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                                                @endfor
-                                            </div>
-                                        </div>
-                                        
-                                        @if($review->review_comment)
-                                            <p class="text-slate-600 text-sm leading-relaxed mt-2">{{ $review->review_comment }}</p>
-                                        @endif
-
-                                        @if($review->review_image)
-                                            <div class="mt-3 flex gap-2">
-                                                <div class="w-32 h-32 rounded-2xl overflow-hidden border border-slate-100 shadow-sm bg-slate-50">
-                                                    <a href="{{ asset('storage/' . $review->review_image) }}" target="_blank">
-                                                        <img src="{{ asset('storage/' . $review->review_image) }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
+                    <div id="reviews-container" class="divide-y divide-slate-100">
+                        @include('destinations.partials.reviews', ['reviews' => $reviews])
                     </div>
+                    
+                    @if($reviews->hasMorePages())
+                        <div class="mt-6 text-center" id="load-more-reviews-wrapper">
+                            <button id="load-more-reviews-btn" 
+                                    data-next-page="2" 
+                                    data-url="{{ route('destinations.reviews.loadMore', $destination) }}" 
+                                    class="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 px-6 py-3 text-sm font-semibold text-slate-700 transition-all shadow-sm">
+                                <span>Muat Lebih Banyak Ulasan</span>
+                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </button>
+                        </div>
+                    @endif
                 @endif
             </div>
         </div>
@@ -237,7 +214,7 @@
             <div class="sticky top-24 space-y-8">
                 <!-- Owner Info -->
                 <div class="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
-                    <h3 class="text-lg font-bold text-slate-900 mb-6">Informasi Kontak</h3>
+                    <h2 class="text-lg font-bold text-slate-900 mb-6">Informasi Kontak</h2>
                     <div class="flex items-center gap-4 mb-8">
                         <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500 uppercase">
                             {{ substr($destination->owner?->name ?? 'A', 0, 1) }}
@@ -272,6 +249,41 @@
             </div>
         </aside>
     </div>
+
+    <!-- Schema Markup JSON-LD untuk SEO Rich Snippets -->
+    <script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@type": "TouristAttraction",
+      "name": "{{ $destination->name }}",
+      "description": "{{ \Illuminate\Support\Str::limit(strip_tags($destination->description), 160) }}",
+      "image": "{{ $destination->images->first()?->image_path ? asset('storage/' . $destination->images->first()->image_path) : asset('assets/images/hero.png') }}",
+      "address": {
+        "@@type": "PostalAddress",
+        "streetAddress": "{{ $destination->address }}",
+        "addressLocality": "{{ $destination->city }}",
+        "addressRegion": "Jawa Tengah",
+        "addressCountry": "ID"
+      },
+      "telephone": "{{ $destination->owner?->phone ?? 'info@tabibito.id' }}",
+      @if($destination->transactions_avg_rating > 0)
+      "aggregateRating": {
+        "@@type": "AggregateRating",
+        "ratingValue": "{{ number_format($destination->transactions_avg_rating, 1) }}",
+        "bestRating": "5",
+        "worstRating": "1",
+        "reviewCount": "{{ max($reviews->total(), 1) }}"
+      },
+      @endif
+      "offers": {
+        "@@type": "AggregateOffer",
+        "priceCurrency": "IDR",
+        "lowPrice": "{{ optional($destination->tickets->sortBy('price')->first())->price ?? 0 }}",
+        "highPrice": "{{ optional($destination->tickets->sortByDesc('price')->first())->price ?? 0 }}",
+        "offerCount": "{{ $destination->tickets->count() }}"
+      }
+    }
+    </script>
     @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -281,6 +293,48 @@
                 navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
                 autoplay: { delay: 5000, disableOnInteraction: false },
             });
+
+            // Load More Reviews
+            const loadMoreBtn = document.getElementById('load-more-reviews-btn');
+            const wrapper = document.getElementById('load-more-reviews-wrapper');
+            const container = document.getElementById('reviews-container');
+
+            if (loadMoreBtn) {
+                loadMoreBtn.addEventListener('click', function() {
+                    const page = this.getAttribute('data-next-page');
+                    const url = this.getAttribute('data-url') + '?page=' + page;
+
+                    // Disable button and show loading state
+                    this.disabled = true;
+                    this.classList.add('opacity-50');
+                    const textSpan = this.querySelector('span');
+                    const originalText = textSpan.innerText;
+                    textSpan.innerText = 'Memuat...';
+
+                    fetch(url)
+                        .then(res => res.json())
+                        .then(data => {
+                            // Append new reviews HTML
+                            container.insertAdjacentHTML('beforeend', data.html);
+
+                            if (data.has_more) {
+                                this.setAttribute('data-next-page', parseInt(page) + 1);
+                                this.disabled = false;
+                                this.classList.remove('opacity-50');
+                                textSpan.innerText = originalText;
+                            } else {
+                                // Hide wrapper if no more reviews
+                                wrapper.remove();
+                            }
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            this.disabled = false;
+                            this.classList.remove('opacity-50');
+                            textSpan.innerText = originalText;
+                        });
+                });
+            }
         });
     </script>
     @endpush

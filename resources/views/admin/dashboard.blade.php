@@ -45,7 +45,7 @@
         <div class="rounded-xl bg-white p-4 shadow-sm">
             <h2 class="font-semibold">Transaksi Terbaru</h2>
             @foreach($latestTransactions as $trx)
-                <p class="mt-2 text-sm">{{ $trx->order_id }} - {{ strtoupper($trx->status) }} - Rp {{ number_format($trx->total_price, 0, ',', '.') }}</p>
+                <p class="mt-2 text-sm">{{ $trx->order_id }} - {{ strtoupper($trx->display_status) }} - Rp {{ number_format($trx->total_price, 0, ',', '.') }}</p>
             @endforeach
         </div>
     </div>

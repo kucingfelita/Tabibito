@@ -1,2 +1,9 @@
 User-agent: *
-Disallow:
+Disallow: /admin
+Disallow: /owner
+Disallow: /checkout
+Disallow: /profile
+Disallow: /riwayat
+Disallow: /wishlist
+
+Sitemap: https://tabibito.egiehariansyah.my.id/sitemap.xml
