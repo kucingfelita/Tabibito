@@ -1,5 +1,5 @@
 {{-- Owner Navigation — horizontal scrollable pill tabs (mobile & desktop) --}}
-<nav class="mb-10 overflow-x-auto flex gap-2 pb-2 border-b border-slate-100" style="-ms-overflow-style: none; scrollbar-width: none;">
+<nav id="owner-nav" class="mb-10 overflow-x-auto flex gap-2 pb-2.5 border-b border-slate-100 cursor-grab active:cursor-grabbing select-none" style="-ms-overflow-style: none; scrollbar-width: none;">
 
     @if(auth()->user()->tipe_user !== \App\Models\User::TYPE_EMPLOYEE)
         {{-- Dashboard --}}
@@ -77,3 +77,36 @@
     @endif
 
 </nav>
+
+<script>
+    (function () {
+        const nav = document.getElementById('owner-nav');
+        if (!nav) return;
+
+        let isDown = false, startX, scrollLeft, isDragging = false;
+
+        nav.addEventListener('mousedown', function (e) {
+            isDown = true;
+            isDragging = false;
+            startX = e.pageX - nav.offsetLeft;
+            scrollLeft = nav.scrollLeft;
+            nav.style.cursor = 'grabbing';
+        });
+
+        nav.addEventListener('mouseleave', function () { isDown = false; nav.style.cursor = 'grab'; });
+        nav.addEventListener('mouseup',    function () { isDown = false; nav.style.cursor = 'grab'; });
+
+        nav.addEventListener('mousemove', function (e) {
+            if (!isDown) return;
+            e.preventDefault();
+            const walk = (e.pageX - nav.offsetLeft) - startX;
+            if (Math.abs(walk) > 5) isDragging = true;
+            nav.scrollLeft = scrollLeft - walk;
+        });
+
+        // Prevent navigating on drag
+        nav.querySelectorAll('a').forEach(function (link) {
+            link.addEventListener('click', function (e) { if (isDragging) e.preventDefault(); });
+        });
+    })();
+</script>
