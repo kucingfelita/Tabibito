@@ -214,22 +214,8 @@
                     </table>
                     
                     <div class="qr-section">
-                        @php
-                            try {
-                                $qrCode = 'data:image/png;base64,' . base64_encode(QrCode::format('png')->size(200)->generate($transaction->qr_code_token));
-                            } catch (\Throwable $e) {
-                                $qrCode = null;
-                            }
-                        @endphp
-                        
                         <div class="qr-wrapper">
-                            @if($qrCode)
-                                <img src="{{ $qrCode }}" width="200" height="200" style="display: block; outline: none; border: none;" alt="QR Code">
-                            @else
-                                <div style="display: inline-block;">
-                                    {!! QrCode::size(200)->generate($transaction->qr_code_token) !!}
-                                </div>
-                            @endif
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ urlencode($transaction->qr_code_token) }}" width="200" height="200" style="display: block; outline: none; border: none;" alt="QR Code">
                         </div>
                         <div>
                             <p class="warning-text">Tunjukkan QR Code di atas atau kode manual berikut kepada petugas loket:</p>

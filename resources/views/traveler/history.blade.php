@@ -2,6 +2,7 @@
 
 @push('styles')
 <style>
+    [x-cloak] { display: none !important; }
     /* Boarding Pass Design System */
     .boarding-pass {
         background: #ffffff;
@@ -86,7 +87,7 @@
 @endpush
 
 @section('content')
-<div class="max-w-5xl mx-auto px-4 md:px-0" x-data="{ activeTab: 'all' }">
+<div class="max-w-5xl mx-auto px-4 md:px-0" x-data="{ activeTab: 'all', showZoomModal: false, zoomQrToken: '', zoomTrxOrder: '' }">
     <!-- Header Title Area -->
     <div class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -265,13 +266,19 @@
                             @else
                                 <!-- Active QR Code Ticket Boarding stub -->
                                 <div class="flex flex-col items-center justify-center">
-                                    <div class="bg-white p-2.5 rounded-2xl border border-slate-100 shadow-sm mb-3">
+                                    <div class="bg-white p-2.5 rounded-2xl border border-slate-100 shadow-sm mb-2 cursor-pointer hover:scale-105 transition-all duration-300 shadow-slate-200/50"
+                                         @click="zoomQrToken = '{{ $trx->qr_code_token }}'; zoomTrxOrder = '{{ $trx->order_id }}'; showZoomModal = true"
+                                         title="Klik untuk memperbesar">
                                         <div class="p-1 bg-white inline-block">
                                             {!! QrCode::size(120)->generate($trx->qr_code_token) !!}
                                         </div>
                                     </div>
-                                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2">Scan Barcode untuk Masuk</p>
-                                    <p class="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-100/50">{{ $trx->qr_code_token }}</p>
+                                    <p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider mb-1 text-center">Scan Barcode untuk Masuk</p>
+                                    <p class="text-[10px] text-primary-500 font-bold uppercase tracking-wider mb-2.5 cursor-pointer hover:underline flex items-center justify-center gap-1"
+                                       @click="zoomQrToken = '{{ $trx->qr_code_token }}'; zoomTrxOrder = '{{ $trx->order_id }}'; showZoomModal = true">
+                                        <i class="fa-solid fa-magnifying-glass-plus"></i> Klik untuk memperbesar
+                                    </p>
+                                    <p class="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-100/50 select-all">{{ $trx->qr_code_token }}</p>
                                 </div>
                             @endif
                         @elseif($trx->status === 'pending')
@@ -392,6 +399,54 @@
         </div>
     @endif
 </div>
+
+    <!-- QR Code Zoom Modal -->
+    <div x-show="showZoomModal" 
+         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         @click.away="showZoomModal = false"
+         x-cloak>
+        
+        <div class="bg-white rounded-[2.5rem] p-6 md:p-8 max-w-sm w-full border border-slate-100 shadow-2xl relative transform transition-all"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95"
+             @click.stop>
+            
+            <!-- Close Button -->
+            <button @click="showZoomModal = false" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors flex items-center justify-center border border-slate-100">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+            
+            <div class="text-center mt-2">
+                <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase tracking-wider mb-3 inline-block">
+                    E-Tiket Digital
+                </span>
+                <h3 class="text-lg font-black text-slate-900 mb-1" x-text="zoomTrxOrder"></h3>
+                <p class="text-xs text-slate-400 font-bold tracking-wide uppercase mb-6">Tunjukkan ke Petugas Loket</p>
+                
+                <!-- Zoomed QR Code Wrapper -->
+                <div class="bg-white p-4 rounded-3xl border border-slate-100 shadow-inner mb-6 inline-block">
+                    <img :src="'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(zoomQrToken)" 
+                         class="w-64 h-64 mx-auto block rounded-2xl" 
+                         alt="QR Code">
+                </div>
+                
+                <div class="bg-slate-50 border border-slate-100/50 rounded-2xl p-4">
+                    <p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-widest mb-1.5">Kode Manual Tiket</p>
+                    <p class="text-xs font-mono font-black text-emerald-800 bg-emerald-50/50 border border-emerald-100/30 py-2 px-4 rounded-xl break-all" x-text="zoomQrToken"></p>
+                </div>
+            </div>
+        </div>
+    </div>
 
 @push('scripts')
 <script>

@@ -2,6 +2,7 @@
 
 @push('styles')
 <style>
+    [x-cloak] { display: none !important; }
     /* Premium ticket-like look with tear-off border */
     .receipt-card {
         background: #ffffff;
@@ -109,7 +110,7 @@
         </div>
     </div>
 
-    <div class="max-w-2xl mx-auto px-4 md:px-0 py-4">
+    <div class="max-w-2xl mx-auto px-4 md:px-0 py-4" x-data="{ showZoomModal: false }">
         @if($transaction && in_array($transaction->status, ['settlement', 'success']))
             <!-- ================== SUCCESS STATE ================== -->
             <div class="receipt-card p-8 md:p-10 text-center relative overflow-hidden">
@@ -164,16 +165,21 @@
                 <!-- Dotted Tear-off Divider -->
                 <div class="receipt-divider"></div>
 
-                <!-- Live QR Code Placeholder & Live Total (Lower Tear-off Part) -->
+                <!-- Live QR Code & Live Total (Lower Tear-off Part) -->
                 <div class="mt-20 flex flex-col items-center justify-center pt-2">
-                    <!-- Fake QR Code Design for Premium Aesthetics -->
-                    <div class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm mb-4 inline-block">
-                        <div class="w-28 h-28 bg-slate-900 rounded-xl flex items-center justify-center text-white relative">
-                            <div class="absolute inset-2 border border-dashed border-white/20 rounded-lg"></div>
-                            <i class="fa-solid fa-qrcode text-5xl opacity-80"></i>
+                    <!-- Real QR Code Design with Zoom Feature -->
+                    <div class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm mb-3 inline-block cursor-pointer hover:scale-105 transition-all duration-300 shadow-slate-200/50"
+                         @click="showZoomModal = true"
+                         title="Klik untuk memperbesar">
+                        <div class="p-2 bg-white inline-block">
+                            {!! QrCode::size(120)->generate($transaction->qr_code_token) !!}
                         </div>
                     </div>
-                    <p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-widest mb-5">Tunjukkan QR Code ini di pintu masuk</p>
+                    <p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-widest mb-1">Tunjukkan QR Code ini di pintu masuk</p>
+                    <p class="text-[10px] text-primary-500 font-bold uppercase tracking-wider mb-5 cursor-pointer hover:underline flex items-center gap-1"
+                       @click="showZoomModal = true">
+                        <i class="fa-solid fa-magnifying-glass-plus"></i> Klik untuk memperbesar
+                    </p>
 
                     <div class="w-full flex justify-between items-center bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4">
                         <span class="text-xs font-black text-slate-900 uppercase tracking-widest">Total Pembayaran</span>
@@ -182,11 +188,11 @@
                 </div>
 
                 <!-- Page Redirections -->
-                <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                    <a href="{{ route('history.index') }}" class="w-full sm:w-auto bg-primary-600 hover:bg-primary-700 text-white font-extrabold px-12 py-4 md:py-4.5 rounded-2xl shadow-lg shadow-primary-600/20 transition-all text-sm md:text-base uppercase tracking-wider flex items-center justify-center gap-2">
+                <div class="mt-10 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4 pt-4 w-full">
+                    <a href="{{ route('history.index') }}" class="w-full sm:w-auto bg-primary-600 hover:bg-primary-700 text-white font-extrabold px-6 sm:px-12 py-4 md:py-4.5 rounded-2xl shadow-lg shadow-primary-600/20 transition-all text-sm md:text-base uppercase tracking-wider flex items-center justify-center gap-2">
                         <i class="fa-solid fa-ticket text-base"></i> Lihat E-Tiket Saya
                     </a>
-                    <a href="{{ route('home') }}" class="w-full sm:w-auto bg-white border border-slate-200 text-slate-700 font-extrabold px-12 py-4 md:py-4.5 rounded-2xl hover:bg-slate-50 transition-all text-sm md:text-base uppercase tracking-wider text-center">
+                    <a href="{{ route('home') }}" class="w-full sm:w-auto bg-white border border-slate-200 text-slate-700 font-extrabold px-6 sm:px-12 py-4 md:py-4.5 rounded-2xl hover:bg-slate-50 transition-all text-sm md:text-base uppercase tracking-wider text-center">
                         Ke Beranda
                     </a>
                 </div>
@@ -227,8 +233,8 @@
                 </div>
 
                 <!-- CTAs -->
-                <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 max-w-md mx-auto">
-                    <a href="{{ route('checkout.resume', ['order_id' => $transaction->order_id]) }}" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-extrabold px-12 py-4 md:py-4.5 rounded-2xl shadow-lg shadow-amber-500/20 transition-all text-sm md:text-base uppercase tracking-wider flex items-center justify-center gap-2">
+                <div class="mt-10 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4 pt-4 max-w-md mx-auto">
+                    <a href="{{ route('checkout.resume', ['order_id' => $transaction->order_id]) }}" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-extrabold px-6 sm:px-12 py-4 md:py-4.5 rounded-2xl shadow-lg shadow-amber-500/20 transition-all text-sm md:text-base uppercase tracking-wider flex items-center justify-center gap-2">
                         <i class="fa-solid fa-credit-card text-base"></i> Lanjutkan Pembayaran
                     </a>
                 </div>
@@ -267,13 +273,63 @@
                 </div>
 
                 <!-- CTAs -->
-                <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 max-w-md mx-auto">
-                    <a href="{{ $transaction ? route('checkout.resume', ['order_id' => $transaction->order_id]) : route('destinations.index') }}" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-extrabold px-12 py-4 md:py-4.5 rounded-2xl shadow-lg shadow-rose-600/20 transition-all text-sm md:text-base uppercase tracking-wider flex items-center justify-center gap-2">
+                <div class="mt-10 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4 pt-4 max-w-md mx-auto">
+                    <a href="{{ $transaction ? route('checkout.resume', ['order_id' => $transaction->order_id]) : route('destinations.index') }}" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-extrabold px-6 sm:px-12 py-4 md:py-4.5 rounded-2xl shadow-lg shadow-rose-600/20 transition-all text-sm md:text-base uppercase tracking-wider flex items-center justify-center gap-2">
                         <i class="fa-solid fa-arrow-rotate-right text-base"></i> Coba Transaksi Lagi
                     </a>
-                    <a href="{{ route('home') }}" class="w-full bg-white border border-slate-200 text-slate-700 font-extrabold px-12 py-4 md:py-4.5 rounded-2xl hover:bg-slate-50 transition-all text-sm md:text-base uppercase tracking-wider text-center">
+                    <a href="{{ route('home') }}" class="w-full bg-white border border-slate-200 text-slate-700 font-extrabold px-6 sm:px-12 py-4 md:py-4.5 rounded-2xl hover:bg-slate-50 transition-all text-sm md:text-base uppercase tracking-wider text-center">
                         Kembali Ke Beranda
                     </a>
+                </div>
+            </div>
+        @endif
+
+        @if($transaction && in_array($transaction->status, ['settlement', 'success']))
+            <!-- QR Code Zoom Modal -->
+            <div x-show="showZoomModal" 
+                 class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 @click.away="showZoomModal = false"
+                 x-cloak>
+                
+                <div class="bg-white rounded-[2.5rem] p-6 md:p-8 max-w-sm w-full border border-slate-100 shadow-2xl relative transform transition-all"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 scale-95"
+                     x-transition:enter-end="opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100 scale-100"
+                     x-transition:leave-end="opacity-0 scale-95"
+                     @click.stop>
+                    
+                    <!-- Close Button -->
+                    <button @click="showZoomModal = false" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors flex items-center justify-center border border-slate-100">
+                        <i class="fa-solid fa-xmark text-sm"></i>
+                    </button>
+                    
+                    <div class="text-center mt-2">
+                        <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase tracking-wider mb-3 inline-block">
+                            E-Tiket Digital
+                        </span>
+                        <h3 class="text-lg font-black text-slate-900 mb-1">{{ $transaction->order_id }}</h3>
+                        <p class="text-xs text-slate-400 font-bold tracking-wide uppercase mb-6">Tunjukkan ke Petugas Loket</p>
+                        
+                        <!-- Zoomed QR Code Wrapper -->
+                        <div class="bg-white p-4 rounded-3xl border border-slate-100 shadow-inner mb-6 inline-block">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data={{ urlencode($transaction->qr_code_token) }}" 
+                                 class="w-64 h-64 mx-auto block rounded-2xl" 
+                                 alt="QR Code">
+                        </div>
+                        
+                        <div class="bg-slate-50 border border-slate-100/50 rounded-2xl p-4">
+                            <p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-widest mb-1.5">Kode Manual Tiket</p>
+                            <p class="text-xs font-mono font-black text-emerald-800 bg-emerald-50/50 border border-emerald-100/30 py-2 px-4 rounded-xl break-all">{{ $transaction->qr_code_token }}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         @endif

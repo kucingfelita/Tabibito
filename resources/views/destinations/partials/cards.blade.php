@@ -6,31 +6,18 @@
             <!-- Image Section -->
             <div class="relative shrink-0 w-full sm:w-56 h-48 sm:h-36 rounded-2xl bg-slate-100 isolate">
                 <a href="{{ route('destinations.show', $destination) }}" class="block h-full w-full overflow-hidden rounded-2xl relative isolate">
-                    <!-- Native Lazy Loading + Alpine.js Skeleton Loader -->
-                    <div class="relative w-full h-full rounded-2xl overflow-hidden isolate" x-data="{ loaded: false, error: false }">
-                        <div x-show="!loaded" class="absolute inset-0 shimmer bg-slate-200 z-10"></div>
-                        @php
-                            $coverImg = $destination->coverImage ?? $destination->images->first();
-                        @endphp
-                        @if($coverImg?->image_path)
-                            <img x-show="!error"
-                                 src="{{ asset('storage/' . $coverImg->image_path) }}" 
-                                 alt="Destinasi Wisata {{ $destination->name }} di {{ $destination->city }} - Tabibito Jateng" 
-                                 loading="lazy"
-                                 x-on:load="loaded = true"
-                                 x-on:error="loaded = true; error = true"
-                                 class="h-full w-full object-cover group-hover:scale-110 transition-transform duration-700 rounded-2xl"
-                                 :class="loaded && !error ? 'opacity-100' : 'opacity-0'">
-                            <div x-show="error" class="w-full h-full bg-slate-100 flex flex-col items-center justify-center rounded-2xl text-slate-300">
-                                <i class="fa-regular fa-image text-3xl"></i>
-                                <span class="text-[9px] font-black uppercase tracking-wider text-slate-400 mt-2">Gambar Rusak</span>
-                            </div>
-                        @else
-                            <div class="w-full h-full bg-slate-100 flex items-center justify-center rounded-2xl" x-init="loaded = true">
-                                <i class="fa-regular fa-image text-slate-300 text-3xl"></i>
-                            </div>
-                        @endif
-                    </div>
+                    @php
+                        $coverImg = $destination->coverImage ?? $destination->images->first();
+                    @endphp
+                    @if($coverImg?->image_path)
+                        <img src="{{ asset('storage/' . $coverImg->image_path) }}" 
+                             alt="Destinasi Wisata {{ $destination->name }} di {{ $destination->city }} - Tabibito Jateng" 
+                             class="h-full w-full object-cover group-hover:scale-110 transition-transform duration-700 rounded-2xl">
+                    @else
+                        <div class="w-full h-full bg-slate-100 flex items-center justify-center rounded-2xl">
+                            <i class="fa-regular fa-image text-slate-300 text-3xl"></i>
+                        </div>
+                    @endif
                     
                     <!-- City Overlay Badge -->
                     <div class="absolute top-3 left-3 z-20 px-2.5 py-1 rounded-lg bg-slate-900/60 backdrop-blur-md border border-white/10 text-[9px] font-extrabold text-white uppercase tracking-wider">
