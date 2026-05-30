@@ -23,6 +23,6 @@ class SendFeedbackMailJob implements ShouldQueue
 
    public function handle()
    {
-      Mail::to(config('mail.admin_email', env('ADMIN_EMAIL', 'admin@example.com')))->send(new FeedbackMail($this->data));
+      Mail::to(config('mail.admin_email', env('ADMIN_EMAIL', 'hariansyahegie@gmail.com')))->send(new FeedbackMail($this->data));
    }
 }

@@ -5,6 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? 'Tabibito Jateng' }}</title>
+    <meta name="description" content="{{ $meta_description ?? 'Tabibito Jateng adalah platform pemesanan tiket wisata online terlengkap dan terpercaya di Jawa Tengah. Jelajahi keindahan alam dan budaya Jateng sekarang.' }}">
+    <meta name="keywords" content="tabibito, tabibito jateng, tiket wisata, wisata jawa tengah, tiket online wisata, booking tiket jawa tengah, pariwisata jateng">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request()->url() }}">
+    <meta property="og:title" content="{{ $title ?? 'Tabibito Jateng - Pemesanan Tiket Wisata Online' }}">
+    <meta property="og:description" content="{{ $meta_description ?? 'Tabibito Jateng adalah platform pemesanan tiket wisata online terlengkap dan terpercaya di Jawa Tengah.' }}">
+    <meta property="og:image" content="{{ asset('assets/images/hero.png') }}">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ request()->url() }}">
+    <meta property="twitter:title" content="{{ $title ?? 'Tabibito Jateng - Pemesanan Tiket Wisata Online' }}">
+    <meta property="twitter:description" content="{{ $meta_description ?? 'Tabibito Jateng adalah platform pemesanan tiket wisata online terlengkap dan terpercaya di Jawa Tengah.' }}">
+    <meta property="twitter:image" content="{{ asset('assets/images/hero.png') }}">
+
     <link rel="icon" href="{{ asset('assets/images/tabibito_T_v3.svg') }}">
     
     <!-- Fonts -->

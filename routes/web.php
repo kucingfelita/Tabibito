@@ -20,6 +20,7 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\Traveler\HistoryController;
 use App\Http\Controllers\Traveler\ProfileController;
 use App\Http\Controllers\Traveler\WishlistController;
+use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/owner/register/step1', [OwnerRegisterController::class, 'step1'])->name('owner.register.step1');
@@ -57,6 +58,7 @@ Route::middleware('redirect.staff')->group(function () {
 
     Route::get('/wisata', [DestinationController::class, 'index'])->name('destinations.index');
     Route::get('/wisata/{destination}', [DestinationController::class, 'show'])->name('destinations.show');
+    Route::get('/destinations/{destination}/reviews/load-more', [DestinationController::class, 'loadMoreReviews'])->name('destinations.reviews.loadMore');
     Route::get('/tiket/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
     Route::get('/destinations/load-more', [DestinationController::class, 'loadMore'])->name('destinations.loadMore');
     Route::get('/contact', [ContactController::class, 'index'])->name('contact');
@@ -79,6 +81,8 @@ Route::middleware('redirect.staff')->group(function () {
 
     Route::get('/payment/finish', [CheckoutController::class, 'finish'])->name('checkout.finish');
 });
+
+Route::get('/sitemap.xml', [SitemapController::class, 'index']);
 
 Route::prefix('owner')
     ->name('owner.')

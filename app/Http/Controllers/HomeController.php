@@ -17,7 +17,9 @@ class HomeController extends Controller
                 ->where('status', 'active')
                 ->with('tickets:id,destination_id,price')
                 ->withAvg('transactions', 'rating')
-                ->latest()
+                ->withCount('transactions')
+                ->orderByDesc('transactions_avg_rating')
+                ->orderByDesc('transactions_count')
                 ->take(3)
                 ->get();
         }

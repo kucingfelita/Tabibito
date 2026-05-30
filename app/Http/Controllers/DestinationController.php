@@ -68,10 +68,25 @@ class DestinationController extends Controller
             ->whereNotNull('rating')
             ->with('user')
             ->latest()
-            ->take(10)
-            ->get();
+            ->paginate(10);
 
         return view('destinations.show', compact('destination', 'reviews'));
+    }
+
+    public function loadMoreReviews(Request $request, Destination $destination)
+    {
+        $reviews = $destination->transactions()
+            ->whereNotNull('rating')
+            ->with('user')
+            ->latest()
+            ->paginate(10, ['*'], 'page', $request->page);
+
+        $html = view('destinations.partials.reviews', compact('reviews'))->render();
+
+        return response()->json([
+            'html' => $html,
+            'has_more' => $reviews->hasMorePages()
+        ]);
     }
 
     public function loadMore(Request $request)
