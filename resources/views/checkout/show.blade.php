@@ -232,7 +232,7 @@
 
                     <!-- Payment Button & Live Total Display -->
                     <div class="pt-8 border-t border-slate-100">
-                        <div class="flex flex-col items-center justify-center p-6 bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl text-center relative overflow-hidden shadow-xl shadow-slate-950/20">
+                        <div class="flex flex-col items-stretch sm:items-center justify-center p-6 bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl text-center relative overflow-hidden shadow-xl shadow-slate-950/20">
                             <!-- Background elements -->
                             <div class="absolute -bottom-10 -left-10 w-24 h-24 bg-white/5 rounded-full"></div>
                             <div class="absolute -top-10 -right-10 w-24 h-24 bg-primary-500/10 rounded-full blur-xl"></div>
@@ -244,11 +244,11 @@
                             
                             <div class="w-full sm:w-auto relative z-10">
                                 @if(session('snap_token'))
-                                    <button type="button" disabled class="w-full bg-slate-700 text-slate-400 px-12 py-4.5 md:py-5 rounded-2xl font-extrabold text-sm md:text-base transition-all cursor-not-allowed border border-slate-600 flex items-center justify-center gap-2.5">
+                                    <button type="button" disabled class="w-full bg-slate-700 text-slate-400 px-6 sm:px-12 py-4.5 md:py-5 rounded-2xl font-extrabold text-sm md:text-base transition-all cursor-not-allowed border border-slate-600 flex items-center justify-center gap-2.5">
                                         <i class="fa-solid fa-spinner animate-spin text-base"></i> Menunggu Pembayaran
                                     </button>
                                 @else
-                                    <button type="submit" id="submit-btn" class="w-full sm:w-auto bg-primary-500 hover:bg-primary-600 text-white px-12 py-4.5 md:py-5 rounded-2xl font-extrabold shadow-lg shadow-primary-500/20 transition-all transform hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2.5 text-sm md:text-base tracking-wide">
+                                    <button type="submit" id="submit-btn" class="w-full sm:w-auto bg-primary-500 hover:bg-primary-600 text-white px-6 sm:px-12 py-4.5 md:py-5 rounded-2xl font-extrabold shadow-lg shadow-primary-500/20 transition-all transform hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2.5 text-sm md:text-base tracking-wide">
                                         Bayar Sekarang <i class="fa-solid fa-arrow-right"></i>
                                     </button>
                                 @endif
