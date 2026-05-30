@@ -321,7 +321,7 @@
 
                     @if(session('snap_token'))
                         <div class="mt-6 pt-6 border-t border-slate-50">
-                            <button id="pay-button" type="button" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-extrabold py-4.5 md:py-5 rounded-2xl shadow-lg shadow-primary-600/20 transition-all flex items-center justify-center gap-3 active:scale-95 text-sm md:text-base">
+                            <button id="pay-button" type="button" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-extrabold py-4 md:py-5 rounded-2xl shadow-lg shadow-primary-600/20 transition-all flex items-center justify-center gap-3 active:scale-95 text-sm md:text-base">
                                 <i class="fa-solid fa-credit-card animate-bounce text-base"></i>
                                 Lanjutkan Pembayaran
                             </button>

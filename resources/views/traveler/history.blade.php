@@ -398,7 +398,6 @@
             {{ $transactions->links() }}
         </div>
     @endif
-</div>
 
     <!-- QR Code Zoom Modal -->
     <div x-show="showZoomModal" 
@@ -447,6 +446,8 @@
             </div>
         </div>
     </div>
+
+</div>{{-- end x-data wrapper --}}
 
 @push('scripts')
 <script>
