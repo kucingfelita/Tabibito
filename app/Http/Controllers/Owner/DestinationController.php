@@ -20,7 +20,7 @@ class DestinationController extends Controller
     {
         $destinations = Destination::query()
             ->where('user_id', auth()->id())
-            ->with(['images', 'tags'])
+            ->with(['coverImage', 'slideImages', 'tags'])
             ->latest()
             ->paginate(10);
 
@@ -51,12 +51,23 @@ class DestinationController extends Controller
 
             $this->syncTags($destination, $request);
 
-            if ($request->hasFile('images')) {
-                foreach ($request->file('images') as $image) {
+            if ($request->hasFile('cover_image')) {
+                $path = $this->compressAndStoreImage($request->file('cover_image'));
+                DestinationImage::query()->create([
+                    'destination_id' => $destination->id,
+                    'image_path'     => $path,
+                    'is_cover'       => true,
+                ]);
+            }
+
+            if ($request->hasFile('slide_images')) {
+                $slides = array_slice($request->file('slide_images'), 0, 7);
+                foreach ($slides as $image) {
                     $path = $this->compressAndStoreImage($image);
                     DestinationImage::query()->create([
                         'destination_id' => $destination->id,
-                        'image_path' => $path,
+                        'image_path'     => $path,
+                        'is_cover'       => false,
                     ]);
                 }
             }
@@ -85,12 +96,33 @@ class DestinationController extends Controller
 
             $this->syncTags($destination, $request);
 
-            if ($request->hasFile('images')) {
-                foreach ($request->file('images') as $image) {
+            if ($request->hasFile('cover_image')) {
+                $path = $this->compressAndStoreImage($request->file('cover_image'));
+                // Replace existing cover or create new
+                $existingCover = $destination->images()->where('is_cover', true)->first();
+                if ($existingCover) {
+                    Storage::disk('public')->delete($existingCover->image_path);
+                    $existingCover->update(['image_path' => $path]);
+                } else {
+                    DestinationImage::query()->create([
+                        'destination_id' => $destination->id,
+                        'image_path'     => $path,
+                        'is_cover'       => true,
+                    ]);
+                }
+            }
+
+            if ($request->hasFile('slide_images')) {
+                // Count existing slides and cap total at 7
+                $existingSlideCount = $destination->images()->where('is_cover', false)->count();
+                $allowedNew = max(0, 7 - $existingSlideCount);
+                $slides = array_slice($request->file('slide_images'), 0, $allowedNew);
+                foreach ($slides as $image) {
                     $path = $this->compressAndStoreImage($image);
                     DestinationImage::query()->create([
                         'destination_id' => $destination->id,
-                        'image_path' => $path,
+                        'image_path'     => $path,
+                        'is_cover'       => false,
                     ]);
                 }
             }

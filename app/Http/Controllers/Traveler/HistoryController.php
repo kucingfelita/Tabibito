@@ -20,7 +20,7 @@ class HistoryController extends Controller
 
         $transactions = Transaction::query()
             ->where('user_id', auth()->id())
-            ->with('ticket.destination')
+            ->with(['ticket.destination.coverImage', 'ticket.destination.images'])
             ->latest()
             ->paginate(10);
 

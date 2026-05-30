@@ -37,6 +37,16 @@ class Destination extends Model
         return $this->hasMany(DestinationImage::class);
     }
 
+    public function coverImage()
+    {
+        return $this->hasOne(DestinationImage::class)->where('is_cover', true)->latest('id');
+    }
+
+    public function slideImages(): HasMany
+    {
+        return $this->hasMany(DestinationImage::class)->where('is_cover', false);
+    }
+
     public function tickets(): HasMany
     {
         return $this->hasMany(Ticket::class);

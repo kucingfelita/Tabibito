@@ -23,14 +23,16 @@ class DestinationController extends Controller
         }
 
         $destinations = Destination::query()
-            ->with(['tags', 'images', 'tickets'])
+            ->with(['tags', 'images', 'coverImage', 'tickets'])
             ->withAvg('transactions', 'rating')
             ->when(auth()->check(), fn($q) => $q->with(['wishlists' => fn($qw) => $qw->where('user_id', auth()->id())]))
             ->where('status', 'active')
             // Multi-tag support (OR logic)
             ->when($request->filled('tags'), function ($query) use ($request) {
-                $tags = is_array($request->tags) ? $request->tags : [$request->tags];
-                $query->whereHas('tags', fn($q) => $q->whereIn('tags.id', $tags));
+                $tags = array_filter(is_array($request->tags) ? $request->tags : [$request->tags]);
+                if (!empty($tags)) {
+                    $query->whereHas('tags', fn($q) => $q->whereIn('tags.id', $tags));
+                }
             })
             // Price range support
             ->when($request->filled('min_price'), function ($query) use ($request) {
@@ -61,7 +63,7 @@ class DestinationController extends Controller
 
     public function show(Destination $destination): View
     {
-        $destination->load(['tags', 'images', 'tickets']);
+        $destination->load(['tags', 'images', 'coverImage', 'slideImages', 'tickets']);
         $destination->loadAvg('transactions', 'rating');
 
         $reviews = $destination->transactions()
@@ -92,14 +94,16 @@ class DestinationController extends Controller
     public function loadMore(Request $request)
     {
         $destinations = Destination::query()
-            ->with(['tags', 'images', 'tickets'])
+            ->with(['tags', 'images', 'coverImage', 'tickets'])
             ->withAvg('transactions', 'rating')
             ->when(auth()->check(), fn($q) => $q->with(['wishlists' => fn($qw) => $qw->where('user_id', auth()->id())]))
             ->where('status', 'active')
             // Multi-tag support (OR logic)
             ->when($request->filled('tags'), function ($query) use ($request) {
-                $tags = is_array($request->tags) ? $request->tags : [$request->tags];
-                $query->whereHas('tags', fn($q) => $q->whereIn('tags.id', $tags));
+                $tags = array_filter(is_array($request->tags) ? $request->tags : [$request->tags]);
+                if (!empty($tags)) {
+                    $query->whereHas('tags', fn($q) => $q->whereIn('tags.id', $tags));
+                }
             })
             // Price range support
             ->when($request->filled('min_price'), function ($query) use ($request) {

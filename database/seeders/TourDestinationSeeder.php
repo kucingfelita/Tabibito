@@ -127,7 +127,7 @@ class TourDestinationSeeder extends Seeder
                     'name' => 'Lawangsewu',
                     'description' => 'Gedung bersejarah milik PT KAI yang dahulu merupakan kantor pusat NIS. Dikenal dengan arsitektur pintu yang sangat banyak dan megah, jendela kaca patri besar, serta lorong bersejarah.',
                     'address' => 'Jl. Pemuda, Sekayu, Semarang Tengah',
-                    'city' => 'Semarang',
+                    'city' => 'Kota Semarang',
                     'map_link' => 'https://maps.google.com/?q=Lawang+Sewu+Semarang',
                     'open_time' => '08:00:00',
                     'close_time' => '20:00:00',

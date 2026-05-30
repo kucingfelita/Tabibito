@@ -27,7 +27,10 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icon Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <!-- Styles & Scripts -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -36,7 +39,7 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Outfit', 'sans-serif'],
+                        sans: ['Plus Jakarta Sans', 'Outfit', 'sans-serif'],
                     },
                     colors: {
                         primary: {
@@ -73,13 +76,17 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
+    <!-- Flatpickr (Global Datepicker) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    
     <style>
         [x-cloak] { display: none !important; }
         
         .glass-nav {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
         }
 
         .btn-premium {
@@ -88,47 +95,110 @@
 
         .btn-premium:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 12px 20px -3px rgba(14, 140, 233, 0.25), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
 
         @media (max-width: 639px) {
             .main-content { padding: 16px 16px; }
         }
+
+        /* Shimmer Loading Animations */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .shimmer {
+            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite linear;
+        }
+
+        /* Premium Nav Link Underline Hover */
+        .nav-link-hover {
+            position: relative;
+        }
+        .nav-link-hover::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 2.5px;
+            bottom: -6px;
+            left: 0;
+            background: linear-gradient(90deg, #0e8ce9, #f97316);
+            transform-origin: bottom right;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 9999px;
+        }
+        .nav-link-hover:hover::after, .nav-link-active::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+        
+        .nav-link-active::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2.5px;
+            bottom: -6px;
+            left: 0;
+            background: linear-gradient(90deg, #0e8ce9, #f97316);
+            border-radius: 9999px;
+        }
+
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
     </style>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     @stack('styles')
 </head>
-<body class="bg-[#F8FAFC] text-slate-900 font-sans antialiased">
+<body class="bg-[#F8FAFC] text-slate-900 font-sans antialiased min-h-screen flex flex-col">
     <!-- Premium Navigation -->
-    <nav class="sticky top-0 z-50 glass-nav border-b border-slate-200/60" x-data="{ navOpen: false }">
+    <nav class="sticky top-0 z-50 glass-nav border-b border-slate-100" x-data="{ navOpen: false }">
         <div class="mx-auto flex max-w-7xl items-center justify-between px-4 h-16 md:h-20">
             <!-- Logo -->
             <a href="{{ route('home') }}" class="flex items-center gap-2 group">
-                <div class="bg-primary-600 p-1.5 rounded-lg group-hover:rotate-12 transition-transform">
+                <div class="bg-gradient-to-tr from-primary-600 to-primary-500 p-2 rounded-xl group-hover:rotate-12 transition-transform duration-300 shadow-md shadow-primary-200">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                 </div>
-                <span class="text-xl md:text-2xl font-bold bg-gradient-to-r from-primary-700 to-primary-500 bg-clip-text text-transparent">Tabibito</span>
+                <div class="flex flex-col">
+                    <span class="text-xl md:text-2xl font-bold bg-gradient-to-r from-slate-900 via-primary-700 to-primary-600 bg-clip-text text-transparent tracking-tight">Tabibito<span class="text-secondary-500">.</span></span>
+                    <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest -mt-1">Jateng Ticket</span>
+                </div>
             </a>
             
             <!-- Desktop Menu -->
             <div class="hidden md:flex items-center gap-8">
                 @if(auth()->guest() || auth()->user()->tipe_user === \App\Models\User::TYPE_USER)
-                <div class="flex items-center gap-6">
-                    <a href="{{ route('home') }}" class="text-[15px] font-medium {{ request()->routeIs('home') ? 'text-primary-600' : 'text-slate-600 hover:text-primary-600' }} transition-colors">Beranda</a>
-                    <a href="{{ route('destinations.index') }}" class="text-[15px] font-medium {{ request()->routeIs('destinations.*') ? 'text-primary-600' : 'text-slate-600 hover:text-primary-600' }} transition-colors">Wisata</a>
-                    <a href="{{ route('contact') }}" class="text-[15px] font-medium {{ request()->routeIs('contact') ? 'text-primary-600' : 'text-slate-600 hover:text-primary-600' }} transition-colors">Kontak</a>
+                <div class="flex items-center gap-8">
+                    <a href="{{ route('home') }}" class="text-[15px] font-semibold nav-link-hover {{ request()->routeIs('home') ? 'text-primary-600 nav-link-active' : 'text-slate-600 hover:text-primary-600' }} transition-colors">Beranda</a>
+                    <a href="{{ route('destinations.index') }}" class="text-[15px] font-semibold nav-link-hover {{ request()->routeIs('destinations.*') ? 'text-primary-600 nav-link-active' : 'text-slate-600 hover:text-primary-600' }} transition-colors">Wisata</a>
+                    <a href="{{ route('contact') }}" class="text-[15px] font-semibold nav-link-hover {{ request()->routeIs('contact') ? 'text-primary-600 nav-link-active' : 'text-slate-600 hover:text-primary-600' }} transition-colors">Kontak</a>
                 </div>
                 @else
                 <div class="flex items-center gap-6">
                     @if(auth()->user()->tipe_user === \App\Models\User::TYPE_ADMIN)
-                        <a href="{{ route('admin.dashboard') }}" class="text-[15px] font-medium {{ request()->routeIs('admin.dashboard') ? 'text-primary-600' : 'text-slate-600 hover:text-primary-600' }} transition-colors">Dashboard Admin</a>
+                        <a href="{{ route('admin.dashboard') }}" class="text-[15px] font-semibold nav-link-hover {{ request()->routeIs('admin.dashboard') ? 'text-primary-600 nav-link-active' : 'text-slate-600 hover:text-primary-600' }} transition-colors">Dashboard Admin</a>
                     @elseif(auth()->user()->tipe_user === \App\Models\User::TYPE_OWNER)
-                        <a href="{{ route('owner.dashboard') }}" class="text-[15px] font-medium {{ request()->routeIs('owner.dashboard') ? 'text-primary-600' : 'text-slate-600 hover:text-primary-600' }} transition-colors">Dashboard Owner</a>
+                        <a href="{{ route('owner.dashboard') }}" class="text-[15px] font-semibold nav-link-hover {{ request()->routeIs('owner.dashboard') ? 'text-primary-600 nav-link-active' : 'text-slate-600 hover:text-primary-600' }} transition-colors">Dashboard Owner</a>
                     @elseif(auth()->user()->tipe_user === \App\Models\User::TYPE_EMPLOYEE)
-                        <a href="{{ route('owner.scanner') }}" class="text-[15px] font-medium {{ request()->routeIs('owner.scanner') ? 'text-primary-600' : 'text-slate-600 hover:text-primary-600' }} transition-colors">Scanner Tiket</a>
-                        <a href="{{ route('owner.scan-history') }}" class="text-[15px] font-medium {{ request()->routeIs('owner.scan-history') ? 'text-primary-600' : 'text-slate-600 hover:text-primary-600' }} transition-colors">Riwayat Scan</a>
+                        <a href="{{ route('owner.scanner') }}" class="text-[15px] font-semibold nav-link-hover {{ request()->routeIs('owner.scanner') ? 'text-primary-600 nav-link-active' : 'text-slate-600 hover:text-primary-600' }} transition-colors">Scanner Tiket</a>
+                        <a href="{{ route('owner.scan-history') }}" class="text-[15px] font-semibold nav-link-hover {{ request()->routeIs('owner.scan-history') ? 'text-primary-600 nav-link-active' : 'text-slate-600 hover:text-primary-600' }} transition-colors">Riwayat Scan</a>
                     @endif
                 </div>
                 @endif
@@ -137,50 +207,54 @@
 
                 @guest
                     <div class="flex items-center gap-3">
-                        <a href="{{ route('login') }}" class="text-[15px] font-semibold text-primary-600 hover:text-primary-700 px-4 py-2">Masuk</a>
-                        <a href="{{ route('register') }}" class="btn-premium bg-primary-600 hover:bg-primary-700 text-white px-6 py-2.5 rounded-xl text-[15px] font-semibold shadow-md shadow-primary-200">Daftar Sekarang</a>
+                        <a href="{{ route('login') }}" class="text-[15px] font-bold text-slate-700 hover:text-primary-600 px-4 py-2 transition-colors">Masuk</a>
+                        <a href="{{ route('register') }}" class="btn-premium bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 text-white px-6 py-2.5 rounded-xl text-[15px] font-bold shadow-md shadow-primary-200">Daftar Sekarang</a>
                     </div>
                 @endguest
 
                 @auth
                     <div x-data="{open:false}" class="relative">
-                        <button @click="open=!open" class="flex items-center gap-2 group">
-                            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-50 font-bold text-primary-600 border border-primary-100 group-hover:bg-primary-100 transition-colors">
+                        <button @click="open=!open" class="flex items-center gap-3 group bg-slate-50 border border-slate-200/80 rounded-2xl px-3 py-1.5 hover:bg-slate-100 transition-colors">
+                            <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-tr from-primary-600 to-primary-500 font-bold text-white shadow-sm">
                                 {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                             </div>
+                            <span class="text-sm font-semibold text-slate-700 group-hover:text-primary-600 transition-colors max-w-[120px] truncate">{{ auth()->user()->name }}</span>
                             <svg class="w-4 h-4 text-slate-400 group-hover:text-primary-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                             </svg>
                         </button>
                         <div x-show="open" x-cloak @click.outside="open=false" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" class="absolute right-0 z-10 mt-3 w-60 rounded-2xl border border-slate-100 bg-white p-2 shadow-xl ring-1 ring-black/5">
-                            <div class="px-3 py-2 mb-2 border-b border-slate-50">
+                            <div class="px-3 py-2.5 mb-2 border-b border-slate-50">
                                 <p class="text-xs font-black text-slate-800 truncate">{{ auth()->user()->name }}</p>
                                 @if(auth()->user()->tipe_user === \App\Models\User::TYPE_EMPLOYEE)
-                                    <p class="text-[10px] text-violet-500 font-bold uppercase tracking-widest mt-0.5">Karyawan</p>
+                                    <p class="text-[10px] text-violet-500 font-bold uppercase tracking-widest mt-0.5"><i class="fa-solid fa-user-gear mr-1"></i>Karyawan</p>
                                 @elseif(auth()->user()->tipe_user === \App\Models\User::TYPE_OWNER)
-                                    <p class="text-[10px] text-primary-500 font-bold uppercase tracking-widest mt-0.5">Owner</p>
+                                    <p class="text-[10px] text-primary-500 font-bold uppercase tracking-widest mt-0.5"><i class="fa-solid fa-user-tie mr-1"></i>Owner</p>
                                 @elseif(auth()->user()->tipe_user === \App\Models\User::TYPE_ADMIN)
-                                    <p class="text-[10px] text-amber-500 font-bold uppercase tracking-widest mt-0.5">Admin</p>
+                                    <p class="text-[10px] text-amber-500 font-bold uppercase tracking-widest mt-0.5"><i class="fa-solid fa-user-shield mr-1"></i>Admin</p>
+                                @else
+                                    <p class="text-[10px] text-emerald-500 font-bold uppercase tracking-widest mt-0.5"><i class="fa-solid fa-user mr-1"></i>Traveler</p>
                                 @endif
                             </div>
 
                             @if(auth()->user()->tipe_user === \App\Models\User::TYPE_EMPLOYEE)
-                                {{-- Karyawan: link pindah ke navbar utama, dropdown cukup info profil & logout saja --}}
-                                <div class="px-3 py-2 text-xs text-slate-500 font-medium">Menu Karyawan</div>
+                                <div class="px-3 py-2 text-xs text-slate-400 font-bold uppercase tracking-wider">Menu Karyawan</div>
+                                <a href="{{ route('owner.scanner') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-primary-600 transition-colors">
+                                    <i class="fa-solid fa-barcode text-slate-400 w-4"></i> Scanner Tiket
+                                </a>
+                                <a href="{{ route('owner.scan-history') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-primary-600 transition-colors">
+                                    <i class="fa-solid fa-clock-rotate-left text-slate-400 w-4"></i> Riwayat Scan
+                                </a>
                             @else
-                                {{-- User, Owner, Admin --}}
                                 <a href="{{ route('profile') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-primary-600 transition-colors">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                                    Profile Saya
+                                    <i class="fa-regular fa-user text-slate-400 w-4"></i> Profil Saya
                                 </a>
                                 @if(auth()->user()->tipe_user === \App\Models\User::TYPE_USER)
                                     <a href="{{ route('wishlist.index') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-primary-600 transition-colors">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-                                        Wishlist Saya
+                                        <i class="fa-regular fa-heart text-slate-400 w-4"></i> Wishlist Saya
                                     </a>
                                     <a href="{{ route('history.index') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-primary-600 transition-colors">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                        Riwayat Pesanan
+                                        <i class="fa-solid fa-receipt text-slate-400 w-4"></i> Riwayat Pesanan
                                     </a>
                                 @endif
                             @endif
@@ -188,9 +262,8 @@
                             <div class="my-2 border-t border-slate-50"></div>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-rose-600 hover:bg-rose-50 transition-colors font-medium">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                                    Keluar
+                                <button class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-rose-600 hover:bg-rose-50 transition-colors font-semibold">
+                                    <i class="fa-solid fa-arrow-right-from-bracket w-4"></i> Keluar
                                 </button>
                             </form>
                         </div>
@@ -226,45 +299,38 @@
                     @auth
                         <div class="space-y-1">
                             @if(auth()->user()->tipe_user === \App\Models\User::TYPE_EMPLOYEE)
-                                {{-- Karyawan: langsung ke scanner & riwayat --}}
                                 <div class="px-4 py-2">
                                     <span class="text-[10px] font-black text-violet-500 uppercase tracking-widest">Karyawan</span>
                                 </div>
                                 <a href="{{ route('owner.scanner') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-violet-50 hover:text-violet-700 font-medium">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
-                                    Scanner Tiket
+                                    <i class="fa-solid fa-barcode"></i> Scanner Tiket
                                 </a>
                                 <a href="{{ route('owner.scan-history') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-violet-50 hover:text-violet-700 font-medium">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                                    Riwayat Scan
+                                    <i class="fa-solid fa-clock-rotate-left"></i> Riwayat Scan
                                 </a>
                             @else
                                 <a href="{{ route('profile') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-medium">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                                    Profile Saya
+                                    <i class="fa-regular fa-user"></i> Profil Saya
                                 </a>
                                 
                                 @if(auth()->user()->tipe_user === \App\Models\User::TYPE_USER)
                                     <a href="{{ route('wishlist.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-medium">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-                                        Wishlist Saya
+                                        <i class="fa-regular fa-heart"></i> Wishlist Saya
                                     </a>
                                     <a href="{{ route('history.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-medium">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                                        Riwayat Pesanan
+                                        <i class="fa-solid fa-receipt"></i> Riwayat Pesanan
                                     </a>
                                 @endif
-
+ 
                                 @if(in_array(auth()->user()->tipe_user, [1,3], true))
                                     <a href="{{ auth()->user()->tipe_user === 1 ? route('admin.dashboard') : route('owner.dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-primary-600 hover:bg-primary-50 font-bold border-t border-slate-50 mt-1 pt-4">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
-                                        Dashboard {{ auth()->user()->tipe_user === 1 ? 'Admin' : 'Owner' }}
+                                        <i class="fa-solid fa-chart-line"></i> Dashboard {{ auth()->user()->tipe_user === 1 ? 'Admin' : 'Owner' }}
                                     </a>
                                 @endif
                             @endif
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button class="w-full text-left px-4 py-3 rounded-xl text-rose-600 hover:bg-rose-50 font-bold">Keluar</button>
+                                <button class="w-full text-left px-4 py-3 rounded-xl text-rose-600 hover:bg-rose-50 font-bold mt-2">Keluar</button>
                             </form>
                         </div>
                     @endauth
@@ -273,70 +339,170 @@
         </div>
     </nav>
 
-    <main class="mx-auto max-w-7xl main-content py-8 md:py-12">
+    <!-- Main Content Area -->
+    <main class="mx-auto max-w-7xl w-full main-content py-6 md:py-10 flex-1">
         @yield('content')
     </main>
 
-    <footer class="mt-20 bg-white border-t border-slate-200 pt-16 pb-8">
+    <!-- Premium Footer -->
+    <footer class="bg-slate-900 border-t border-slate-800 text-slate-400 mt-auto pt-16 pb-8">
         <div class="mx-auto max-w-7xl px-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-                <div class="col-span-1 md:col-span-1">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-8 mb-16">
+                <!-- Branding column -->
+                <div class="col-span-1 md:col-span-4">
                     <a href="{{ route('home') }}" class="flex items-center gap-2 mb-6">
-                        <div class="bg-primary-600 p-1 rounded-lg">
+                        <div class="bg-primary-600 p-2 rounded-xl">
                             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         </div>
-                        <span class="text-xl font-bold text-slate-900">Tabibito</span>
+                        <span class="text-xl font-bold text-white tracking-tight">Tabibito<span class="text-secondary-500">.</span></span>
                     </a>
-                    <p class="text-slate-500 text-sm leading-relaxed">Platform pemesanan tiket wisata terlengkap dan terpercaya di Jawa Tengah. Jelajahi keindahan alam dan budaya bersama kami.</p>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6">Platform pemesanan tiket wisata terlengkap dan terpercaya di Jawa Tengah. Jelajahi keindahan alam dan warisan budaya Jawa Tengah bersama kemudahan pemesanan digital.</p>
+                    
+                    <!-- Social icons -->
+                    <div class="flex gap-3">
+                        <a href="https://instagram.com/kucing_felita" target="_blank" class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-800 text-slate-400 hover:bg-gradient-to-tr hover:from-primary-600 hover:to-primary-500 hover:text-white transition-all duration-300">
+                            <i class="fa-brands fa-instagram text-lg"></i>
+                        </a>
+                        <a href="#" class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-800 text-slate-400 hover:bg-gradient-to-tr hover:from-primary-600 hover:to-primary-500 hover:text-white transition-all duration-300">
+                            <i class="fa-brands fa-facebook-f text-base"></i>
+                        </a>
+                        <a href="#" class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-800 text-slate-400 hover:bg-gradient-to-tr hover:from-primary-600 hover:to-primary-500 hover:text-white transition-all duration-300">
+                            <i class="fa-brands fa-x-twitter text-base"></i>
+                        </a>
+                    </div>
                 </div>
                 
-                <div>
-                    <h4 class="font-bold text-slate-900 mb-6 uppercase text-xs tracking-widest">Menu Cepat</h4>
-                    <ul class="space-y-4 text-sm">
-                        <li><a href="{{ route('home') }}" class="text-slate-500 hover:text-primary-600 transition-colors">Beranda</a></li>
-                        <li><a href="{{ route('destinations.index') }}" class="text-slate-500 hover:text-primary-600 transition-colors">Cari Wisata</a></li>
-                        <li><a href="{{ route('contact') }}" class="text-slate-500 hover:text-primary-600 transition-colors">Hubungi Kami</a></li>
+                <!-- Quick links -->
+                <div class="col-span-1 md:col-span-2">
+                    <h4 class="font-bold text-white mb-6 uppercase text-[10px] tracking-widest">Jelajahi</h4>
+                    <ul class="space-y-3.5 text-sm">
+                        <li><a href="{{ route('home') }}" class="hover:text-primary-400 transition-colors">Beranda</a></li>
+                        <li><a href="{{ route('destinations.index') }}" class="hover:text-primary-400 transition-colors">Semua Wisata</a></li>
+                        <li><a href="{{ route('contact') }}" class="hover:text-primary-400 transition-colors">Hubungi Kami</a></li>
                     </ul>
                 </div>
 
-                <div>
-                    <h4 class="font-bold text-slate-900 mb-6 uppercase text-xs tracking-widest">Dukungan</h4>
-                    <ul class="space-y-4 text-sm">
-                        <li><a href="{{ route('contact') }}" class="text-slate-500 hover:text-primary-600 transition-colors">Pusat Bantuan</a></li>
-                        <li><a href="{{ route('terms') }}" class="text-slate-500 hover:text-primary-600 transition-colors">Syarat & Ketentuan</a></li>
-                        <li><a href="{{ route('privacy') }}" class="text-slate-500 hover:text-primary-600 transition-colors">Kebijakan Privasi</a></li>
+                <!-- Support links -->
+                <div class="col-span-1 md:col-span-2">
+                    <h4 class="font-bold text-white mb-6 uppercase text-[10px] tracking-widest">Informasi</h4>
+                    <ul class="space-y-3.5 text-sm">
+                        <li><a href="{{ route('contact') }}" class="hover:text-primary-400 transition-colors">Pusat Bantuan</a></li>
+                        <li><a href="{{ route('terms') }}" class="hover:text-primary-400 transition-colors">Syarat & Ketentuan</a></li>
+                        <li><a href="{{ route('privacy') }}" class="hover:text-primary-400 transition-colors">Kebijakan Privasi</a></li>
                     </ul>
                 </div>
 
-                <div>
-                    <h4 class="font-bold text-slate-900 mb-6 uppercase text-xs tracking-widest">Ikuti Kami</h4>
-                    <div class="flex gap-4">
-                        <a href="https://instagram.com/kucing_felita" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:bg-primary-50 hover:text-primary-600 transition-all">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                        </a>
-                        <a href="#" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:bg-primary-50 hover:text-primary-600 transition-all">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
-                        </a>
+                <!-- Newsletter subscription -->
+                <div class="col-span-1 md:col-span-4" x-data="{
+                    email: '',
+                    loading: false,
+                    success: false,
+                    error: '',
+                    successMsg: '',
+                    async subscribe() {
+                        if (!this.email || !this.email.includes('@')) {
+                            this.error = 'Masukkan alamat email yang valid.';
+                            return;
+                        }
+                        this.loading = true;
+                        this.error = '';
+                        this.success = false;
+                        try {
+                            const res = await fetch('{{ route('newsletter.subscribe') }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                    'Accept': 'application/json'
+                                },
+                                body: JSON.stringify({ email: this.email })
+                            });
+                            const data = await res.json();
+                            if (res.ok && data.success) {
+                                this.success = true;
+                                this.successMsg = data.message;
+                                this.email = '';
+                            } else {
+                                this.error = data.message || 'Gagal berlangganan. Coba lagi.';
+                            }
+                        } catch (e) {
+                            this.error = 'Terjadi kesalahan jaringan. Coba lagi.';
+                        } finally {
+                            this.loading = false;
+                        }
+                    }
+                }">
+                    <h4 class="font-bold text-white mb-6 uppercase text-[10px] tracking-widest">Langganan Info Wisata</h4>
+                    <p class="text-sm text-slate-400 mb-4 leading-relaxed">Dapatkan promo spesial tiket wisata dan panduan liburan Jawa Tengah langsung di kotak masuk Anda.</p>
+
+                    <!-- Success State -->
+                    <div x-show="success" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-cloak class="flex items-start gap-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-4 py-3.5">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center mt-0.5">
+                            <i class="fa-solid fa-check text-emerald-400 text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="text-emerald-400 text-sm font-semibold" x-text="successMsg"></p>
+                            <button @click="success = false" class="text-xs text-slate-500 hover:text-slate-300 mt-1.5 transition-colors">Tutup</button>
+                        </div>
+                    </div>
+
+                    <!-- Form State -->
+                    <div x-show="!success">
+                        <form @submit.prevent="subscribe()" class="flex gap-2">
+                            <input type="email" x-model="email" placeholder="Alamat email Anda" @keydown="error = ''" class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all" :class="error ? 'border-red-500/50 focus:ring-red-500' : 'border-slate-700'" required>
+                            <button type="submit" :disabled="loading" class="bg-primary-600 hover:bg-primary-700 disabled:opacity-50 text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all hover:scale-105 active:scale-95">
+                                <i x-show="!loading" class="fa-solid fa-paper-plane"></i>
+                                <i x-show="loading" x-cloak class="fa-solid fa-spinner fa-spin"></i>
+                            </button>
+                        </form>
+                        <p x-show="error" x-transition x-cloak class="text-red-400 text-xs mt-2 flex items-center gap-1.5"><i class="fa-solid fa-circle-exclamation"></i> <span x-text="error"></span></p>
                     </div>
                 </div>
             </div>
             
-            <div class="pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4">
-                <p class="text-slate-400 text-xs tracking-wide">© {{ date('Y') }} Tabibito Jateng. All rights reserved.</p>
-                <div class="flex gap-6">
-                    <!-- <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/Midtrans_Logo.png" alt="Midtrans" class="h-4 grayscale opacity-50 hover:opacity-100 transition-opacity"> -->
+            <div class="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="text-center md:text-left">
+                    <p class="text-slate-500 text-xs">© {{ date('Y') }} Tabibito Jateng. Dibuat dengan penuh dedikasi.</p>
+                </div>
+                <!-- Payment Partner Icons -->
+                <div class="flex flex-wrap justify-center gap-4 text-slate-600 text-2xl">
+                    <i class="fa-brands fa-cc-visa hover:text-slate-400 transition-colors" title="Visa"></i>
+                    <i class="fa-brands fa-cc-mastercard hover:text-slate-400 transition-colors" title="Mastercard"></i>
+                    <i class="fa-brands fa-cc-apple-pay hover:text-slate-400 transition-colors" title="Apple Pay"></i>
+                    <i class="fa-brands fa-cc-paypal hover:text-slate-400 transition-colors" title="Paypal"></i>
+                    <span class="text-xs font-bold text-slate-500 self-center px-2 py-1 rounded bg-slate-800 uppercase tracking-widest"><i class="fa-solid fa-shield-halved mr-1"></i> Midtrans Secure</span>
                 </div>
             </div>
         </div>
     </footer>
 
     @if(session('success'))
-        <script>Swal.fire({icon:'success',title:'Berhasil',text:@json(session('success')),timer:2200,showConfirmButton:false,customClass:{popup:'rounded-3xl'}});</script>
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: @json(session('success')),
+                timer: 2500,
+                showConfirmButton: false,
+                customClass: {
+                    popup: 'rounded-3xl border border-slate-100 shadow-xl'
+                }
+            });
+        </script>
     @endif
     @if($errors->any())
-        <script>Swal.fire({icon:'error',title:'Oops',text:@json($errors->first()),customClass:{popup:'rounded-3xl'}});</script>
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops',
+                text: @json($errors->first()),
+                customClass: {
+                    popup: 'rounded-3xl border border-slate-100 shadow-xl'
+                }
+            });
+        </script>
     @endif
-    @stack('scripts')
+    
     @auth
     <script>
         function toggleWishlist(event, destinationId) {
@@ -356,11 +522,31 @@
             .then(res => res.json())
             .then(data => {
                 if (data.status === 'added') {
-                    btn.className = 'absolute -top-2 -right-2 w-10 h-10 rounded-xl flex items-center justify-center transition-all shadow-lg z-10 bg-primary-600 text-white shadow-primary-200';
+                    // Remove default/inactive colors and shadows
+                    btn.classList.remove('bg-white', 'bg-white/80', 'bg-white/90', 'text-slate-400', 'hover:text-primary-600', 'hover:text-rose-500', 'shadow-slate-200');
+                    // Add active wishlist colors (rose)
+                    btn.classList.add('bg-rose-500', 'text-white', 'shadow-rose-200');
                     svg.classList.replace('fill-none', 'fill-current');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Ditambahkan ke Wishlist',
+                        timer: 1500,
+                        showConfirmButton: false,
+                        customClass: { popup: 'rounded-2xl' }
+                    });
                 } else {
-                    btn.className = 'absolute -top-2 -right-2 w-10 h-10 rounded-xl flex items-center justify-center transition-all shadow-lg z-10 bg-white text-slate-400 hover:text-primary-600 shadow-slate-200';
+                    // Remove active colors
+                    btn.classList.remove('bg-rose-500', 'bg-primary-600', 'text-white', 'shadow-rose-200', 'shadow-primary-200');
+                    // Add default/inactive colors
+                    btn.classList.add('bg-white', 'text-slate-400', 'hover:text-rose-500', 'shadow-slate-200');
                     svg.classList.replace('fill-current', 'fill-none');
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Dihapus dari Wishlist',
+                        timer: 1500,
+                        showConfirmButton: false,
+                        customClass: { popup: 'rounded-2xl' }
+                    });
                 }
                 
                 // If we are on the wishlist page, and it's removed, hide the card
@@ -378,6 +564,7 @@
         }
     </script>
     @endauth
+    
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     @stack('scripts')

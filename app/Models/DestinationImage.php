@@ -10,6 +10,7 @@ class DestinationImage extends Model
     protected $fillable = [
         'destination_id',
         'image_path',
+        'is_cover',
     ];
 
     public function destination(): BelongsTo

@@ -40,6 +40,8 @@
         border-color: #0e8ce9 !important;
         color: #ffffff !important;
     }
+    
+    /* Quota Color States */
     .day-quota-safe {
         background-color: #f0fdf4 !important;
         color: #166534 !important;
@@ -65,152 +67,278 @@
         cursor: not-allowed !important;
         text-decoration: line-through;
     }
+    
+    /* Custom style to clean input number spinners */
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+        -webkit-appearance: none; 
+        margin: 0; 
+    }
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
 </style>
 @endpush
 
 @section('content')
     <!-- Breadcrumbs -->
-    <nav class="mb-8 flex items-center gap-2 text-sm">
-        <a href="{{ route('home') }}" class="text-slate-400 hover:text-primary-600 transition-colors">Beranda</a>
+    <nav class="mb-8 flex items-center gap-2 text-sm px-4 md:px-0">
+        <a href="{{ route('home') }}" class="text-slate-400 hover:text-primary-600 transition-colors font-medium">Beranda</a>
         <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-        <a href="{{ route('destinations.index') }}" class="text-slate-400 hover:text-primary-600 transition-colors">Eksplor Wisata</a>
+        <a href="{{ route('destinations.index') }}" class="text-slate-400 hover:text-primary-600 transition-colors font-medium">Eksplor Wisata</a>
         <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         <span class="text-slate-900 font-bold">Checkout</span>
     </nav>
 
-    <div class="grid gap-10 lg:grid-cols-[1.5fr_1fr]">
+    <!-- Step Progress Bar -->
+    <div class="mb-10 bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-sm mx-4 md:mx-0">
+        <div class="max-w-4xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+                <!-- Step 1 -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-sm shadow-sm shrink-0 border border-emerald-100">
+                        <i class="fa-solid fa-check text-xs"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Langkah 1</p>
+                        <p class="text-xs md:text-sm font-bold text-slate-700">Pilih Wisata</p>
+                    </div>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-primary-600 text-white flex items-center justify-center font-bold text-sm shadow-lg shadow-primary-200 shrink-0">
+                        2
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-primary-500 font-bold uppercase tracking-widest">Langkah 2</p>
+                        <p class="text-xs md:text-sm font-black text-slate-900">Isi Data & Tanggal</p>
+                    </div>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="flex items-center gap-3 opacity-50 md:opacity-60">
+                    <div class="w-10 h-10 rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center font-bold text-sm shrink-0 border border-slate-200/50">
+                        3
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Langkah 3</p>
+                        <p class="text-xs md:text-sm font-semibold text-slate-600">Pembayaran</p>
+                    </div>
+                </div>
+                
+                <!-- Step 4 -->
+                <div class="flex items-center gap-3 opacity-50 md:opacity-60">
+                    <div class="w-10 h-10 rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center font-bold text-sm shrink-0 border border-slate-200/50">
+                        4
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Langkah 4</p>
+                        <p class="text-xs md:text-sm font-semibold text-slate-600">Tiket Terbit</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid gap-8 lg:grid-cols-[1.6fr_1fr] px-4 md:px-0 items-start">
         <!-- Checkout Form -->
         <div class="space-y-8">
-            <div class="bg-white rounded-[2.5rem] p-8 md:p-12 border border-slate-100 shadow-sm">
-                <div class="flex items-center gap-4 mb-10">
-                    <div class="w-12 h-12 rounded-2xl bg-primary-600 flex items-center justify-center text-white shadow-lg shadow-primary-200">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            <div class="bg-white rounded-[2.5rem] p-8 md:p-10 border border-slate-100 shadow-sm relative overflow-hidden">
+                <!-- Sparkle Decors -->
+                <div class="absolute top-0 right-0 w-32 h-32 bg-primary-50 rounded-full -mr-16 -mt-16 opacity-40"></div>
+                
+                <div class="flex items-center gap-4 mb-8 pb-6 border-b border-slate-50">
+                    <div class="w-12 h-12 rounded-2xl bg-primary-50 flex items-center justify-center text-primary-600 shadow-sm shrink-0">
+                        <i class="fa-solid fa-user-pen text-lg"></i>
                     </div>
                     <div>
                         <h2 class="text-2xl font-black text-slate-900">Informasi Pemesan</h2>
-                        <p class="text-sm text-slate-400 font-medium">Lengkapi detail pemesanan tiket Anda.</p>
+                        <p class="text-xs text-slate-400 font-semibold tracking-wide">Detail data kunjungan dan pemesan tiket</p>
                     </div>
                 </div>
 
                 <form method="POST" action="{{ route('checkout.store', $ticket) }}" class="space-y-8" id="checkout-form">
                     @csrf
                     
-                    <div class="grid gap-8">
+                    <div class="grid gap-6">
+                        <!-- Nama Pemesan -->
                         <div>
-                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Nama Pemesan</label>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2.5 ml-1">Nama Pemesan</label>
                             <div class="relative group">
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary-600 transition-colors">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                    <i class="fa-solid fa-user text-sm"></i>
                                 </div>
-                                <input type="text" name="name" value="{{ auth()->user()->name }}" readonly class="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-4 py-4 text-slate-800 font-bold focus:ring-2 focus:ring-primary-500/20 transition-all opacity-70">
+                                <input type="text" name="name" value="{{ auth()->user()->name }}" readonly class="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-11 pr-4 py-4 text-slate-800 font-bold focus:ring-2 focus:ring-primary-500/20 transition-all cursor-not-allowed opacity-75">
                             </div>
+                            <p class="mt-1.5 text-[10px] text-slate-400 font-semibold flex items-center gap-1.5 ml-1">
+                                <i class="fa-solid fa-circle-info"></i>
+                                Nama pemesan diambil dari detail akun Anda dan tidak dapat diubah di formulir ini.
+                            </p>
                         </div>
 
-                        <div class="grid md:grid-cols-2 gap-8">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Tanggal Kunjungan</label>
+                        <!-- Date and Quantity Grid -->
+                        <div class="grid md:grid-cols-2 gap-8 pt-4">
+                            <!-- Tanggal Kunjungan -->
+                            <div class="space-y-3">
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Pilih Tanggal Kunjungan</label>
                                 <div class="bg-white rounded-3xl border border-slate-100 overflow-hidden p-2">
                                     <input type="text" id="booking_date" name="booking_date" required class="hidden">
                                 </div>
-                                <p class="mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                    Status Kuota: <span id="quota-info" class="text-slate-400">Pilih tanggal pada kalender</span>
-                                </p>
+                                <div class="p-3 bg-slate-50 rounded-2xl flex items-center gap-2.5 border border-slate-100">
+                                    <span id="quota-indicator" class="w-2.5 h-2.5 rounded-full bg-slate-300 animate-pulse shrink-0"></span>
+                                    <p class="text-xs font-bold text-slate-600">
+                                        Status Kuota: <span id="quota-info" class="text-slate-400">Pilih tanggal pada kalender</span>
+                                    </p>
+                                </div>
                             </div>
 
-                            <div>
-                                <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Jumlah Tiket</label>
-                                <div class="relative group">
-                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary-600 transition-colors">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                            <!-- Jumlah Tiket -->
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-3">Jumlah Tiket</label>
+                                    
+                                    <!-- Beautiful Interactive Spinner -->
+                                    <div class="flex items-center gap-4 bg-slate-50 border border-slate-100 rounded-2xl p-2.5 max-w-[200px]">
+                                        <button type="button" id="qty-dec" class="w-11 h-11 rounded-xl bg-white hover:bg-slate-100 text-slate-800 font-extrabold flex items-center justify-center transition-all border border-slate-100 shadow-sm active:scale-95">
+                                            <i class="fa-solid fa-minus text-xs"></i>
+                                        </button>
+                                        <input type="number" id="qty" name="qty" min="1" max="{{ $ticket->daily_quota }}"
+                                               value="1" required class="w-12 text-center bg-transparent border-none text-slate-900 font-black text-lg focus:ring-0">
+                                        <button type="button" id="qty-inc" class="w-11 h-11 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-extrabold flex items-center justify-center transition-all shadow-md shadow-primary-200 active:scale-95">
+                                            <i class="fa-solid fa-plus text-xs"></i>
+                                        </button>
                                     </div>
-                                    <input type="number" id="qty" name="qty" min="1" max="{{ $ticket->daily_quota }}"
-                                           value="1" required class="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-4 py-4 text-slate-800 font-bold focus:ring-2 focus:ring-primary-500/20 transition-all">
+                                    
+                                    <p class="mt-3 text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1.5 ml-1">
+                                        <i class="fa-solid fa-ticket text-primary-500"></i>
+                                        Batas maksimal per hari: {{ $ticket->daily_quota }} tiket
+                                    </p>
+                                </div>
+                                
+                                <!-- Ticket Detail Info Box -->
+                                <div class="bg-primary-50/50 border border-primary-100/50 rounded-2xl p-5 space-y-2">
+                                    <p class="text-xs font-bold text-primary-900 flex items-center gap-2">
+                                        <i class="fa-solid fa-tags text-primary-600"></i>
+                                        Informasi Kategori Tiket
+                                    </p>
+                                    <p class="text-[11px] text-primary-700/80 leading-relaxed font-semibold">
+                                        Tiket ini berlaku untuk 1 (satu) orang pengunjung pada tanggal terpilih. Anak-anak di atas 3 tahun wajib memiliki tiket sendiri.
+                                    </p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="pt-8 border-t border-slate-50">
-                        <div class="flex flex-col items-center justify-center mb-8 p-6 bg-primary-50 rounded-3xl border border-primary-100 text-center">
-                            <div class="mb-6">
-                                <p class="text-xs text-primary-700 font-bold uppercase tracking-widest mb-1">Total Pembayaran</p>
-                                <p id="total-display" class="text-4xl font-black text-primary-700">Rp {{ number_format($ticket->price, 0, ',', '.') }}</p>
+                    <!-- Payment Button & Live Total Display -->
+                    <div class="pt-8 border-t border-slate-100">
+                        <div class="flex flex-col items-center justify-center p-6 bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl text-center relative overflow-hidden shadow-xl shadow-slate-950/20">
+                            <!-- Background elements -->
+                            <div class="absolute -bottom-10 -left-10 w-24 h-24 bg-white/5 rounded-full"></div>
+                            <div class="absolute -top-10 -right-10 w-24 h-24 bg-primary-500/10 rounded-full blur-xl"></div>
+                            
+                            <div class="mb-6 relative z-10">
+                                <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1.5">Total Estimasi Pembayaran</p>
+                                <p id="total-display" class="text-4xl font-black text-white bg-gradient-to-r from-white via-primary-100 to-primary-400 bg-clip-text text-transparent">Rp {{ number_format($ticket->price, 0, ',', '.') }}</p>
                             </div>
-                            @if(session('snap_token'))
-                                <button type="button" disabled class="w-full sm:w-auto bg-slate-300 text-white px-12 py-4 rounded-2xl font-bold transition-all cursor-not-allowed">
-                                    Menunggu Pembayaran
-                                </button>
-                            @else
-                                <button type="submit" id="submit-btn" class="w-full sm:w-auto bg-primary-600 hover:bg-primary-700 text-white px-12 py-4 rounded-2xl font-bold shadow-xl shadow-primary-600/30 transition-all transform hover:-translate-y-1 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none">
-                                    Bayar Sekarang
-                                </button>
-                            @endif
+                            
+                            <div class="w-full sm:w-auto relative z-10">
+                                @if(session('snap_token'))
+                                    <button type="button" disabled class="w-full bg-slate-700 text-slate-400 px-12 py-4.5 md:py-5 rounded-2xl font-extrabold text-sm md:text-base transition-all cursor-not-allowed border border-slate-600 flex items-center justify-center gap-2.5">
+                                        <i class="fa-solid fa-spinner animate-spin text-base"></i> Menunggu Pembayaran
+                                    </button>
+                                @else
+                                    <button type="submit" id="submit-btn" class="w-full sm:w-auto bg-primary-500 hover:bg-primary-600 text-white px-12 py-4.5 md:py-5 rounded-2xl font-extrabold shadow-lg shadow-primary-500/20 transition-all transform hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2.5 text-sm md:text-base tracking-wide">
+                                        Bayar Sekarang <i class="fa-solid fa-arrow-right"></i>
+                                    </button>
+                                @endif
+                            </div>
                         </div>
-                        <p class="text-center text-[10px] text-slate-400 font-medium">Dengan melanjutkan, Anda menyetujui kebijakan pembatalan dan ketentuan layanan kami.</p>
+                        <p class="text-center text-[10px] text-slate-400 font-semibold mt-4">Dengan melanjutkan pemesanan, Anda menyetujui syarat & ketentuan pengembalian dana.</p>
                     </div>
                 </form>
             </div>
         </div>
 
-        <!-- Summary Sidebar -->
+        <!-- Sticky Summary Sidebar -->
         <aside class="space-y-8">
-            <div class="sticky top-24 space-y-8">
-                <div class="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-sm overflow-hidden relative">
-                    <!-- Decorative Background -->
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-primary-50 rounded-full -mr-16 -mt-16 opacity-50"></div>
+            <div class="sticky top-28 space-y-6">
+                <!-- Summary Card -->
+                <div class="bg-white rounded-[2rem] border border-slate-100 p-6 md:p-8 shadow-sm overflow-hidden relative">
+                    <!-- Elegant light-blue circle shape in bg -->
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-primary-50 rounded-full -mr-16 -mt-16 opacity-60"></div>
                     
-                    <h3 class="text-xl font-bold text-slate-900 mb-8 relative">Ringkasan Pesanan</h3>
+                    <h3 class="text-lg font-black text-slate-900 mb-6 relative">Ringkasan Pesanan</h3>
                     
-                    <div class="space-y-6 relative">
-                        <div class="flex items-start gap-4">
-                            <div class="shrink-0 w-16 h-16 rounded-2xl overflow-hidden bg-slate-100">
-                                @if($ticket->destination->images->first()?->image_path)
-                                    <img src="{{ asset('storage/' . $ticket->destination->images->first()->image_path) }}" class="w-full h-full object-cover">
+                    <div class="space-y-5 relative">
+                        <!-- Destination Detail Row -->
+                        <div class="flex items-start gap-4 pb-5 border-b border-slate-50">
+                            <div class="shrink-0 w-16 h-16 rounded-2xl overflow-hidden bg-slate-100 border border-slate-100">
+                                @php
+                                    $coverImg = $ticket->destination->coverImage ?? $ticket->destination->images->first();
+                                @endphp
+                                @if($coverImg?->image_path)
+                                    <img src="{{ asset('storage/' . $coverImg->image_path) }}" class="w-full h-full object-cover">
+                                @else
+                                    <div class="w-full h-full bg-slate-200 flex items-center justify-center text-slate-400">
+                                        <i class="fa-regular fa-image"></i>
+                                    </div>
                                 @endif
                             </div>
-                            <div>
-                                <p class="text-sm font-black text-slate-900 leading-tight mb-1">{{ $ticket->destination->name }}</p>
-                                <p class="text-xs text-slate-400 font-medium">{{ $ticket->destination->city }}</p>
+                            <div class="space-y-1">
+                                <span class="px-2 py-0.5 rounded-full bg-primary-50 text-primary-700 text-[9px] font-black uppercase tracking-wider">Destinasi</span>
+                                <p class="text-sm font-black text-slate-900 leading-snug">{{ $ticket->destination->name }}</p>
+                                <p class="text-xs text-slate-400 font-bold flex items-center gap-1">
+                                    <i class="fa-solid fa-location-dot text-rose-500"></i> {{ $ticket->destination->city }}
+                                </p>
                             </div>
                         </div>
 
-                        <div class="pt-6 border-t border-slate-50 space-y-4">
-                            <div class="flex justify-between items-center">
-                                <span class="text-sm text-slate-500 font-medium">Tipe Tiket</span>
-                                <span class="text-sm text-slate-900 font-bold">{{ $ticket->name }}</span>
+                        <!-- Ticket details list -->
+                        <div class="space-y-4 pt-2">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-400 font-bold uppercase tracking-wider">Kategori Tiket</span>
+                                <span class="text-slate-800 font-extrabold">{{ $ticket->name }}</span>
                             </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-sm text-slate-500 font-medium">Harga Satuan</span>
-                                <span class="text-sm text-slate-900 font-bold">Rp {{ number_format($ticket->price, 0, ',', '.') }}</span>
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-400 font-bold uppercase tracking-wider">Harga Satuan</span>
+                                <span class="text-slate-800 font-extrabold">Rp {{ number_format($ticket->price, 0, ',', '.') }}</span>
                             </div>
-                            <div class="flex justify-between items-center pt-4 border-t border-dashed border-slate-200">
-                                <span class="text-base font-black text-slate-900">Total</span>
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-400 font-bold uppercase tracking-wider">Jumlah Tiket</span>
+                                <span id="summary-qty" class="text-slate-800 font-extrabold">1 Tiket</span>
+                            </div>
+                            
+                            <div class="pt-5 border-t border-dashed border-slate-200 flex justify-between items-center">
+                                <div>
+                                    <span class="text-xs font-black text-slate-900 uppercase tracking-widest">Total Bayar</span>
+                                    <p class="text-[9px] text-slate-400 font-bold">Sudah termasuk pajak & biaya layanan</p>
+                                </div>
                                 <span id="summary-total" class="text-xl font-black text-primary-600">Rp {{ number_format($ticket->price, 0, ',', '.') }}</span>
                             </div>
                         </div>
                     </div>
 
                     @if(session('snap_token'))
-                        <div class="mt-8 pt-8 border-t border-slate-50">
-                            <button id="pay-button" type="button" class="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-5 rounded-2xl shadow-xl shadow-cyan-600/30 transition-all flex items-center justify-center gap-3">
-                                <svg class="w-5 h-5 animate-pulse" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+                        <div class="mt-6 pt-6 border-t border-slate-50">
+                            <button id="pay-button" type="button" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-extrabold py-4.5 md:py-5 rounded-2xl shadow-lg shadow-primary-600/20 transition-all flex items-center justify-center gap-3 active:scale-95 text-sm md:text-base">
+                                <i class="fa-solid fa-credit-card animate-bounce text-base"></i>
                                 Lanjutkan Pembayaran
                             </button>
                         </div>
                     @endif
                 </div>
 
-                <!-- Trust Badge -->
-                <div class="bg-slate-900 rounded-[2rem] p-8 text-white relative overflow-hidden">
-                    <svg class="absolute bottom-[-20px] right-[-20px] w-32 h-32 text-white/5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M2.166 4.9L10 1.154l7.834 3.746A2 2 0 0119 6.753V14c0 1.171-.779 2.123-1.877 2.4l-6.523 1.63a1.996 1.996 0 01-1.2 0l-6.523-1.63A2.001 2.001 0 011 14V6.753c0-.795.474-1.514 1.166-1.853zM10 9a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/></svg>
-                    <div class="flex items-center gap-4 mb-4">
-                        <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
-                            <svg class="w-6 h-6 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                <!-- Secure Checkout Trust Badge -->
+                <div class="bg-slate-900 rounded-[2rem] p-7 text-white relative overflow-hidden shadow-sm">
+                    <div class="absolute -bottom-6 -right-6 w-24 h-24 bg-white/5 rounded-full"></div>
+                    <div class="flex items-center gap-3.5 mb-3">
+                        <div class="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-primary-400 shrink-0">
+                            <i class="fa-solid fa-shield-halved text-sm"></i>
                         </div>
-                        <h4 class="font-bold text-sm">Secure Checkout</h4>
+                        <h4 class="font-bold text-sm">Jaminan Transaksi Aman</h4>
                     </div>
-                    <p class="text-xs text-slate-400 leading-relaxed">Seluruh data transaksi dan pembayaran Anda diproses melalui gateway Midtrans yang aman dan terpercaya.</p>
+                    <p class="text-[11px] text-slate-400 leading-relaxed font-medium">Seluruh data transaksi dan pembayaran Anda dienkripsi secara penuh dan diproses melalui gateway pembayaran resmi **Midtrans**.</p>
                 </div>
             </div>
         </aside>
@@ -223,10 +351,15 @@
         const storageKey = 'checkout_ticket_' + ticketId;
 
         const qtyInput = document.getElementById('qty');
+        const qtyDec = document.getElementById('qty-dec');
+        const qtyInc = document.getElementById('qty-inc');
         const dateInput = document.getElementById('booking_date');
+        
         const quotaInfo = document.getElementById('quota-info');
+        const quotaIndicator = document.getElementById('quota-indicator');
         const totalDisplay = document.getElementById('total-display');
         const summaryTotal = document.getElementById('summary-total');
+        const summaryQty = document.getElementById('summary-qty');
 
         const quotaUrl = '/checkout/' + ticketId + '/quota';
         let monthlyQuotas = {};
@@ -236,16 +369,18 @@
         }
 
         function updateTotal() {
-            const qty = parseInt(qtyInput.value) || 0;
+            const qty = parseInt(qtyInput.value) || 1;
             const total = price * qty;
             totalDisplay.textContent = formatRupiah(total);
             summaryTotal.textContent = formatRupiah(total);
+            summaryQty.textContent = qty + ' Tiket';
         }
 
         function updateQuota(date) {
             if (!date) return;
-            quotaInfo.textContent = 'Memuat...';
+            quotaInfo.textContent = 'Memuat kuota...';
             quotaInfo.className = 'text-slate-400';
+            quotaIndicator.className = 'w-2.5 h-2.5 rounded-full bg-slate-300 animate-pulse shrink-0';
 
             fetch(quotaUrl + '?date=' + encodeURIComponent(date), {
                 headers: { 'Accept': 'application/json' }
@@ -257,19 +392,35 @@
             .then(function(data) {
                 const avail = parseInt(data.available);
                 quotaInfo.textContent = avail + ' tiket tersedia';
-                quotaInfo.className = avail > 0 ? 'text-emerald-500' : 'text-rose-500';
-                qtyInput.max = avail > 0 ? avail : 1;
+                
                 if (avail <= 0) {
+                    quotaInfo.className = 'text-rose-600';
+                    quotaIndicator.className = 'w-2.5 h-2.5 rounded-full bg-rose-600 shrink-0';
                     qtyInput.value = 0;
-                } else if (parseInt(qtyInput.value) > avail || parseInt(qtyInput.value) === 0) {
-                    qtyInput.value = avail > 0 ? 1 : 0;
+                    qtyInput.max = 0;
+                } else {
+                    if (avail < 10) {
+                        quotaInfo.className = 'text-amber-500 font-bold';
+                        quotaIndicator.className = 'w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0 animate-ping';
+                    } else {
+                        quotaInfo.className = 'text-emerald-600';
+                        quotaIndicator.className = 'w-2.5 h-2.5 rounded-full bg-emerald-600 shrink-0';
+                    }
+                    
+                    qtyInput.max = avail;
+                    
+                    if (parseInt(qtyInput.value) > avail || parseInt(qtyInput.value) === 0) {
+                        qtyInput.value = 1;
+                    }
                 }
+                
                 updateTotal();
                 saveToStorage();
             })
             .catch(function(err) {
-                quotaInfo.textContent = 'Gagal memuat kuota';
-                quotaInfo.className = 'text-rose-500';
+                quotaInfo.textContent = 'Gagal memuat data kuota';
+                quotaInfo.className = 'text-rose-600';
+                quotaIndicator.className = 'w-2.5 h-2.5 rounded-full bg-rose-600 shrink-0';
                 console.error('Quota fetch error:', err);
             });
         }
@@ -363,18 +514,43 @@
 
         window.addEventListener('beforeunload', saveToStorage);
 
+        // Custom increment / decrement button functionality
+        qtyDec.addEventListener('click', function() {
+            let val = parseInt(qtyInput.value) || 1;
+            if (val > 1) {
+                qtyInput.value = val - 1;
+                updateTotal();
+                saveToStorage();
+            }
+        });
+
+        qtyInc.addEventListener('click', function() {
+            let val = parseInt(qtyInput.value) || 1;
+            let maxVal = parseInt(qtyInput.max) || {{ $ticket->daily_quota }};
+            if (val < maxVal) {
+                qtyInput.value = val + 1;
+                updateTotal();
+                saveToStorage();
+            }
+        });
+
         document.getElementById('checkout-form').addEventListener('submit', function() {
             saveToStorage();
             const submitBtn = document.getElementById('submit-btn');
             if (submitBtn) {
                 setTimeout(() => {
                     submitBtn.disabled = true;
-                    submitBtn.innerHTML = '<svg class="w-5 h-5 animate-spin mx-auto inline-block mr-2" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Memproses...';
+                    submitBtn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Memproses...';
                 }, 10);
             }
         });
 
         qtyInput.addEventListener('input', function() {
+            let val = parseInt(qtyInput.value) || 1;
+            let maxVal = parseInt(qtyInput.max) || {{ $ticket->daily_quota }};
+            if (val < 1) qtyInput.value = 1;
+            if (val > maxVal) qtyInput.value = maxVal;
+            
             updateTotal();
             saveToStorage();
         });

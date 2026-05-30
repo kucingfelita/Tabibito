@@ -11,20 +11,29 @@ class HomeController extends Controller
     public function index(): View
     {
         $recommendations = collect();
+        $tags = collect();
+        $cities = collect();
 
         if (Schema::hasTable('destinations')) {
             $recommendations = Destination::query()
                 ->where('status', 'active')
-                ->with('tickets:id,destination_id,price')
+                ->with(['tickets:id,destination_id,price', 'images', 'coverImage', 'tags'])
+                ->when(auth()->check(), fn($q) => $q->with(['wishlists' => fn($qw) => $qw->where('user_id', auth()->id())]))
                 ->withAvg('transactions', 'rating')
                 ->withCount('transactions')
                 ->orderByDesc('transactions_avg_rating')
                 ->orderByDesc('transactions_count')
                 ->take(3)
                 ->get();
+
+            $cities = Destination::query()->where('status', 'active')->distinct()->pluck('city');
         }
 
-        return view('home.index', compact('recommendations'));
+        if (Schema::hasTable('tags')) {
+            $tags = \App\Models\Tag::query()->orderBy('name')->get(['id', 'name']);
+        }
+
+        return view('home.index', compact('recommendations', 'cities', 'tags'));
     }
 
     public function terms(): View

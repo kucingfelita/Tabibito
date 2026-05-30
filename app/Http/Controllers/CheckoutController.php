@@ -82,7 +82,7 @@ class CheckoutController extends Controller
             ->where('order_id', trim($orderId))
             ->where('user_id', auth()->id())
             ->where('status', 'pending')
-            ->with('ticket.destination')
+            ->with(['ticket.destination.coverImage', 'ticket.destination.images'])
             ->first();
 
         if (!$transaction) {
@@ -145,7 +145,7 @@ class CheckoutController extends Controller
 
         $transaction = Transaction::query()
             ->where('order_id', $orderId)
-            ->with('ticket.destination')
+            ->with(['ticket.destination.coverImage', 'ticket.destination.images'])
             ->first();
 
         // If not found, try searching without the -R suffix (for resumed transactions)
@@ -153,7 +153,7 @@ class CheckoutController extends Controller
             $originalOrderId = explode('-R', $orderId)[0];
             $transaction = Transaction::query()
                 ->where('order_id', 'like', $originalOrderId . '%')
-                ->with('ticket.destination')
+                ->with(['ticket.destination.coverImage', 'ticket.destination.images'])
                 ->first();
         }
 

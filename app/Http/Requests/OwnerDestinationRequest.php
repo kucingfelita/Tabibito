@@ -11,8 +11,8 @@ class OwnerDestinationRequest extends FormRequest
     public static function jawaTengahCities(): array
     {
         return [
-            'Semarang',
-            'Surakarta',
+            'Kota Semarang',
+            'Kota Surakarta',
             'Kota Salatiga',
             'Kota Magelang',
             'Kota Pekalongan',
@@ -57,6 +57,8 @@ class OwnerDestinationRequest extends FormRequest
     }
 
     /**
+     * Get the validation rules that apply to the request.
+     */
     public function rules(): array
     {
         return [
@@ -67,11 +69,12 @@ class OwnerDestinationRequest extends FormRequest
             'tag_ids' => ['nullable', 'array'],
             'tag_ids.*' => ['exists:tags,id'],
             'custom_tags' => ['nullable', 'string', 'max:255'],
-            'map_link' => ['nullable', 'url', 'max:255'],
+            'map_link' => ['required', 'url', 'max:255'],
             'open_time' => ['required'],
             'close_time' => ['required', 'after:open_time'],
-            'images' => ['nullable', 'array', 'max:8'],
-            'images.*' => ['image', 'max:5120'],
+            'cover_image' => ['nullable', 'image', 'max:5120'],
+            'slide_images' => ['nullable', 'array', 'max:7'],
+            'slide_images.*' => ['image', 'max:5120'],
         ];
     }
 
@@ -81,14 +84,23 @@ class OwnerDestinationRequest extends FormRequest
     public function withValidator($validator): void
     {
         $validator->after(function ($validator) {
-            if ($this->hasFile('images')) {
-                $destination = $this->route('destination');
-                $existingCount = $destination ? $destination->images()->count() : 0;
-                $newCount = count($this->file('images', []));
-
-                if ($existingCount + $newCount > 8) {
-                    $validator->errors()->add('images', "Total foto destinasi tidak boleh melebihi 8 foto. Saat ini destinasi memiliki {$existingCount} foto, dan Anda mencoba mengunggah {$newCount} foto baru.");
+            $destination = $this->route('destination');
+            $existingCount = $destination ? $destination->images()->count() : 0;
+            
+            $newCount = 0;
+            if ($this->hasFile('cover_image')) {
+                // If there's an existing cover image, it gets replaced, so count doesn't increase.
+                // But if there is no existing image at all, it's +1.
+                if ($existingCount === 0) {
+                    $newCount += 1;
                 }
+            }
+            if ($this->hasFile('slide_images')) {
+                $newCount += count($this->file('slide_images', []));
+            }
+
+            if ($existingCount + $newCount > 8) {
+                $validator->errors()->add('slide_images', "Total foto destinasi tidak boleh melebihi 8 foto. Saat ini destinasi memiliki {$existingCount} foto, dan Anda mencoba mengunggah {$newCount} foto baru.");
             }
         });
     }

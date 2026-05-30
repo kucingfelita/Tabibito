@@ -8,109 +8,129 @@
         .swiper-wrapper { display: flex !important; }
         .swiper-slide { flex-shrink: 0 !important; width: 100% !important; height: 100% !important; }
         
-        .swiper-button-next, .swiper-button-prev { color: #fff; background: rgba(0,0,0,0.3); width: 44px; height: 44px; border-radius: 50%; backdrop-filter: blur(4px); }
-        .swiper-button-next:after, .swiper-button-prev:after { font-size: 18px; font-weight: bold; }
-        .swiper-pagination-bullet-active { background: #0ea5e9 !important; }
+        .swiper-button-next, .swiper-button-prev { color: #fff; background: rgba(0,0,0,0.4); width: 40px; height: 40px; border-radius: 12px; backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1); }
+        .swiper-button-next:after, .swiper-button-prev:after { font-size: 14px; font-weight: bold; }
+        .swiper-pagination-bullet-active { background: #0ea8e9 !important; width: 24px !important; border-radius: 9999px !important; }
+        .swiper-pagination-bullet { transition: all 0.3s; }
     </style>
     @endpush
 
     <!-- Breadcrumbs -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <nav class="flex items-center gap-2 text-sm">
-            <a href="{{ route('home') }}" class="text-slate-400 hover:text-primary-600 transition-colors">Beranda</a>
-            <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 px-4 md:px-0">
+        <nav class="flex items-center gap-2.5 text-xs font-semibold">
+            <a href="{{ route('home') }}" class="text-slate-400 hover:text-primary-600 transition-colors flex items-center gap-1"><i class="fa-solid fa-house"></i> Beranda</a>
+            <i class="fa-solid fa-chevron-right text-slate-300 text-[10px]"></i>
             <a href="{{ route('destinations.index') }}" class="text-slate-400 hover:text-primary-600 transition-colors">Eksplor Wisata</a>
-            <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-            <span class="text-slate-900 font-bold truncate">{{ $destination->name }}</span>
+            <i class="fa-solid fa-chevron-right text-slate-300 text-[10px]"></i>
+            <span class="text-slate-900 font-bold truncate max-w-[150px] md:max-w-none">{{ $destination->name }}</span>
         </nav>
 
-        <a href="https://wa.me/?text={{ urlencode('Cek tempat wisata keren ini: ' . $destination->name . ' - ' . request()->url()) }}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-colors font-bold text-sm">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-2.135 0-3.998 1.063-5.11 2.67l-.233.344-1.291-.473 1.258 3.426.305.83-.541.691c-.482.616-.763 1.391-.763 2.23 0 1.954 1.583 3.541 3.535 3.541 1.066 0 2.029-.475 2.684-1.229l.345-.398.508.156c.241.074.492.112.75.112.716 0 1.365-.3 1.833-.787l.375-.389.516.14c.248.067.505.102.768.102 1.488 0 2.697-1.211 2.697-2.698 0-.962-.511-1.801-1.272-2.278l-.396-.248.14-.445c.162-.517.248-1.063.248-1.63 0-3.057-2.482-5.541-5.539-5.541zM22 12c0 5.523-4.477 10-10 10-1.785 0-3.456-.468-4.903-1.286l-5.097 1.286 1.306-4.992c-.837-1.47-1.306-3.175-1.306-4.992 0-5.523 4.477-10 10-10s10 4.477 10 10zm-14.724-2.215c-.463-.672-.724-1.481-.724-2.355 0-2.316 1.879-4.195 4.195-4.195 2.316 0 4.195 1.879 4.195 4.195 0 .584-.118 1.139-.333 1.644.821.579 1.359 1.543 1.359 2.632 0 1.402-.916 2.585-2.186 2.99.014.09.022.181.022.274 0 1.127-.69 2.091-1.666 2.483.473.541.761 1.25.761 2.023 0 1.706-1.388 3.095-3.095 3.095-.918 0-1.745-.401-2.311-1.037-.566.636-1.393 1.037-2.311 1.037-1.706 0-3.095-1.388-3.095-3.095 0-.877.366-1.667.954-2.226-1.125-.327-1.954-1.365-1.954-2.603 0-.87.411-1.644 1.05-2.146l.001.001z"/></svg>
-            Bagikan ke WA
+        <a href="https://wa.me/?text={{ urlencode('Cek tempat wisata keren ini di Tabibito Jateng: ' . $destination->name . ' - ' . request()->url()) }}" target="_blank" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 text-emerald-600 transition-all font-bold text-xs shadow-sm shadow-emerald-100 border border-emerald-200/50 hover:scale-[1.02]">
+            <i class="fa-brands fa-whatsapp text-base"></i> Bagikan Ke WhatsApp
         </a>
     </div>
 
-    <div class="grid gap-10 lg:grid-cols-[1.8fr_1fr]">
+    <div class="grid gap-10 lg:grid-cols-[1.8fr_1fr] px-4 md:px-0">
         <!-- Main Content -->
         <div class="space-y-10">
             <!-- Hero Section / Slider -->
-            <div class="bg-white rounded-[2.5rem] overflow-hidden shadow-sm border border-slate-100">
+            <div class="bg-white rounded-[2.5rem] overflow-hidden shadow-sm border border-slate-100/80">
                 <div class="relative">
-                    <div class="swiper hero-swiper h-80 md:h-[450px]">
+                    <div class="swiper hero-swiper h-80 md:h-[480px]">
                         <div class="swiper-wrapper">
-                            @forelse($destination->images->take(8) as $image)
-                                <div class="swiper-slide bg-slate-100">
-                                    <img src="{{ asset('storage/' . $image->image_path) }}" 
-                                         alt="Foto Keindahan {{ $destination->name }} di {{ $destination->city }} - Tabibito Jateng" 
-                                         class="h-full w-full object-cover"
-                                         loading="lazy">
-                                </div>
+                            @php
+                                $allImages = collect();
+                                if ($destination->coverImage) {
+                                    $allImages->push($destination->coverImage);
+                                }
+                                if ($destination->slideImages && $destination->slideImages->isNotEmpty()) {
+                                    $allImages = $allImages->concat($destination->slideImages);
+                                } elseif ($destination->images && $destination->images->isNotEmpty() && $allImages->isEmpty()) {
+                                    // Fallback for legacy images
+                                    $allImages = $destination->images;
+                                }
+                            @endphp
+                            @forelse($allImages as $image)
+                                <div class="swiper-slide bg-slate-100 relative group" x-data="{ loaded: false, error: false }">
+                                     <div x-show="!loaded" class="absolute inset-0 shimmer bg-slate-200 z-10"></div>
+                                     <img x-show="!error"
+                                          src="{{ asset('storage/' . $image->image_path) }}" 
+                                          alt="Foto Keindahan {{ $destination->name }} di {{ $destination->city }} - Tabibito Jateng" 
+                                          class="h-full w-full object-cover"
+                                          x-on:load="loaded = true"
+                                          x-on:error="loaded = true; error = true"
+                                          loading="lazy">
+                                     <div x-show="error" class="w-full h-full bg-slate-100 flex flex-col items-center justify-center text-slate-300">
+                                         <i class="fa-regular fa-image text-4xl"></i>
+                                         <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 mt-2">Gambar Tidak Ditemukan</span>
+                                     </div>
+                                 </div>
                             @empty
                                 <div class="swiper-slide">
                                     <div class="w-full h-full bg-slate-50 flex items-center justify-center">
-                                        <svg class="w-20 h-20 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                        <i class="fa-regular fa-image text-slate-200 text-6xl"></i>
                                     </div>
                                 </div>
                             @endforelse
                         </div>
-                        @if($destination->images->take(8)->count() > 1)
-                            <div class="swiper-pagination !bottom-24"></div>
-                            <div class="swiper-button-next"></div>
-                            <div class="swiper-button-prev"></div>
+                        @if($allImages->count() > 1)
+                            <div class="swiper-pagination !bottom-8"></div>
+                            <div class="swiper-button-next !right-6"></div>
+                            <div class="swiper-button-prev !left-6"></div>
                         @endif
                     </div>
                     
-                    <!-- Gradient & Overlay -->
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none z-[5]"></div>
+                    <!-- Gradient Overlay -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent pointer-events-none z-[5]"></div>
                     <div class="absolute bottom-8 left-8 right-8 z-10 pointer-events-none">
-                        <div class="flex flex-wrap gap-2 mb-4">
+                        <div class="flex flex-wrap gap-2 mb-3">
                             @foreach($destination->tags as $tag)
-                                <span class="px-3 py-1 rounded-lg bg-white/20 backdrop-blur-md border border-white/30 text-xs font-bold text-white uppercase tracking-widest">{{ $tag->name }}</span>
+                                <span class="px-3 py-1 rounded-lg bg-white/20 backdrop-blur-md border border-white/20 text-[10px] font-extrabold text-white uppercase tracking-wider">{{ $tag->name }}</span>
                             @endforeach
                         </div>
-                        <h1 class="text-3xl md:text-5xl font-black text-white leading-tight">{{ $destination->name }}</h1>
+                        <h1 class="text-3xl md:text-5xl font-black text-white leading-tight tracking-tight">{{ $destination->name }}</h1>
                     </div>
                 </div>
                 
                 <div class="p-8 md:p-10">
-                    <div class="flex flex-wrap items-center gap-6 mb-8 text-sm text-slate-500 font-medium">
+                    <div class="flex flex-wrap items-center gap-6 mb-8 text-xs text-slate-500 font-bold uppercase tracking-wider">
                         <div class="flex items-center gap-2">
-                            <div class="w-8 h-8 rounded-lg bg-primary-50 flex items-center justify-center text-primary-600">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+                            <div class="w-9 h-9 rounded-xl bg-primary-50 flex items-center justify-center text-primary-600 shadow-sm shadow-primary-100">
+                                <i class="fa-solid fa-location-dot"></i>
                             </div>
-                            {{ $destination->city }}
+                            <span>{{ $destination->city }}</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>
+                            <div class="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600 shadow-sm shadow-amber-100">
+                                <i class="fa-solid fa-clock"></i>
                             </div>
-                            {{ $destination->open_time }} - {{ $destination->close_time }}
+                            <span>{{ $destination->open_time }} - {{ $destination->close_time }} WIB</span>
                         </div>
                     </div>
 
                     <div class="prose prose-slate max-w-none">
                         @if($destination->transactions_avg_rating > 0)
-                        <div class="flex items-center gap-2 mb-6 bg-amber-50 inline-flex px-4 py-2 rounded-2xl border border-amber-100">
-                            <div class="flex items-center gap-1 text-amber-500">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <div class="flex items-center gap-2.5 mb-6 bg-gradient-to-r from-amber-50 to-amber-100/50 inline-flex px-4 py-2.5 rounded-2xl border border-amber-200/40 shadow-sm">
+                            <div class="flex items-center text-amber-500">
+                                <i class="fa-solid fa-star text-base"></i>
                             </div>
-                            <span class="text-xl font-black text-amber-700">{{ number_format($destination->transactions_avg_rating, 1) }}</span>
-                            <span class="text-sm text-amber-600 font-medium">/ 5.0 dari pengunjung</span>
+                            <span class="text-lg font-black text-amber-800">{{ number_format($destination->transactions_avg_rating, 1) }}</span>
+                            <span class="text-xs text-amber-600 font-semibold uppercase tracking-wider">/ 5.0 Rating Pengunjung</span>
                         </div>
                         @endif
-                        <h2 class="text-xl font-bold text-slate-900 mb-4">Tentang Destinasi</h2>
-                        <p class="text-slate-600 leading-relaxed text-lg">{{ $destination->description }}</p>
+                        <h2 class="text-lg font-bold text-slate-900 tracking-tight mb-3">Tentang Destinasi</h2>
+                        <p class="text-slate-600 leading-relaxed text-sm md:text-base font-medium">{{ $destination->description }}</p>
                     </div>
 
-                    <div class="mt-10 pt-10 border-t border-slate-50">
-                        <h2 class="text-xl font-bold text-slate-900 mb-4">Lokasi</h2>
-                        <p class="text-slate-500 mb-6 flex items-start gap-2">
-                            <svg class="w-5 h-5 text-primary-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                            {{ $destination->address }}, {{ $destination->city }}
+                    <div class="mt-10 pt-10 border-t border-slate-100">
+                        <h2 class="text-lg font-bold text-slate-900 tracking-tight mb-3">Lokasi Alamat</h2>
+                        <p class="text-slate-500 text-xs md:text-sm mb-6 flex items-start gap-2 font-medium">
+                            <i class="fa-solid fa-map-location-dot text-primary-500 shrink-0 mt-0.5 text-base"></i>
+                            <span>{{ $destination->address }}, {{ $destination->city }}</span>
                         </p>
-                        <a href="{{ $destination->map_link }}" target="_blank" class="inline-flex items-center gap-3 bg-white border-2 border-slate-100 px-6 py-3 rounded-2xl font-bold text-slate-700 hover:bg-slate-50 hover:border-primary-600/20 hover:text-primary-600 transition-all group">
-                            Petunjuk Arah
-                            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                        <a href="{{ $destination->map_link }}" target="_blank" class="inline-flex items-center gap-3 bg-white border border-slate-200 hover:border-primary-500/30 px-6 py-3 rounded-2xl font-bold text-xs text-slate-700 hover:text-primary-600 transition-all hover:shadow-lg shadow-slate-100 group">
+                            Petunjuk Arah Google Maps
+                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                         </a>
                     </div>
                 </div>
@@ -118,34 +138,32 @@
 
             <!-- Tickets Section -->
             <div>
-                <h2 class="text-2xl font-bold text-slate-900 mb-8">Pilihan Tiket</h2>
+                <h2 class="text-xl font-bold text-slate-900 tracking-tight mb-6 flex items-center gap-2"><i class="fa-solid fa-ticket text-primary-500"></i> Pilihan Tiket & Kategori</h2>
                 <div class="grid gap-6">
                     @foreach($destination->tickets as $index => $ticket)
-                        <div class="ticket-card {{ $index >= 5 ? 'hidden' : '' }} bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                        <div class="ticket-card {{ $index >= 5 ? 'hidden' : '' }} bg-white rounded-[2rem] border border-slate-100/80 p-6 md:p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                             <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
                                 <div class="flex-1">
                                     <div class="flex items-center gap-3 mb-4">
                                         <div class="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center text-primary-600 font-black">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
+                                            <i class="fa-solid fa-ticket"></i>
                                         </div>
-                                        <h3 class="text-xl font-bold text-slate-900">{{ $ticket->name }}</h3>
+                                        <h3 class="text-lg font-bold text-slate-900 tracking-tight">{{ $ticket->name }}</h3>
                                     </div>
-                                    <p class="text-slate-500 text-sm leading-relaxed mb-4">{{ $ticket->benefit }}</p>
-                                    <div class="flex items-center gap-4 text-xs font-bold uppercase tracking-widest text-slate-400">
-                                        <div class="flex items-center gap-1.5">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                            Kuota: {{ $ticket->daily_quota }} / hari
-                                        </div>
+                                    <p class="text-slate-500 text-xs md:text-sm leading-relaxed mb-4 font-semibold">{{ $ticket->benefit }}</p>
+                                    <div class="flex flex-wrap gap-3">
+                                        <span class="px-3 py-1 rounded-lg bg-slate-50 text-[10px] font-bold text-slate-500 flex items-center gap-1.5"><i class="fa-solid fa-users"></i> Kuota Kuota: {{ $ticket->daily_quota }} / hari</span>
+                                        <span class="px-3 py-1 rounded-lg bg-emerald-50 text-[10px] font-bold text-emerald-600 flex items-center gap-1.5"><i class="fa-solid fa-circle-check"></i> Instan Konfirmasi</span>
                                     </div>
                                 </div>
-                                <div class="shrink-0 flex md:flex-col items-center md:items-end justify-between md:justify-center gap-4 pt-6 md:pt-0 border-t md:border-t-0 md:border-l border-slate-100 md:pl-10">
+                                <div class="shrink-0 flex md:flex-col items-center md:items-end justify-between md:justify-center gap-4 pt-6 md:pt-0 border-t md:border-t-0 md:border-l border-slate-100 md:pl-8">
                                     <div class="text-left md:text-right">
-                                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Harga Tiket</p>
+                                        <p class="text-[9px] text-slate-400 font-extrabold uppercase tracking-widest mb-1">Harga Tiket</p>
                                         <p class="text-2xl font-black text-primary-600">
                                             <span class="text-xs font-medium">Rp</span> {{ number_format($ticket->price, 0, ',', '.') }}
                                         </p>
                                     </div>
-                                    <a href="{{ route('tickets.show', $ticket) }}" class="btn-premium bg-primary-600 hover:bg-primary-700 text-white px-8 py-4 rounded-2xl font-bold shadow-lg shadow-primary-200 transition-all">
+                                    <a href="{{ route('tickets.show', $ticket) }}" class="btn-premium bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 text-white px-6 py-3.5 rounded-xl text-xs font-bold shadow-md shadow-primary-200 transition-all">
                                         Pesan Sekarang
                                     </a>
                                 </div>
@@ -158,7 +176,7 @@
                     <div class="mt-8 text-center">
                         <button onclick="showAllTickets(this)" class="inline-flex items-center gap-3 bg-white border border-slate-200 px-8 py-4 rounded-2xl font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-all group shadow-sm">
                             Lihat {{ $destination->tickets->count() - 5 }} Tiket Lainnya
-                            <svg class="w-5 h-5 text-slate-400 group-hover:translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            <i class="fa-solid fa-chevron-down text-slate-400 group-hover:translate-y-0.5 transition-transform"></i>
                         </button>
                     </div>
 
@@ -174,9 +192,9 @@
             <!-- Reviews Section -->
             <div class="mt-12 bg-white rounded-[2.5rem] border border-slate-100 p-8 md:p-10 shadow-sm">
                 <div class="flex items-center justify-between mb-8">
-                    <h2 class="text-2xl font-bold text-slate-900">Ulasan Pengunjung</h2>
+                    <h2 class="text-xl font-bold text-slate-900 tracking-tight">Ulasan Pengunjung</h2>
                     <span class="px-4 py-1.5 rounded-full bg-slate-50 border border-slate-100 text-xs font-bold text-slate-500 flex items-center gap-1.5">
-                        <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <i class="fa-solid fa-star text-amber-400"></i>
                         {{ $reviews->total() }} Ulasan
                     </span>
                 </div>
@@ -184,7 +202,7 @@
                 @if($reviews->isEmpty())
                     <div class="text-center py-12">
                         <div class="w-16 h-16 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center mx-auto mb-4 text-slate-300">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                            <i class="fa-regular fa-comment-dots text-xl"></i>
                         </div>
                         <p class="text-sm font-semibold text-slate-800">Belum ada ulasan</p>
                         <p class="text-xs text-slate-400 mt-1">Jadilah yang pertama memberikan ulasan setelah melakukan kunjungan wisata!</p>
@@ -201,7 +219,7 @@
                                     data-url="{{ route('destinations.reviews.loadMore', $destination) }}" 
                                     class="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 px-6 py-3 text-sm font-semibold text-slate-700 transition-all shadow-sm">
                                 <span>Muat Lebih Banyak Ulasan</span>
-                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                <i class="fa-solid fa-chevron-down text-slate-400"></i>
                             </button>
                         </div>
                     @endif
@@ -214,35 +232,38 @@
             <div class="sticky top-24 space-y-8">
                 <!-- Owner Info -->
                 <div class="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
-                    <h2 class="text-lg font-bold text-slate-900 mb-6">Informasi Kontak</h2>
+                    <h2 class="text-lg font-bold text-slate-900 tracking-tight mb-6">Informasi Kontak Pengelola</h2>
                     <div class="flex items-center gap-4 mb-8">
-                        <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500 uppercase">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-primary-600 to-primary-500 flex items-center justify-center font-bold text-white uppercase shadow-sm">
                             {{ substr($destination->owner?->name ?? 'A', 0, 1) }}
                         </div>
                         <div>
-                            <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Dikelola oleh</p>
+                            <p class="text-[9px] text-slate-400 font-extrabold uppercase tracking-widest">Dikelola oleh</p>
                             <p class="font-bold text-slate-900">{{ $destination->owner?->name ?? 'Admin Tabibito' }}</p>
                         </div>
                     </div>
                     
                     <div class="space-y-4">
                         <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                            <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Email</p>
-                            <p class="text-sm font-medium text-slate-700 truncate">{{ $destination->owner?->email ?? 'info@tabibito.id' }}</p>
+                            <p class="text-[9px] text-slate-400 font-extrabold uppercase tracking-widest mb-1">Email Resmi</p>
+                            <p class="text-xs md:text-sm font-bold text-slate-700 truncate"><i class="fa-regular fa-envelope mr-1.5 text-primary-500"></i>{{ $destination->owner?->email ?? 'info@tabibito.id' }}</p>
                         </div>
-                        <p class="text-xs text-slate-400 leading-relaxed italic">Silakan hubungi pengelola untuk informasi fasilitas khusus atau pemesanan grup besar.</p>
+                        <p class="text-xs text-slate-400 leading-relaxed italic">Silakan hubungi pengelola untuk informasi fasilitas khusus, kunjungan kelompok besar, atau kemitraan event.</p>
                     </div>
                 </div>
 
                 <!-- Trusted Badge -->
-                <div class="bg-primary-50 rounded-3xl p-8 border border-primary-100">
-                    <div class="flex gap-4">
-                        <div class="shrink-0 w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-primary-600 shadow-sm">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                <div class="bg-primary-950 rounded-3xl p-8 text-white relative overflow-hidden shadow-xl shadow-primary-950/20">
+                    <div class="absolute right-0 bottom-0 translate-x-4 translate-y-4 opacity-5 text-9xl">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div class="relative z-10 flex gap-4">
+                        <div class="shrink-0 w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 flex items-center justify-center text-primary-400">
+                            <i class="fa-solid fa-shield-halved text-xl"></i>
                         </div>
                         <div>
-                            <h4 class="font-bold text-primary-900 mb-1 text-sm">Pembayaran Aman</h4>
-                            <p class="text-xs text-primary-700 opacity-80 leading-relaxed">Seluruh transaksi Anda dilindungi dengan sistem enkripsi terbaik dari Midtrans.</p>
+                            <h4 class="font-bold mb-1 text-sm tracking-tight">Transaksi Aman & Terlindungi</h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">Seluruh proses pemesanan tiket Anda terenkripsi penuh menggunakan payment gateway Midtrans yang aman dan tepercaya.</p>
                         </div>
                     </div>
                 </div>
@@ -257,7 +278,7 @@
       "@@type": "TouristAttraction",
       "name": "{{ $destination->name }}",
       "description": "{{ \Illuminate\Support\Str::limit(strip_tags($destination->description), 160) }}",
-      "image": "{{ $destination->images->first()?->image_path ? asset('storage/' . $destination->images->first()->image_path) : asset('assets/images/hero.png') }}",
+      "image": "{{ ($destination->coverImage ?? $destination->images->first())?->image_path ? asset('storage/' . ($destination->coverImage ?? $destination->images->first())->image_path) : asset('assets/images/hero.png') }}",
       "address": {
         "@@type": "PostalAddress",
         "streetAddress": "{{ $destination->address }}",
@@ -284,6 +305,7 @@
       }
     }
     </script>
+
     @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {

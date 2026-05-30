@@ -14,7 +14,7 @@ class WishlistController extends Controller
     public function index(): View
     {
         $destinations = auth()->user()->wishlistedDestinations()
-            ->with(['tags', 'images'])
+            ->with(['tags', 'images', 'coverImage'])
             ->withAvg('transactions', 'rating')
             ->paginate(12);
 
