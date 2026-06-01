@@ -5,7 +5,7 @@
     <section class="relative rounded-[2rem] md:rounded-[3rem] overflow-hidden bg-slate-900 min-h-[460px] md:min-h-[580px] flex items-center px-6 md:px-16 py-12 md:py-24 shadow-2xl shadow-slate-950/20">
         <!-- Background Image with Overlay -->
         <div class="absolute inset-0 z-0">
-            <img src="{{ asset('assets/images/hero.png') }}" alt="Keindahan Alam dan Pariwisata Jawa Tengah - Tabibito Jateng" fetchpriority="high" loading="eager" class="w-full h-full object-cover opacity-50 scale-105 animate-[pulse_8s_infinite]">
+            <img src="{{ asset('assets/images/hero.webp') }}" alt="Keindahan Alam dan Pariwisata Jawa Tengah - Tabibito Jateng" fetchpriority="high" loading="eager" class="w-full h-full object-cover opacity-50 scale-105 animate-[pulse_8s_infinite]">
             <div class="absolute inset-0 bg-gradient-to-tr from-slate-950 via-slate-900/60 to-transparent"></div>
         </div>
 
@@ -123,6 +123,7 @@
                         @if($coverImg?->image_path)
                             <img src="{{ asset('storage/' . $coverImg->image_path) }}" 
                                  alt="Destinasi Wisata {{ $destination->name }} di {{ $destination->city }} - Tabibito Jateng" 
+                                 loading="lazy"
                                  class="h-full w-full object-cover group-hover:scale-110 transition-transform duration-700 rounded-[1.5rem]">
                         @else
                             <div class="w-full h-full bg-slate-100 flex items-center justify-center rounded-[1.5rem]">

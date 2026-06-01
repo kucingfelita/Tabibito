@@ -13,14 +13,14 @@
     <meta property="og:url" content="{{ request()->url() }}">
     <meta property="og:title" content="{{ $title ?? 'Tabibito Jateng - Pemesanan Tiket Wisata Online' }}">
     <meta property="og:description" content="{{ $meta_description ?? 'Tabibito Jateng adalah platform pemesanan tiket wisata online terlengkap dan terpercaya di Jawa Tengah.' }}">
-    <meta property="og:image" content="{{ asset('assets/images/hero.png') }}">
+    <meta property="og:image" content="{{ asset('assets/images/hero.webp') }}">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ request()->url() }}">
     <meta property="twitter:title" content="{{ $title ?? 'Tabibito Jateng - Pemesanan Tiket Wisata Online' }}">
     <meta property="twitter:description" content="{{ $meta_description ?? 'Tabibito Jateng adalah platform pemesanan tiket wisata online terlengkap dan terpercaya di Jawa Tengah.' }}">
-    <meta property="twitter:image" content="{{ asset('assets/images/hero.png') }}">
+    <meta property="twitter:image" content="{{ asset('assets/images/hero.webp') }}">
 
     <link rel="icon" href="{{ asset('assets/images/tabibito_T_v3.svg') }}">
     
@@ -31,7 +31,7 @@
     
     <!-- Preload LCP Image -->
     @if(request()->routeIs('home'))
-        <link rel="preload" as="image" href="{{ asset('assets/images/hero.png') }}" fetchpriority="high">
+        <link rel="preload" as="image" href="{{ asset('assets/images/hero.webp') }}" fetchpriority="high">
     @endif
 
     <!-- Icon Libraries -->
