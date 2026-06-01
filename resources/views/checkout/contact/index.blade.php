@@ -24,7 +24,7 @@
                     </div>
                     <div>
                         <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Email Resmi</p>
-                        <p class="font-bold text-slate-900">hariansyahegie@gmail.com</p>
+                        <p class="font-bold text-slate-900">support@tabibito.com</p>
                     </div>
                 </div>
                 

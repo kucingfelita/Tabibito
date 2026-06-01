@@ -224,7 +224,7 @@
                 <div class="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
                     <p class="text-[10px] text-slate-400 font-bold leading-normal text-center sm:text-left">
                         Dengan menekan tombol kirim pengajuan, Anda menyetujui <br> 
-                        <a href="#" class="underline hover:text-primary-600">Syarat & Ketentuan Kemitraan</a> yang berlaku di Tabibito.
+                        <a href="{{ route('terms.partnership') }}" target="_blank" class="underline hover:text-primary-600">Syarat & Ketentuan Kemitraan</a> yang berlaku di Tabibito.
                     </p>
                     
                     <button type="submit" class="w-full sm:w-auto bg-primary-600 hover:bg-primary-700 text-white font-extrabold px-12 py-4 md:py-4.5 rounded-2xl shadow-xl shadow-primary-600/20 transition-all transform hover:-translate-y-1 active:translate-y-0 text-sm md:text-base uppercase tracking-wider flex items-center justify-center gap-2">

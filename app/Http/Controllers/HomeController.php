@@ -41,6 +41,11 @@ class HomeController extends Controller
         return view('home.terms');
     }
 
+    public function partnershipTerms(): View
+    {
+        return view('home.partnership-terms');
+    }
+
     public function privacy(): View
     {
         return view('home.privacy');

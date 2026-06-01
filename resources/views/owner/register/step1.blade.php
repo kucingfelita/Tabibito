@@ -1,7 +1,155 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-6xl mx-auto px-4 md:px-0 py-6">
+<div class="max-w-6xl mx-auto px-4 md:px-0 py-6" x-data="{ showTermsModal: true, agreed: false }">
+
+    <!-- Beautiful Glassmorphic Modal for Terms & Conditions -->
+    <div x-show="showTermsModal" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md">
+         
+         <div x-show="showTermsModal"
+              x-transition:enter="transition ease-out duration-300 transform"
+              x-transition:enter-start="opacity-0 scale-95 translate-y-4"
+              x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+              x-transition:leave="transition ease-in duration-200 transform"
+              x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+              x-transition:leave-end="opacity-0 scale-95 translate-y-4"
+              class="bg-white rounded-[2.5rem] border border-slate-100 shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[85vh] relative">
+              
+              <!-- Modal Decor Spark -->
+              <div class="absolute top-0 right-0 w-32 h-32 bg-primary-50 rounded-full -mr-16 -mt-16 opacity-50 z-0"></div>
+
+              <!-- Header -->
+              <div class="p-6 md:p-8 border-b border-slate-100 relative z-10 shrink-0">
+                  <span class="px-3 py-1 rounded-full bg-primary-50 text-primary-700 text-[10px] font-black uppercase tracking-wider">Mitra Wisata Tabibito</span>
+                  <h3 class="text-xl md:text-2xl font-black text-slate-900 tracking-tight mt-2">Syarat & Ketentuan Kemitraan</h3>
+                  <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mt-0.5">Harap baca dan setujui kesepakatan di bawah ini sebelum mendaftar</p>
+              </div>
+
+              <!-- Scrollable Terms Content -->
+              <div class="p-6 md:p-8 overflow-y-auto custom-scrollbar space-y-6 text-slate-600 text-sm font-medium leading-relaxed border-b border-slate-100 z-10 flex-1">
+                  <div class="bg-slate-50 border border-slate-100 rounded-2xl p-5 space-y-3">
+                      <p class="font-extrabold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-scale-balanced text-primary-500"></i> PENGANTAR KEMITRAAN</p>
+                      <p class="text-xs text-slate-500">
+                          Selamat datang di portal pendaftaran kemitraan Tabibito Jawa Tengah. Dengan mendaftar sebagai pengelola destinasi wisata (Mitra/Owner), Anda wajib menyetujui seluruh ketentuan operasional, biaya layanan platform, sistem pemindaian boarding pass, dan tanggung jawab hukum yang terinci di bawah ini.
+                      </p>
+                  </div>
+
+                  <div class="space-y-4">
+                      <!-- Bab 1 -->
+                      <div class="space-y-2">
+                          <p class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                              <span class="w-6 h-6 rounded-lg bg-primary-50 text-primary-600 flex items-center justify-center text-xs font-black">1</span>
+                              Validitas Akun & Kepemilikan Tempat Wisata
+                          </p>
+                          <p class="text-xs pl-8 text-slate-500">
+                              Mitra menyatakan secara hukum bahwa data diri, kepemilikan, dan perizinan atas tempat wisata yang didaftarkan adalah sah, bebas dari sengketa hukum, dan aktif secara operasional di Jawa Tengah.
+                          </p>
+                      </div>
+
+                      <!-- Bab 2 -->
+                      <div class="space-y-2">
+                          <p class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                              <span class="w-6 h-6 rounded-lg bg-primary-50 text-primary-600 flex items-center justify-center text-xs font-black">2</span>
+                              Pengaturan Kuota Tiket Harian
+                          </p>
+                          <p class="text-xs pl-8 text-slate-500">
+                              Mitra berkewajiban mengelola batas kapasitas kuota harian pariwisata secara riil pada dashboard. Hal ini mutlak guna menjamin keselamatan fisik pengunjung di lokasi destinasi wisata.
+                          </p>
+                      </div>
+
+                      <!-- Bab 3 -->
+                      <div class="space-y-2">
+                          <p class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                              <span class="w-6 h-6 rounded-lg bg-primary-50 text-primary-600 flex items-center justify-center text-xs font-black">3</span>
+                              Sistem Pembagian Hasil & Komisi Platform
+                          </p>
+                          <p class="text-xs pl-8 text-slate-500">
+                              Tabibito berhak memotong biaya administrasi/layanan platform sebesar 5% s/d 10% dari setiap tiket kotor yang terjual sukses melalui gerbang pembayaran Midtrans.
+                          </p>
+                      </div>
+
+                      <!-- Bab 4 -->
+                      <div class="space-y-2">
+                          <p class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                              <span class="w-6 h-6 rounded-lg bg-primary-50 text-primary-600 flex items-center justify-center text-xs font-black">4</span>
+                              Pencairan Saldo (Withdrawals)
+                          </p>
+                          <p class="text-xs pl-8 text-slate-500">
+                              Penarikan pendapatan bersih dapat ditarik dengan batas minimum Rp 100.000. Pengajuan penarikan dana akan diproses secara aman ke rekening terdaftar dalam waktu maksimal 2x24 jam hari kerja.
+                          </p>
+                      </div>
+
+                      <!-- Bab 5 -->
+                      <div class="space-y-2">
+                          <p class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                              <span class="w-6 h-6 rounded-lg bg-primary-50 text-primary-600 flex items-center justify-center text-xs font-black">5</span>
+                              Validasi Scanner Boarding QR Code
+                          </p>
+                          <p class="text-xs pl-8 text-slate-500">
+                              Mitra dan petugas loket wajib melakukan verifikasi boarding pass pengunjung secara tertib menggunakan web scanner yang disediakan oleh Tabibito guna mencegah tiket ganda/ilegal.
+                          </p>
+                      </div>
+
+                      <!-- Bab 6 -->
+                      <div class="space-y-2">
+                          <p class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                              <span class="w-6 h-6 rounded-lg bg-primary-50 text-primary-600 flex items-center justify-center text-xs font-black">6</span>
+                              Kebijakan Pengembalian Dana (Refund)
+                          </p>
+                          <p class="text-xs pl-8 text-slate-500">
+                              Apabila terjadi pembatalan kunjungan akibat force majeure atau penutupan paksa tempat wisata oleh Mitra, Mitra berkewajiban menyetujui pengembalian dana 100% kepada calon pengunjung.
+                          </p>
+                      </div>
+
+                      <!-- Bab 7 -->
+                      <div class="space-y-2">
+                          <p class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                              <span class="w-6 h-6 rounded-lg bg-primary-50 text-primary-600 flex items-center justify-center text-xs font-black">7</span>
+                              Asuransi & Tanggung Jawab Fisik Pengunjung
+                          </p>
+                          <p class="text-xs pl-8 text-slate-500">
+                              Seluruh bentuk kecelakaan fisik, cedera, kehilangan barang bawaan, dan aspek keselamatan di lapangan tempat wisata sepenuhnya menjadi tanggung jawab Mitra. Tabibito dibebaskan dari segala tuntutan hukum di luar transaksi e-ticketing.
+                          </p>
+                      </div>
+                  </div>
+              </div>
+
+              <!-- Footer Buttons -->
+              <div class="p-6 md:p-8 border-t border-slate-100 bg-slate-50 relative z-10 shrink-0 space-y-4">
+                  <!-- Checkbox -->
+                  <label class="relative flex items-start gap-3 cursor-pointer select-none">
+                      <input type="checkbox" x-model="agreed" class="w-5 h-5 rounded text-primary-600 border-slate-300 focus:ring-primary-500/20 mt-0.5 cursor-pointer">
+                      <span class="text-xs font-bold text-slate-600 leading-normal">
+                          Saya telah membaca, memahami, dan menyetujui seluruh isi <a href="{{ route('terms.partnership') }}" target="_blank" class="text-primary-600 underline">Syarat & Ketentuan Kemitraan</a> yang berlaku di Tabibito.
+                      </span>
+                  </label>
+
+                  <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                      <!-- Disagree / Back Button -->
+                      <a href="{{ route('home') }}" class="w-full sm:w-1/3 flex items-center justify-center border border-slate-200 hover:border-slate-300 bg-white text-slate-500 font-extrabold py-3.5 rounded-2xl transition-all text-xs uppercase tracking-wider active:scale-95">
+                          Batal & Kembali
+                      </a>
+                      
+                      <!-- Agree / Continue Button -->
+                      <button type="button" 
+                              @click="showTermsModal = false" 
+                              :disabled="!agreed"
+                              class="w-full sm:w-2/3 flex items-center justify-center bg-primary-600 hover:bg-primary-700 disabled:bg-slate-200 disabled:text-slate-400 text-white font-extrabold py-3.5 rounded-2xl shadow-xl shadow-primary-600/20 disabled:shadow-none transition-all text-xs uppercase tracking-wider active:scale-95">
+                          Setuju & Lanjutkan
+                      </button>
+                  </div>
+              </div>
+
+         </div>
+    </div>
+
     <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 overflow-hidden relative">
         <div class="grid lg:grid-cols-12 min-h-[600px] items-stretch">
             

@@ -361,13 +361,13 @@
                     
                     <!-- Social icons -->
                     <div class="flex gap-3">
-                        <a href="https://instagram.com/kucing_felita" target="_blank" class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-800 text-slate-400 hover:bg-gradient-to-tr hover:from-primary-600 hover:to-primary-500 hover:text-white transition-all duration-300">
+                        <a href="https://instagram.com/" target="_blank" class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-800 text-slate-400 hover:bg-gradient-to-tr hover:from-primary-600 hover:to-primary-500 hover:text-white transition-all duration-300">
                             <i class="fa-brands fa-instagram text-lg"></i>
                         </a>
-                        <a href="#" class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-800 text-slate-400 hover:bg-gradient-to-tr hover:from-primary-600 hover:to-primary-500 hover:text-white transition-all duration-300">
+                        <a href="https://facebook.com/" class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-800 text-slate-400 hover:bg-gradient-to-tr hover:from-primary-600 hover:to-primary-500 hover:text-white transition-all duration-300">
                             <i class="fa-brands fa-facebook-f text-base"></i>
                         </a>
-                        <a href="#" class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-800 text-slate-400 hover:bg-gradient-to-tr hover:from-primary-600 hover:to-primary-500 hover:text-white transition-all duration-300">
+                        <a href="https://x.com/" class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-800 text-slate-400 hover:bg-gradient-to-tr hover:from-primary-600 hover:to-primary-500 hover:text-white transition-all duration-300">
                             <i class="fa-brands fa-x-twitter text-base"></i>
                         </a>
                     </div>

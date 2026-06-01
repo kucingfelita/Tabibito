@@ -135,7 +135,7 @@
                 
                 <p class="text-center text-[10px] text-slate-400 mt-5 font-semibold leading-relaxed">
                     Dengan menekan tombol di atas, Anda menyetujui <br> 
-                    <a href="#" class="underline hover:text-primary-600">Syarat & Ketentuan</a> yang berlaku di Tabibito.
+                    <a href="{{ route('terms') }}" target="_blank" class="underline hover:text-primary-600">Syarat & Ketentuan</a> yang berlaku di Tabibito.
                 </p>
             </div>
         </aside>

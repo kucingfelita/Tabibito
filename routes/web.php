@@ -55,6 +55,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware('redirect.staff')->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/terms', [HomeController::class, 'terms'])->name('terms');
+    Route::get('/terms-partnership', [HomeController::class, 'partnershipTerms'])->name('terms.partnership');
     Route::get('/privacy', [HomeController::class, 'privacy'])->name('privacy');
 
     Route::get('/wisata', [DestinationController::class, 'index'])->name('destinations.index');
