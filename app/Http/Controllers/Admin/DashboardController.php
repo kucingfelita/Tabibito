@@ -8,6 +8,8 @@ use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Withdrawal;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -67,5 +69,31 @@ class DashboardController extends Controller
         $withdrawal->update(['status' => 'approved']);
 
         return back()->with('success', 'Withdrawal berhasil disetujui' . ($approverKey && $withdrawal->reference_no ? ' dan transfer otomatis telah dieksekusi.' : '. Jangan lupa transfer manual ke rekening Owner.'));
+    }
+
+    public function rejectWithdrawal(Request $request, Withdrawal $withdrawal): RedirectResponse
+    {
+        if ($withdrawal->status !== 'pending') {
+            return back()->withErrors(['withdrawal' => 'Withdrawal ini sudah diproses.']);
+        }
+
+        $request->validate([
+            'reject_reason' => ['nullable', 'string', 'max:500'],
+        ]);
+
+        DB::transaction(function () use ($withdrawal) {
+            $locked = Withdrawal::query()->lockForUpdate()->findOrFail($withdrawal->id);
+
+            if ($locked->status !== 'pending') {
+                return;
+            }
+
+            $gross = $locked->gross_amount;
+            $locked->update(['status' => 'rejected']);
+
+            $locked->user()->lockForUpdate()->first()?->increment('balance', $gross);
+        });
+
+        return back()->with('success', 'Pencairan ditolak. Saldo owner telah dikembalikan.');
     }
 }

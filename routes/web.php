@@ -68,20 +68,16 @@ Route::middleware('redirect.staff')->group(function () {
 
     Route::middleware('auth')->group(function () {
         Route::get('/riwayat', [HistoryController::class, 'index'])->name('history.index');
-        Route::post('/riwayat/{transaction}/check-status', [HistoryController::class, 'checkStatus'])->name('history.checkStatus');
         Route::post('/riwayat/{transaction}/rating', [HistoryController::class, 'submitRating'])->name('history.rating');
         Route::post('/riwayat/{transaction}/cancel', [HistoryController::class, 'cancel'])->name('history.cancel');
         Route::get('/checkout/{ticket}', [CheckoutController::class, 'show'])->name('checkout.show');
         Route::post('/checkout/{ticket}', [CheckoutController::class, 'store'])->name('checkout.store');
         Route::get('/checkout/{ticket}/quota', [CheckoutController::class, 'quotaCheck'])->name('checkout.quota');
         Route::get('/checkout/{ticket}/quotas-month', [CheckoutController::class, 'quotasMonth'])->name('checkout.quotas-month');
+        Route::post('/checkout/payment/expire', [CheckoutController::class, 'expirePayment'])->name('checkout.expire');
+        Route::get('/checkout/payment/resume', [CheckoutController::class, 'resume'])->name('checkout.resume');
+        Route::get('/payment/finish', [CheckoutController::class, 'finish'])->name('checkout.finish');
     });
-
-    Route::get('/checkout/payment/resume', [CheckoutController::class, 'resume'])
-        ->name('checkout.resume')
-        ->middleware('auth');
-
-    Route::get('/payment/finish', [CheckoutController::class, 'finish'])->name('checkout.finish');
 });
 
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
@@ -98,7 +94,7 @@ Route::prefix('owner')
         Route::get('/scan-history', [ScanHistoryController::class, 'index'])->name('scan-history');
 
         // Hanya owner (3) yang bisa akses fitur berikut
-        Route::middleware('user.type:3,1')->group(function () {
+        Route::middleware('user.type:3')->group(function () {
             Route::get('/dashboard', [OwnerDashboardController::class, 'index'])->name('dashboard');
             Route::get('/destinations', [OwnerDestinationController::class, 'index'])->name('destinations.index');
             Route::post('/destinations', [OwnerDestinationController::class, 'store'])->name('destinations.store');
@@ -124,4 +120,5 @@ Route::prefix('admin')
         Route::patch('/destinations/{destination}/approve', [AdminDashboardController::class, 'approveDestination'])->name('destinations.approve');
         Route::patch('/destinations/{destination}/reject', [AdminDashboardController::class, 'rejectDestination'])->name('destinations.reject');
         Route::patch('/withdrawals/{withdrawal}/approve', [AdminDashboardController::class, 'approveWithdrawal'])->name('withdrawals.approve');
+        Route::patch('/withdrawals/{withdrawal}/reject', [AdminDashboardController::class, 'rejectWithdrawal'])->name('withdrawals.reject');
     });

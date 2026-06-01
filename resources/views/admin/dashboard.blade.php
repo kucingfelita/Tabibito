@@ -108,16 +108,25 @@
                         <div>
                             <span class="px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 text-[8px] font-black uppercase tracking-wider border border-amber-100">Review VA</span>
                             <h4 class="font-extrabold text-slate-800 text-sm mt-1.5 leading-snug">Owner #{{ $withdrawal->user_id }}</h4>
-                            <p class="text-[10px] text-primary-600 font-extrabold mt-0.5 uppercase tracking-wide">Nominal: Rp {{ number_format($withdrawal->amount, 0, ',', '.') }}</p>
+                            <p class="text-[10px] text-slate-500 font-semibold mt-0.5">Diajukan: Rp {{ number_format($withdrawal->gross_amount, 0, ',', '.') }} · Net: Rp {{ number_format($withdrawal->amount, 0, ',', '.') }}</p>
                         </div>
                         
-                        <form method="POST" action="{{ route('admin.withdrawals.approve', $withdrawal) }}" class="shrink-0">
-                            @csrf
-                            @method('PATCH')
-                            <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-5 py-2.5 rounded-xl transition-all text-[10px] uppercase tracking-wider shadow-md shadow-emerald-200 active:scale-95 flex items-center gap-1.5">
-                                <i class="fa-solid fa-building-columns text-xs"></i> Tandai Selesai
-                            </button>
-                        </form>
+                        <div class="flex flex-wrap gap-2 shrink-0">
+                            <form method="POST" action="{{ route('admin.withdrawals.approve', $withdrawal) }}">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-5 py-2.5 rounded-xl transition-all text-[10px] uppercase tracking-wider shadow-md shadow-emerald-200 active:scale-95 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-circle-check text-xs"></i> Setujui
+                                </button>
+                            </form>
+                            <form method="POST" action="{{ route('admin.withdrawals.reject', $withdrawal) }}" onsubmit="return confirm('Tolak pencairan ini? Saldo owner akan dikembalikan.');">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="bg-rose-50 hover:bg-rose-100 text-rose-600 font-extrabold px-5 py-2.5 rounded-xl transition-all text-[10px] uppercase tracking-wider border border-rose-100 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-xmark text-xs"></i> Tolak
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 @empty
                     <div class="py-12 text-center text-slate-400 space-y-3">

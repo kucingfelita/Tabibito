@@ -25,21 +25,38 @@ class ScannerController extends Controller
         $transaction = Transaction::query()->where('qr_code_token', $data['qr_code_token'])->first();
 
         if (! $transaction) {
-            return response()->json(['message' => 'QR tidak ditemukan.'], 404);
+            return response()->json(['message' => 'QR tidak ditemukan di sistem.'], 404);
+        }
+
+        if ($transaction->status === 'pending' || empty($transaction->qr_code_token)) {
+            return response()->json([
+                'message' => 'Tiket belum aktif. QR masuk hanya muncul di akun pengunjung setelah pembayaran berhasil.',
+            ], 422);
+        }
+
+        if (in_array($transaction->status, ['expire', 'cancelled'], true)) {
+            return response()->json([
+                'message' => 'Tiket dibatalkan atau kedaluwarsa. Tidak dapat digunakan untuk masuk.',
+            ], 422);
+        }
+
+        if ($transaction->status === 'used') {
+            return response()->json([
+                'message' => 'Tiket ini sudah pernah discan dan digunakan.',
+            ], 422);
         }
 
         if ($transaction->status !== 'settlement') {
-            return response()->json(['message' => 'Tiket tidak valid atau sudah digunakan.'], 422);
+            return response()->json(['message' => 'Status tiket tidak valid untuk scan.'], 422);
         }
 
         if (! now()->isSameDay($transaction->booking_date)) {
             return response()->json([
-                'message' => 'Tiket ini tidak berlaku untuk hari ini. Tanggal kunjungan tiket adalah ' . $transaction->booking_date->translatedFormat('d F Y') . '.'
+                'message' => 'Tiket ini tidak berlaku untuk hari ini. Tanggal kunjungan tiket adalah ' . $transaction->booking_date->translatedFormat('d F Y') . '.',
             ], 422);
         }
 
-        // Validasi ownership: pastikan tiket ini milik destinasi owner yang login (atau karyawannya)
-        $user    = auth()->user();
+        $user = auth()->user();
         $ownerId = $user->resolveOwnerId();
 
         $ownerDestinationIds = Destination::query()
@@ -56,12 +73,12 @@ class ScannerController extends Controller
         $transaction->update(['status' => 'used']);
 
         return response()->json([
-            'message'          => 'Tiket valid!',
-            'qty'              => $transaction->qty,
-            'visitor_name'     => $transaction->user->name,
-            'ticket_name'      => $transaction->ticket->name,
+            'message' => 'Tiket valid!',
+            'qty' => $transaction->qty,
+            'visitor_name' => $transaction->user->name,
+            'ticket_name' => $transaction->ticket->name,
             'destination_name' => $transaction->ticket->destination->name,
-            'booking_date'     => $transaction->booking_date->format('d M Y'),
+            'booking_date' => $transaction->booking_date->format('d M Y'),
         ]);
     }
 }

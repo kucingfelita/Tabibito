@@ -93,8 +93,9 @@
                             </p>
                         </div>
 
-                        <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-extrabold py-4.5 rounded-2xl shadow-xl shadow-primary-600/20 transition-all transform hover:-translate-y-1 active:translate-y-0 text-xs uppercase tracking-wider flex items-center justify-center gap-2">
-                            Kirim Permintaan Tarik Dana <i class="fa-solid fa-paper-plane text-xs ml-1"></i>
+                        <button type="submit" class="w-full min-h-[3.5rem] md:min-h-[3.75rem] bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white font-extrabold py-5 md:py-6 px-6 rounded-2xl shadow-xl shadow-primary-600/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 text-sm md:text-base uppercase tracking-wide flex items-center justify-center gap-3 touch-manipulation">
+                            <i class="fa-solid fa-paper-plane text-base md:text-lg"></i>
+                            <span>Kirim Permintaan Tarik Dana</span>
                         </button>
                     </form>
                 @endif
@@ -125,14 +126,18 @@
                                     <p class="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-0.5">Tanggal Permintaan</p>
                                     <p class="text-xs font-bold text-slate-500"><i class="fa-regular fa-calendar mr-1.5"></i>{{ $wd->created_at->format('d M Y H:i') }} WIB</p>
                                 </div>
-                                <div class="grid grid-cols-2 gap-x-8 gap-y-1 pt-1">
+                                <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-1 pt-1">
                                     <div>
-                                        <p class="text-[8px] text-slate-400 font-bold uppercase tracking-wider">Jumlah Kasar</p>
-                                        <p class="text-sm font-black text-slate-900">Rp {{ number_format($wd->amount, 0, ',', '.') }}</p>
+                                        <p class="text-[8px] text-slate-400 font-bold uppercase tracking-wider">Jumlah Diajukan</p>
+                                        <p class="text-sm font-black text-slate-900">Rp {{ number_format($wd->gross_amount, 0, ',', '.') }}</p>
                                     </div>
                                     <div>
                                         <p class="text-[8px] text-slate-400 font-bold uppercase tracking-wider">Biaya Admin (5%)</p>
                                         <p class="text-xs font-extrabold text-rose-500">- Rp {{ number_format($wd->admin_fee, 0, ',', '.') }}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-[8px] text-slate-400 font-bold uppercase tracking-wider">Diterima (Net)</p>
+                                        <p class="text-xs font-extrabold text-emerald-600">Rp {{ number_format($wd->amount, 0, ',', '.') }}</p>
                                     </div>
                                 </div>
                             </div>

@@ -87,7 +87,7 @@
                     </p>
                     <ul class="list-disc pl-5 space-y-2">
                         <li>Metode pembayaran yang tersedia meliputi Virtual Account (VA) Bank, Kartu Kredit/Debit, E-Wallet (Gopay, ShopeePay, OVO), QRIS, serta pembayaran ritel merchant berizin resmi.</li>
-                        <li>Pengguna wajib menyelesaikan pembayaran dalam batas waktu yang ditentukan (maksimal <strong>1 jam</strong> sejak pemesanan dibuat). Kelalaian penyelesaian pembayaran melewati batas waktu akan mengakibatkan pembatalan otomatis oleh sistem.</li>
+                        <li>Pengguna wajib menyelesaikan pembayaran dalam batas waktu yang ditentukan (maksimal <strong>6 jam</strong> sejak pemesanan dibuat). Kelalaian penyelesaian pembayaran melewati batas waktu akan mengakibatkan pembatalan otomatis oleh sistem dan kuota tiket dikembalikan ke ketersediaan harian.</li>
                         <li>Tabibito berhak mengenakan biaya layanan administrasi platform yang nilainya akan tertera secara transparan pada rincian tagihan sebelum proses transaksi pembayaran dilakukan.</li>
                     </ul>
                 </div>

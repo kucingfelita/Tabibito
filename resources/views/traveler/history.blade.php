@@ -232,15 +232,15 @@
                         <!-- Action controls if pending -->
                         @if($trx->status === 'pending')
                             <div class="pt-4 border-t border-slate-50 flex flex-wrap gap-2.5">
-                                <a href="{{ route('checkout.resume', ['order_id' => $trx->order_id]) }}" class="bg-amber-500 hover:bg-amber-600 text-white font-black px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider shadow-md shadow-amber-500/20 transition-all flex items-center gap-1.5">
-                                    <i class="fa-solid fa-credit-card"></i> Lanjutkan Bayar
-                                </a>
-                                <form method="POST" action="{{ route('history.checkStatus', $trx) }}" class="inline">
-                                    @csrf
-                                    <button type="submit" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all">
-                                        Periksa Status
-                                    </button>
-                                </form>
+                                @if(!$trx->isPaymentWindowExpired())
+                                    <a href="{{ route('checkout.resume', ['order_id' => $trx->order_id]) }}" class="bg-amber-500 hover:bg-amber-600 text-white font-black px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider shadow-md shadow-amber-500/20 transition-all flex items-center gap-1.5">
+                                        <i class="fa-solid fa-credit-card"></i> Lanjutkan Bayar
+                                    </a>
+                                @else
+                                    <p class="text-[10px] font-bold text-rose-600 bg-rose-50 border border-rose-100 px-4 py-2.5 rounded-xl">
+                                        <i class="fa-solid fa-clock mr-1"></i> Batas pembayaran {{ \App\Models\Transaction::paymentTimeoutLabel() }} telah habis. Pesanan dibatalkan otomatis.
+                                    </p>
+                                @endif
                                 <form method="POST" action="{{ route('history.cancel', $trx) }}" class="inline cancel-form">
                                     @csrf
                                     <button type="button" onclick="confirmCancel(this)" class="bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all">
@@ -253,7 +253,7 @@
 
                     <!-- Right Section: Stub/Ticket validation status -->
                     <div class="flex flex-col justify-center items-center text-center md:border-l md:border-dashed md:border-slate-100 md:pl-6 pt-6 md:pt-0">
-                        @if($trx->status === 'settlement')
+                        @if($trx->status === 'settlement' && $trx->qr_code_token)
                             @if($trx->is_expired)
                                 <!-- Expired Boarding pass stub -->
                                 <div class="w-full bg-rose-50 border border-rose-100 rounded-3xl p-5 text-center">

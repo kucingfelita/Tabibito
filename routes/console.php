@@ -8,6 +8,6 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::command('app:expire-transactions')->daily();
+Schedule::command('app:expire-transactions')->everyFiveMinutes();
 
 

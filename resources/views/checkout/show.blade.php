@@ -362,7 +362,25 @@
         const summaryQty = document.getElementById('summary-qty');
 
         const quotaUrl = '/checkout/' + ticketId + '/quota';
+        const submitBtn = document.getElementById('submit-btn');
         let monthlyQuotas = {};
+        let selectedDateAvailable = true;
+
+        function formatDateYmd(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return year + '-' + month + '-' + day;
+        }
+
+        function isDateFullyBooked(dateStr) {
+            return monthlyQuotas[dateStr] !== undefined && monthlyQuotas[dateStr] === 0;
+        }
+
+        function setCheckoutEnabled(enabled) {
+            if (!submitBtn) return;
+            submitBtn.disabled = !enabled;
+        }
 
         function formatRupiah(number) {
             return 'Rp ' + Math.round(number).toLocaleString('id-ID');
@@ -396,9 +414,18 @@
                 if (avail <= 0) {
                     quotaInfo.className = 'text-rose-600';
                     quotaIndicator.className = 'w-2.5 h-2.5 rounded-full bg-rose-600 shrink-0';
-                    qtyInput.value = 0;
-                    qtyInput.max = 0;
+                    quotaInfo.textContent = 'Tiket habis — pilih tanggal lain';
+                    selectedDateAvailable = false;
+                    qtyInput.value = 1;
+                    qtyInput.min = 1;
+                    qtyInput.max = 1;
+                    qtyInput.disabled = true;
+                    setCheckoutEnabled(false);
                 } else {
+                    selectedDateAvailable = true;
+                    qtyInput.disabled = false;
+                    qtyInput.min = 1;
+                    setCheckoutEnabled(true);
                     if (avail < 10) {
                         quotaInfo.className = 'text-amber-500 font-bold';
                         quotaIndicator.className = 'w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0 animate-ping';
@@ -455,6 +482,11 @@
             inline: true,
             minDate: "today",
             dateFormat: "Y-m-d",
+            disable: [
+                function(date) {
+                    return isDateFullyBooked(formatDateYmd(date));
+                }
+            ],
             onMonthChange: function(selectedDates, dateStr, instance) {
                 const currentMonth = instance.currentMonth + 1;
                 const currentYear = instance.currentYear;
@@ -471,6 +503,15 @@
                 fetchMonthlyQuotas(currentYear, currentMonth);
             },
             onChange: function(selectedDates, dateStr, instance) {
+                if (dateStr && isDateFullyBooked(dateStr)) {
+                    fp.clear();
+                    dateInput.value = '';
+                    quotaInfo.textContent = 'Tanggal penuh — pilih tanggal lain';
+                    quotaInfo.className = 'text-rose-600';
+                    selectedDateAvailable = false;
+                    setCheckoutEnabled(false);
+                    return;
+                }
                 if (dateStr) {
                     dateInput.value = dateStr;
                     updateQuota(dateStr);
@@ -534,9 +575,13 @@
             }
         });
 
-        document.getElementById('checkout-form').addEventListener('submit', function() {
+        document.getElementById('checkout-form').addEventListener('submit', function(e) {
+            if (!dateInput.value || !selectedDateAvailable || parseInt(qtyInput.max) < 1) {
+                e.preventDefault();
+                alert('Pilih tanggal dengan kuota tersedia terlebih dahulu.');
+                return;
+            }
             saveToStorage();
-            const submitBtn = document.getElementById('submit-btn');
             if (submitBtn) {
                 setTimeout(() => {
                     submitBtn.disabled = true;

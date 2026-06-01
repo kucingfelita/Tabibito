@@ -36,17 +36,7 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        $user = Auth::user();
-        $redirectTo = '/';
-        if ($user->tipe_user == 1) {
-            $redirectTo = '/admin/dashboard';
-        } elseif ($user->tipe_user == 3) {
-            $redirectTo = '/owner/dashboard';
-        } elseif ($user->tipe_user == 4) {
-            $redirectTo = '/owner/scanner';
-        }
-
-        return redirect($redirectTo)->with('success', 'Login berhasil.');
+        return redirect(Auth::user()->loginRedirectPath())->with('success', 'Login berhasil.');
     }
 
     public function register(RegisterRequest $request): RedirectResponse

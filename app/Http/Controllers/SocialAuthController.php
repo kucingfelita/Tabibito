@@ -51,6 +51,6 @@ class SocialAuthController extends Controller
             return redirect()->route('google.set-password');
         }
 
-        return redirect('/')->with('success', 'Login berhasil.');
+        return redirect($user->loginRedirectPath())->with('success', 'Login berhasil.');
     }
 }

@@ -4,19 +4,20 @@ namespace App\Http\Controllers\Traveler;
 
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
-use App\Services\MidtransService;
+use App\Services\TransactionPaymentService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class HistoryController extends Controller
 {
-    public function index(): View
+    public function index(TransactionPaymentService $paymentService): View
     {
-        // Auto-expire unpaid pending transactions whose booking date has passed
+        $paymentService->expireOverduePendingPayments();
+
         Transaction::query()
+            ->where('user_id', auth()->id())
             ->where('status', 'pending')
-            ->where('booking_date', '<', now()->toDateString())
-            ->update(['status' => 'expire']);
+            ->each(fn (Transaction $t) => $t->refreshPaymentExpiresAt());
 
         $transactions = Transaction::query()
             ->where('user_id', auth()->id())
@@ -25,31 +26,6 @@ class HistoryController extends Controller
             ->paginate(10);
 
         return view('traveler.history', compact('transactions'));
-    }
-
-    public function checkStatus(Transaction $transaction, MidtransService $midtransService): RedirectResponse
-    {
-        // Ensure user owns the transaction
-        if ($transaction->user_id !== auth()->id()) {
-            abort(403);
-        }
-
-        $statusResponse = $midtransService->checkTransactionStatus($transaction->order_id);
-
-        if ($statusResponse) {
-            $newStatus = match ($statusResponse->transaction_status) {
-                'settlement' => 'settlement',
-                'pending' => 'pending',
-                'expire', 'cancel' => 'expire',
-                default => $transaction->status,
-            };
-
-            if ($newStatus !== $transaction->status) {
-                $transaction->update(['status' => $newStatus]);
-            }
-        }
-
-        return back()->with('success', 'Status transaksi telah diperbarui.');
     }
 
     public function submitRating(\Illuminate\Http\Request $request, Transaction $transaction): RedirectResponse
@@ -68,7 +44,7 @@ class HistoryController extends Controller
         ];
 
         if (extension_loaded('fileinfo')) {
-            $validationRules['review_image'] = ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:5120']; // 5MB limit
+            $validationRules['review_image'] = ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:5120'];
         } else {
             $validationRules['review_image'] = ['nullable', 'file', 'max:5120'];
         }
@@ -76,7 +52,6 @@ class HistoryController extends Controller
         try {
             $request->validate($validationRules);
 
-            // Manual extension validation if fileinfo is missing
             if ($request->hasFile('review_image') && !extension_loaded('fileinfo')) {
                 $file = $request->file('review_image');
                 $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp'];
@@ -111,6 +86,7 @@ class HistoryController extends Controller
             return back()->with('success', 'Terima kasih atas penilaian dan ulasan Anda!');
         } catch (\Throwable $e) {
             \Log::error('Error submit rating: ' . $e->getMessage());
+
             return back()->with('error', 'Gagal menyimpan ulasan: ' . $e->getMessage());
         }
     }
@@ -128,7 +104,7 @@ class HistoryController extends Controller
                 $manager = new \Intervention\Image\ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
                 $image = $manager->read($file->getRealPath())->scaleDown(width: 1200);
                 $encoded = $image->toJpeg(75);
-                
+
                 \Storage::disk('public')->put($targetPath, $encoded->toStream());
 
                 return $targetPath;
@@ -137,30 +113,25 @@ class HistoryController extends Controller
             \Log::warning('Review image compression failed: ' . $e->getMessage());
         }
 
-        // Fallback to direct stream upload (does not require fileinfo extension)
         try {
             \Storage::disk('public')->put($targetPath, fopen($file->getRealPath(), 'r'));
+
             return $targetPath;
         } catch (\Throwable $e) {
             return $file->store('reviews', 'public');
         }
     }
 
-    public function cancel(Transaction $transaction): RedirectResponse
+    public function cancel(Transaction $transaction, TransactionPaymentService $paymentService): RedirectResponse
     {
-        // Pastikan transaksi milik user yang login
         if ($transaction->user_id !== auth()->id()) {
             abort(403);
         }
 
-        // Hanya transaksi pending yang bisa dibatalkan
-        if ($transaction->status !== 'pending') {
-            return back()->with('error', 'Hanya pesanan dengan status pending yang bisa dibatalkan. Tidak ada pengembalian dana.');
+        if (!$paymentService->cancelByUser($transaction)) {
+            return back()->with('error', 'Hanya pesanan dengan status pending yang bisa dibatalkan.');
         }
 
-        // Update status ke 'cancelled' — kuota otomatis kembali karena getAvailableQuota tidak menghitung 'cancelled'
-        $transaction->update(['status' => 'cancelled']);
-
-        return back()->with('success', 'Pesanan berhasil dibatalkan. Kuota tiket telah dikembalikan.');
+        return back()->with('success', 'Pesanan berhasil dibatalkan. Kuota tiket telah dikembalikan dan kode pembayaran dinonaktifkan.');
     }
 }

@@ -104,4 +104,14 @@ class User extends Authenticatable
     {
         return $this->tipe_user === self::TYPE_EMPLOYEE ? $this->owner_id : $this->id;
     }
+
+    public function loginRedirectPath(): string
+    {
+        return match ((int) $this->tipe_user) {
+            self::TYPE_ADMIN => '/admin/dashboard',
+            self::TYPE_OWNER => '/owner/dashboard',
+            self::TYPE_EMPLOYEE => '/owner/scanner',
+            default => '/',
+        };
+    }
 }

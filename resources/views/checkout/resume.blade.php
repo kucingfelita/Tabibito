@@ -73,10 +73,17 @@
                         </div>
                         <div>
                             <p class="text-xs font-bold text-amber-800 uppercase tracking-widest mb-0.5">Selesaikan Pembayaran Dalam</p>
-                            <div class="flex items-center gap-2">
-                                <span id="countdown-timer" class="text-2xl font-black text-amber-900">15:00</span>
-                                <span class="text-xs font-semibold text-amber-700/80">Menit sebelum tiket dibatalkan</span>
+                            <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                                @php
+                                    $remainingSeconds = max(0, $transaction->paymentExpiresAt()->getTimestamp() - now()->getTimestamp());
+                                    $rh = str_pad((string) intdiv($remainingSeconds, 3600), 2, '0', STR_PAD_LEFT);
+                                    $rm = str_pad((string) intdiv($remainingSeconds % 3600, 60), 2, '0', STR_PAD_LEFT);
+                                    $rs = str_pad((string) ($remainingSeconds % 60), 2, '0', STR_PAD_LEFT);
+                                @endphp
+                                <span id="countdown-timer" class="text-2xl md:text-3xl font-black text-amber-900 tabular-nums">{{ $rh }}:{{ $rm }}:{{ $rs }}</span>
+                                <span class="text-xs font-semibold text-amber-700/80">sebelum pesanan dibatalkan otomatis</span>
                             </div>
+                            <p class="text-[10px] font-semibold text-amber-700/70 mt-1">Kuota tiket akan dikembalikan jika pembayaran tidak diselesaikan.</p>
                         </div>
                     </div>
 
@@ -274,43 +281,71 @@
     <script src="{{ config('services.midtrans.snap_url') }}" data-client-key="{{ config('services.midtrans.client_key') }}"></script>
     <script>
         const orderId = @json($transaction->order_id);
-        const countdownKey = 'payment_countdown_' + orderId;
+        const paymentExpiresAt = new Date(@json($transaction->paymentExpiresAt()->toIso8601String())).getTime();
+        const expireUrl = @json(route('checkout.expire'));
+        const csrfToken = @json(csrf_token());
         const countdownElement = document.getElementById('countdown-timer');
+        let paymentExpiredHandled = false;
 
-        // Simulated persistent countdown timer
-        let targetTime = sessionStorage.getItem(countdownKey);
-        if (!targetTime) {
-            // Set 15 minutes from now
-            targetTime = new Date().getTime() + (15 * 60 * 1000);
-            sessionStorage.setItem(countdownKey, targetTime);
-        } else {
-            targetTime = parseInt(targetTime);
+        function pad2(n) {
+            return String(n).padStart(2, '0');
+        }
+
+        function formatRemaining(ms) {
+            const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            return pad2(hours) + ':' + pad2(minutes) + ':' + pad2(seconds);
+        }
+
+        function disablePayButton() {
+            const payBtn = document.getElementById('pay-button');
+            if (!payBtn) return;
+            payBtn.disabled = true;
+            payBtn.className = 'w-full bg-slate-200 text-slate-500 font-black py-5 rounded-2xl cursor-not-allowed text-center flex items-center justify-center gap-2 text-base';
+            payBtn.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Waktu Bayar Habis';
+        }
+
+        async function handlePaymentExpired() {
+            if (paymentExpiredHandled) return;
+            paymentExpiredHandled = true;
+
+            countdownElement.textContent = '00:00:00';
+            countdownElement.className = 'text-2xl md:text-3xl font-black text-rose-600 animate-pulse tabular-nums';
+            disablePayButton();
+
+            try {
+                const response = await fetch(expireUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                    },
+                    body: JSON.stringify({ order_id: orderId }),
+                });
+                const data = await response.json();
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                    return;
+                }
+            } catch (e) {
+                // Tetap arahkan ke riwayat jika request gagal; scheduler server akan membatalkan.
+            }
+
+            window.location.href = @json(route('history.index'));
         }
 
         function runTimer() {
-            const now = new Date().getTime();
-            const diff = targetTime - now;
+            const diff = paymentExpiresAt - Date.now();
 
             if (diff <= 0) {
-                countdownElement.textContent = "00:00";
-                countdownElement.className = "text-rose-600 animate-pulse text-2xl font-black";
-                const payBtn = document.getElementById('pay-button');
-                if (payBtn) {
-                    payBtn.disabled = true;
-                    payBtn.className = "w-full bg-slate-200 text-slate-400 font-black py-5 rounded-2xl cursor-not-allowed text-center";
-                    payBtn.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Waktu Bayar Habis';
-                }
-                sessionStorage.removeItem(countdownKey);
+                handlePaymentExpired();
                 return;
             }
 
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-            const displayMinutes = String(minutes).padStart(2, '0');
-            const displaySeconds = String(seconds).padStart(2, '0');
-
-            countdownElement.textContent = displayMinutes + ":" + displaySeconds;
+            countdownElement.textContent = formatRemaining(diff);
             setTimeout(runTimer, 1000);
         }
 
@@ -323,7 +358,6 @@
 
             window.snap.pay(@json($transaction->snap_token), {
                 onSuccess: function (result) {
-                    sessionStorage.removeItem(countdownKey);
                     const params = new URLSearchParams({
                         order_id: result.order_id,
                         transaction_status: result.transaction_status || 'success',

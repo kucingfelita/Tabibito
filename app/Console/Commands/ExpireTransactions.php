@@ -3,43 +3,45 @@
 namespace App\Console\Commands;
 
 use App\Models\Transaction;
+use App\Services\TransactionPaymentService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
 class ExpireTransactions extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'app:expire-transactions';
+    protected $signature = 'app:expire-transactions {--sync : Perbarui payment_expires_at pending sesuai konfigurasi .env saat ini}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Automatically expire unpaid pending transactions that have passed their booking date';
+    protected $description = 'Expire unpaid pending transactions past payment window or booking date';
 
-    /**
-     * Execute the console command.
-     */
-    public function handle()
+    public function handle(TransactionPaymentService $paymentService): int
     {
-        $today = now()->toDateString();
+        $label = Transaction::paymentTimeoutLabel();
+        $this->info("Konfigurasi batas pembayaran: {$label}");
 
-        $count = Transaction::query()
-            ->where('status', 'pending')
-            ->where('booking_date', '<', $today)
-            ->update(['status' => 'expire']);
+        if ($this->option('sync')) {
+            $pending = Transaction::query()->where('status', 'pending')->get();
+            $synced = 0;
+            foreach ($pending as $transaction) {
+                $transaction->refreshPaymentExpiresAt();
+                $synced++;
+            }
+            $this->info("Disinkronkan payment_expires_at untuk {$synced} transaksi pending.");
+        }
+
+        $pendingCount = Transaction::query()->where('status', 'pending')->count();
+        $this->line("Transaksi pending saat ini: {$pendingCount}");
+
+        $count = $paymentService->expireOverduePendingPayments();
 
         if ($count > 0) {
-            $message = "Successfully expired {$count} unpaid pending transactions that passed their booking date.";
+            $message = "Berhasil expire {$count} transaksi pending (timeout pembayaran / tanggal kunjungan lewat).";
             $this->info($message);
             Log::info($message);
         } else {
-            $this->info("No past-due unpaid pending transactions found.");
+            $this->warn('Tidak ada transaksi pending yang perlu di-expire.');
+            $this->line('Tips: buat pesanan baru setelah ubah .env, atau jalankan dengan --sync lalu coba lagi.');
         }
+
+        return self::SUCCESS;
     }
 }

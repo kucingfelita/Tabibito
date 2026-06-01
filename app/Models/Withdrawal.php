@@ -29,4 +29,10 @@ class Withdrawal extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /** Nominal bruto yang dipotong dari saldo (net + biaya admin). */
+    public function getGrossAmountAttribute(): float
+    {
+        return (float) $this->amount + (float) $this->admin_fee;
+    }
 }

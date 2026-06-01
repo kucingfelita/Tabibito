@@ -111,7 +111,10 @@
     </div>
 
     <div class="max-w-2xl mx-auto px-4 md:px-0 py-4" x-data="{ showZoomModal: false }">
-        @if($transaction && in_array($transaction->status, ['settlement', 'success']))
+        @php($displayStatus = $status ?? ($transaction->status ?? 'not_found'))
+        @php($showQr = $showQr ?? false)
+
+        @if($transaction && $displayStatus === 'settlement')
             <!-- ================== SUCCESS STATE ================== -->
             <div class="receipt-card p-8 md:p-10 text-center relative overflow-hidden">
                 <!-- Sparkle Background -->
@@ -165,9 +168,9 @@
                 <!-- Dotted Tear-off Divider -->
                 <div class="receipt-divider"></div>
 
+                @if($showQr)
                 <!-- Live QR Code & Live Total (Lower Tear-off Part) -->
                 <div class="mt-20 flex flex-col items-center justify-center pt-2">
-                    <!-- Real QR Code Design with Zoom Feature -->
                     <div class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm mb-3 inline-block cursor-pointer hover:scale-105 transition-all duration-300 shadow-slate-200/50"
                          @click="showZoomModal = true"
                          title="Klik untuk memperbesar">
@@ -186,6 +189,11 @@
                         <span class="text-2xl font-black text-primary-600">Rp {{ number_format($transaction->total_price, 0, ',', '.') }}</span>
                     </div>
                 </div>
+                @else
+                <div class="mt-8 bg-emerald-50 border border-emerald-100 rounded-2xl p-5 text-center">
+                    <p class="text-xs font-bold text-emerald-800">Pembayaran berhasil dikonfirmasi. E-tiket tersedia di menu Riwayat Pesanan Anda.</p>
+                </div>
+                @endif
 
                 <!-- Page Redirections -->
                 <div class="mt-10 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4 pt-4 w-full">
@@ -198,7 +206,38 @@
                 </div>
             </div>
 
-        @elseif($transaction && $transaction->status === 'pending')
+        @elseif($transaction && $displayStatus === 'late_payment_rejected')
+            <div class="bg-white rounded-[2.5rem] p-8 md:p-12 border border-amber-100 shadow-sm text-center">
+                <div class="w-20 h-20 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-6">
+                    <i class="fa-solid fa-clock text-3xl"></i>
+                </div>
+                <h1 class="text-3xl font-black text-slate-900 mb-2">Pembayaran Tidak Dapat Diproses</h1>
+                <p class="text-xs text-slate-500 font-medium max-w-md mx-auto mt-4 leading-relaxed">
+                    Pembayaran diterima setelah batas waktu {{ \App\Models\Transaction::paymentTimeoutLabel() }}. Pesanan telah dibatalkan dan kuota dikembalikan.
+                    Dana yang terpotong akan diproses refund melalui tim support — hubungi kami dengan Order ID Anda.
+                </p>
+                <p class="text-xs font-black text-slate-700 mt-4 break-all">{{ $transaction->order_id }}</p>
+                <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+                    <a href="{{ route('contact') }}" class="bg-primary-600 hover:bg-primary-700 text-white font-extrabold px-8 py-4 rounded-2xl text-sm uppercase tracking-wider">Hubungi Support</a>
+                    <a href="{{ route('history.index') }}" class="bg-white border border-slate-200 text-slate-700 font-extrabold px-8 py-4 rounded-2xl text-sm uppercase tracking-wider">Riwayat Pesanan</a>
+                </div>
+            </div>
+
+        @elseif($transaction && ($displayStatus === 'expire' || $transaction->status === 'expire'))
+            <div class="bg-white rounded-[2.5rem] p-8 md:p-12 border border-slate-100 shadow-sm text-center">
+                <div class="w-20 h-20 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center mx-auto mb-6">
+                    <i class="fa-solid fa-hourglass-end text-3xl"></i>
+                </div>
+                <h1 class="text-3xl font-black text-slate-900 mb-2">Batas Waktu Pembayaran Habis</h1>
+                <p class="text-xs text-slate-500 font-medium max-w-md mx-auto mt-4 leading-relaxed">
+                    Pesanan dibatalkan otomatis setelah {{ \App\Models\Transaction::paymentTimeoutLabel() }}. Kuota tiket telah dikembalikan dan kode Virtual Account / QRIS tidak lagi berlaku di sistem kami.
+                </p>
+                <div class="mt-8">
+                    <a href="{{ route('destinations.index') }}" class="inline-flex bg-primary-600 hover:bg-primary-700 text-white font-extrabold px-8 py-4 rounded-2xl text-sm uppercase tracking-wider">Pesan Tiket Baru</a>
+                </div>
+            </div>
+
+        @elseif($transaction && $displayStatus === 'pending')
             <!-- ================== PENDING STATE ================== -->
             <div class="bg-white rounded-[2.5rem] p-8 md:p-12 border border-slate-100 shadow-sm text-center relative overflow-hidden">
                 <div class="absolute -top-10 -right-10 w-36 h-36 bg-amber-500/5 rounded-full blur-2xl"></div>
@@ -240,10 +279,16 @@
                 </div>
             </div>
 
+        @elseif($displayStatus === 'not_found')
+            <div class="bg-white rounded-[2.5rem] p-8 md:p-12 border border-slate-100 shadow-sm text-center">
+                <h1 class="text-2xl font-black text-slate-900 mb-2">Transaksi Tidak Ditemukan</h1>
+                <p class="text-xs text-slate-500 font-medium">Order ID tidak valid atau tidak terkait dengan akun Anda.</p>
+                <a href="{{ route('history.index') }}" class="inline-block mt-6 text-primary-600 font-bold text-sm">Ke Riwayat Pesanan</a>
+            </div>
+
         @else
             <!-- ================== FAILED/ERROR STATE ================== -->
             <div class="bg-white rounded-[2.5rem] p-8 md:p-12 border border-slate-100 shadow-sm text-center relative overflow-hidden">
-                <!-- Red-pink ambient light -->
                 <div class="absolute -top-10 -right-10 w-36 h-36 bg-rose-500/5 rounded-full blur-2xl"></div>
                 
                 <div class="mb-6 relative">
@@ -274,8 +319,8 @@
 
                 <!-- CTAs -->
                 <div class="mt-10 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4 pt-4 max-w-md mx-auto">
-                    <a href="{{ $transaction ? route('checkout.resume', ['order_id' => $transaction->order_id]) : route('destinations.index') }}" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-extrabold px-6 sm:px-12 py-4 md:py-4.5 rounded-2xl shadow-lg shadow-rose-600/20 transition-all text-sm md:text-base uppercase tracking-wider flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-arrow-rotate-right text-base"></i> Coba Transaksi Lagi
+                    <a href="{{ route('destinations.index') }}" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-extrabold px-6 sm:px-12 py-4 md:py-4.5 rounded-2xl shadow-lg shadow-rose-600/20 transition-all text-sm md:text-base uppercase tracking-wider flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-arrow-rotate-right text-base"></i> Pesan Tiket Baru
                     </a>
                     <a href="{{ route('home') }}" class="w-full bg-white border border-slate-200 text-slate-700 font-extrabold px-6 sm:px-12 py-4 md:py-4.5 rounded-2xl hover:bg-slate-50 transition-all text-sm md:text-base uppercase tracking-wider text-center">
                         Kembali Ke Beranda
@@ -284,7 +329,7 @@
             </div>
         @endif
 
-        @if($transaction && in_array($transaction->status, ['settlement', 'success']))
+        @if($transaction && ($showQr ?? false))
             <!-- QR Code Zoom Modal -->
             <div x-show="showZoomModal" 
                  class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"

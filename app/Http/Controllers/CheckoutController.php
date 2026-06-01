@@ -7,6 +7,8 @@ use App\Jobs\SendInvoicePendingMailJob;
 use App\Models\Ticket;
 use App\Models\Transaction;
 use App\Services\MidtransService;
+use App\Services\TransactionPaymentService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -25,6 +27,7 @@ class CheckoutController extends Controller
         if (!$date) {
             return response()->json(['available' => $ticket->daily_quota]);
         }
+
         return response()->json(['available' => $ticket->getAvailableQuota($date)]);
     }
 
@@ -60,7 +63,7 @@ class CheckoutController extends Controller
                     $formattedKey = date('Y-m-d', strtotime($dateKey));
                 }
                 if ($formattedKey === $dateStr) {
-                    $soldQty = (int)$qty;
+                    $soldQty = (int) $qty;
                     break;
                 }
             }
@@ -70,7 +73,7 @@ class CheckoutController extends Controller
         return response()->json($quotas);
     }
 
-    public function resume(Request $request): View
+    public function resume(Request $request, MidtransService $midtransService, TransactionPaymentService $paymentService): View|RedirectResponse
     {
         $orderId = $request->query('order_id');
 
@@ -89,29 +92,48 @@ class CheckoutController extends Controller
             abort(404, 'Transaksi tidak ditemukan atau sudah tidak dapat dilanjutkan.');
         }
 
-        // Always regenerate snap token to ensure it's valid
-        $midtransService = app(MidtransService::class);
-        $transaction->load(['user', 'ticket']);
+        $transaction->refreshPaymentExpiresAt();
+        $transaction->refresh();
 
-        // Keep the original transaction order_id in the DB, but use a temporary one for Midtrans snap re-creation.
+        if ($paymentService->expirePendingPayment($transaction) || $transaction->fresh()->status !== 'pending') {
+            return redirect()
+                ->route('history.index')
+                ->with('error', 'Batas waktu pembayaran (' . Transaction::paymentTimeoutLabel() . ') telah habis. Pesanan dibatalkan, kuota dikembalikan, dan kode pembayaran tidak lagi berlaku.');
+        }
+
+        $transaction->load(['user', 'ticket']);
         $snapOrderId = $transaction->order_id . '-R' . now()->format('His');
         $snapToken = $midtransService->createSnapToken($transaction, $transaction->ticket, $snapOrderId);
         $transaction->update(['snap_token' => $snapToken]);
+        $paymentService->recordSnapOrder($transaction, $snapOrderId);
 
         return view('checkout.resume', compact('transaction'));
     }
 
-    public function store(CheckoutRequest $request, Ticket $ticket, MidtransService $midtransService): RedirectResponse
-    {
+    public function store(
+        CheckoutRequest $request,
+        Ticket $ticket,
+        MidtransService $midtransService,
+        TransactionPaymentService $paymentService,
+    ): RedirectResponse {
         $payload = $request->validated();
 
-        $transaction = DB::transaction(function () use ($ticket, $payload) {
+        $transaction = DB::transaction(function () use ($ticket, $payload, $paymentService) {
             $lockedTicket = Ticket::query()->lockForUpdate()->findOrFail($ticket->id);
+
+            $paymentService->expireDuplicatePendingOrders(
+                (int) auth()->id(),
+                $lockedTicket->id,
+                $payload['booking_date'],
+            );
+
             $availableQuota = $lockedTicket->getAvailableQuota($payload['booking_date']);
 
             if ($payload['qty'] > $availableQuota) {
                 abort(422, 'Kuota tiket tidak mencukupi untuk tanggal tersebut.');
             }
+
+            $paymentExpiresAt = Transaction::paymentExpiresAfter(now());
 
             return Transaction::query()->create([
                 'order_id' => 'ORD-' . now()->format('YmdHis') . '-' . strtoupper(str()->random(6)),
@@ -121,74 +143,138 @@ class CheckoutController extends Controller
                 'total_price' => $lockedTicket->price * (int) $payload['qty'],
                 'booking_date' => $payload['booking_date'],
                 'status' => 'pending',
-                'qr_code_token' => (string) str()->uuid(),
+                'payment_expires_at' => $paymentExpiresAt,
+                'last_midtrans_order_id' => null,
+                'qr_code_token' => null,
             ]);
         });
 
         $transaction->load(['user', 'ticket']);
         $snapToken = $midtransService->createSnapToken($transaction, $transaction->ticket);
         $transaction->update(['snap_token' => $snapToken]);
+        $paymentService->recordSnapOrder($transaction, $transaction->order_id);
         SendInvoicePendingMailJob::dispatch($transaction);
 
         return back()->with('success', 'Token pembayaran berhasil dibuat.')->with('snap_token', $snapToken);
     }
 
-    public function finish(Request $request): RedirectResponse|View
+    public function finish(Request $request, MidtransService $midtransService, TransactionPaymentService $paymentService): RedirectResponse|View
     {
+        if (!auth()->check()) {
+            return redirect()->guest(route('login'));
+        }
+
         $orderId = $request->query('order_id');
-        $status = $request->query('transaction_status', $request->query('status', ''));
 
-        // If no order_id, show not found
         if (!$orderId) {
-            return view('checkout.finish', ['transaction' => null, 'status' => 'not_found']);
+            return view('checkout.finish', [
+                'transaction' => null,
+                'status' => 'not_found',
+                'showQr' => false,
+            ]);
         }
 
-        $transaction = Transaction::query()
-            ->where('order_id', $orderId)
-            ->with(['ticket.destination.coverImage', 'ticket.destination.images'])
-            ->first();
+        $transaction = TransactionPaymentService::findByMidtransOrderId((string) $orderId);
 
-        // If not found, try searching without the -R suffix (for resumed transactions)
-        if (!$transaction && str_contains($orderId, '-R')) {
-            $originalOrderId = explode('-R', $orderId)[0];
-            $transaction = Transaction::query()
-                ->where('order_id', 'like', $originalOrderId . '%')
-                ->with(['ticket.destination.coverImage', 'ticket.destination.images'])
-                ->first();
-        }
-
-        // If transaction doesn't exist, show not found
         if (!$transaction) {
-            return view('checkout.finish', ['transaction' => null, 'status' => 'not_found']);
+            return view('checkout.finish', [
+                'transaction' => null,
+                'status' => 'not_found',
+                'showQr' => false,
+            ]);
         }
 
-        // If payment is still pending, double check with Midtrans API directly.
-        // This is crucial for local testing where webhooks can't reach localhost.
-        if ($transaction->status === 'pending') {
-            $midtransService = app(MidtransService::class);
-            $midtransStatus = $midtransService->checkTransactionStatus($orderId);
+        $transaction->load(['ticket.destination.coverImage', 'ticket.destination.images', 'user']);
 
-            if ($midtransStatus && in_array($midtransStatus->transaction_status, ['settlement', 'success', 'capture'], true)) {
-                DB::transaction(function () use ($transaction) {
-                    $transaction->update(['status' => 'settlement']);
-                    if ($transaction->ticket && $transaction->ticket->destination && $transaction->ticket->destination->owner) {
-                        $owner = $transaction->ticket->destination->owner;
-                        $owner->increment('balance', $transaction->total_price);
+        if ($transaction->user_id !== auth()->id()) {
+            abort(403, 'Anda tidak memiliki akses ke transaksi ini.');
+        }
+
+        $displayStatus = $transaction->status;
+
+        if ($transaction->status === 'pending') {
+            $midtransStatus = $midtransService->checkTransactionStatus((string) $orderId);
+
+            if ($midtransStatus && $paymentService->isSuccessfulMidtransStatus($midtransStatus->transaction_status ?? null)) {
+                $result = $paymentService->attemptSettle($transaction, $midtransStatus);
+
+                $transaction->refresh();
+
+                if ($result === 'settled' || $result === 'already_settled') {
+                    if (empty($transaction->qr_code_token)) {
+                        $transaction->issueEntryQrToken();
                     }
-                });
-                
-                \App\Jobs\SendETicketMailJob::dispatch($transaction->fresh(['user', 'ticket.destination']));
+                    $transaction->refresh();
+                    $displayStatus = 'settlement';
+                } elseif ($result === 'rejected_late') {
+                    $displayStatus = 'late_payment_rejected';
+                } else {
+                    $displayStatus = $transaction->status;
+                }
             } elseif ($midtransStatus && in_array($midtransStatus->transaction_status, ['expire', 'cancel', 'failure'], true)) {
-                DB::transaction(function () use ($transaction) {
-                    $transaction->update(['status' => 'expire']);
-                });
+                $paymentService->expirePendingPayment($transaction->fresh(), cancelOnMidtrans: false);
+                $transaction->refresh();
+                $displayStatus = 'expire';
+            } elseif ($transaction->isPaymentWindowExpired()) {
+                $paymentService->expirePendingPayment($transaction);
+                $transaction->refresh();
+                $displayStatus = 'expire';
             } else {
                 return redirect()->route('checkout.resume', ['order_id' => $transaction->order_id])
                     ->with('warning', 'Silakan lanjutkan pembayaran Anda.');
             }
         }
 
-        // For successful or failed payments, show the appropriate finish page
-        return view('checkout.finish', ['transaction' => $transaction, 'status' => $transaction->status]);
+        $showQr = $displayStatus === 'settlement'
+            && $transaction->user_id === auth()->id()
+            && ! empty($transaction->qr_code_token);
+
+        return view('checkout.finish', [
+            'transaction' => $transaction,
+            'status' => $displayStatus,
+            'showQr' => $showQr,
+        ]);
+    }
+
+    public function expirePayment(Request $request, TransactionPaymentService $paymentService): JsonResponse
+    {
+        $orderId = trim((string) $request->input('order_id', ''));
+
+        if ($orderId === '') {
+            return response()->json(['success' => false, 'message' => 'Order ID tidak valid.'], 422);
+        }
+
+        $transaction = Transaction::query()
+            ->where('order_id', $orderId)
+            ->where('user_id', auth()->id())
+            ->first();
+
+        if (!$transaction) {
+            return response()->json(['success' => false, 'message' => 'Transaksi tidak ditemukan.'], 404);
+        }
+
+        if ($transaction->status !== 'pending') {
+            return response()->json([
+                'success' => true,
+                'already_expired' => true,
+                'redirect' => route('history.index'),
+            ]);
+        }
+
+        if (!$transaction->isPaymentWindowExpired()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Batas waktu pembayaran belum habis.',
+                'expires_at' => $transaction->paymentExpiresAt()->toIso8601String(),
+            ], 422);
+        }
+
+        $paymentService->expirePendingPayment($transaction);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pesanan dibatalkan. Kuota tiket telah dikembalikan dan kode pembayaran tidak lagi berlaku.',
+            'redirect' => route('history.index'),
+        ]);
     }
 }

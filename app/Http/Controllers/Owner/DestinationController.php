@@ -83,7 +83,9 @@ class DestinationController extends Controller
         try {
             abort_unless((int) $destination->user_id === (int) auth()->id(), 403);
 
-            $destination->update([
+            $wasActive = $destination->status === 'active';
+
+            $updateData = [
                 'name' => $request->input('name'),
                 'description' => $request->input('description'),
                 'address' => $request->input('address'),
@@ -91,8 +93,13 @@ class DestinationController extends Controller
                 'map_link' => $request->input('map_link'),
                 'open_time' => $request->input('open_time'),
                 'close_time' => $request->input('close_time'),
-                'status' => 'pending',
-            ]);
+            ];
+
+            if (! $wasActive) {
+                $updateData['status'] = 'pending';
+            }
+
+            $destination->update($updateData);
 
             $this->syncTags($destination, $request);
 
@@ -127,7 +134,11 @@ class DestinationController extends Controller
                 }
             }
 
-            return back()->with('success', 'Destinasi berhasil diperbarui.');
+            $message = $wasActive
+                ? 'Destinasi berhasil diperbarui dan tetap aktif di katalog.'
+                : 'Destinasi berhasil diperbarui dan menunggu verifikasi admin.';
+
+            return back()->with('success', $message);
         } catch (\Throwable $e) {
             return back()->withInput()->withErrors(['error' => 'Gagal simpan: ' . $e->getMessage()]);
         }

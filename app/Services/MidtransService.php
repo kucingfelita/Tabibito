@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Ticket;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\Log;
 use Midtrans\Config;
 use Midtrans\Notification;
 use Midtrans\Snap;
@@ -19,8 +20,11 @@ class MidtransService
         Config::$is3ds = true;
     }
 
-    public function createSnapToken(Transaction $transaction, Ticket $ticket, string $orderId = null): string
+    public function createSnapToken(Transaction $transaction, Ticket $ticket, ?string $orderId = null): string
     {
+        $expiry = Transaction::midtransExpiryConfig();
+        $snapOrderId = $orderId ?? $transaction->order_id;
+
         $params = [
             'enabled_payments' => [
                 'credit_card',
@@ -37,8 +41,13 @@ class MidtransService
                 'cimb_clicks',
             ],
             'transaction_details' => [
-                'order_id' => $orderId ?? $transaction->order_id,
+                'order_id' => $snapOrderId,
                 'gross_amount' => (int) $transaction->total_price,
+            ],
+            'expiry' => [
+                'start_time' => now()->timezone('Asia/Jakarta')->format('Y-m-d H:i:s O'),
+                'unit' => $expiry['unit'],
+                'duration' => $expiry['duration'],
             ],
             'item_details' => [
                 [
@@ -61,6 +70,38 @@ class MidtransService
         ];
 
         return Snap::getSnapToken($params);
+    }
+
+    /**
+     * Batalkan transaksi di Midtrans agar VA/QRIS tidak dapat dibayar setelah batas 6 jam.
+     */
+    public function cancelOrExpireTransaction(string $orderId): void
+    {
+        if ($orderId === '') {
+            return;
+        }
+
+        try {
+            MidtransTransaction::cancel($orderId);
+            Log::info('Midtrans transaction cancelled', ['order_id' => $orderId]);
+
+            return;
+        } catch (\Exception $e) {
+            Log::debug('Midtrans cancel failed, trying expire', [
+                'order_id' => $orderId,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        try {
+            MidtransTransaction::expire($orderId);
+            Log::info('Midtrans transaction expired', ['order_id' => $orderId]);
+        } catch (\Exception $e) {
+            Log::warning('Midtrans cancel/expire failed', [
+                'order_id' => $orderId,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     public function parseNotification(): Notification

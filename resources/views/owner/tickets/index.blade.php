@@ -54,7 +54,7 @@
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary-600 transition-colors">
                                     <i class="fa-solid fa-tags text-sm"></i>
                                 </div>
-                                <input type="text" name="name" required placeholder="Contoh: Tiket Masuk Terusan Akhir Pekan" max-length="120" value="{{ old('name') }}"
+                                <input type="text" name="name" required placeholder="Contoh: Tiket Masuk Terusan Akhir Pekan" maxlength="120" value="{{ old('name') }}"
                                        class="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-11 pr-4 py-4 text-slate-800 font-bold focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all placeholder:text-slate-400/80">
                             </div>
                         </div>
@@ -148,7 +148,7 @@
                                     <!-- Nama Paket -->
                                     <div class="space-y-1">
                                         <label class="block text-[8px] font-black text-slate-400 uppercase tracking-widest ml-1">Nama Kategori / Paket</label>
-                                        <input type="text" name="name" required value="{{ $ticket->name }}" class="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-2.5 text-xs text-slate-800 font-bold" max-length="120">
+                                        <input type="text" name="name" required value="{{ $ticket->name }}" class="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-2.5 text-xs text-slate-800 font-bold" maxlength="120">
                                     </div>
 
                                     <!-- Price & Quota -->
