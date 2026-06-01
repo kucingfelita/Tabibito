@@ -5,7 +5,7 @@
     <section class="relative rounded-[2rem] md:rounded-[3rem] overflow-hidden bg-slate-900 min-h-[460px] md:min-h-[580px] flex items-center px-6 md:px-16 py-12 md:py-24 shadow-2xl shadow-slate-950/20">
         <!-- Background Image with Overlay -->
         <div class="absolute inset-0 z-0">
-            <img src="{{ asset('assets/images/hero.png') }}" alt="Keindahan Alam dan Pariwisata Jawa Tengah - Tabibito Jateng" class="w-full h-full object-cover opacity-50 scale-105 animate-[pulse_8s_infinite]">
+            <img src="{{ asset('assets/images/hero.png') }}" alt="Keindahan Alam dan Pariwisata Jawa Tengah - Tabibito Jateng" fetchpriority="high" loading="eager" class="w-full h-full object-cover opacity-50 scale-105 animate-[pulse_8s_infinite]">
             <div class="absolute inset-0 bg-gradient-to-tr from-slate-950 via-slate-900/60 to-transparent"></div>
         </div>
 
