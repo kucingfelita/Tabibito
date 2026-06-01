@@ -20,7 +20,7 @@ class DestinationController extends Controller
             ->withCount(['tickets', 'transactions as sold_transactions_count' => function ($query) {
                 $query->whereIn('transactions.status', ['settlement', 'used']);
             }])
-            ->when($status !== 'all' && in_array($status, ['pending', 'active', 'rejected'], true), function ($query) use ($status) {
+            ->when($status !== 'all' && in_array($status, ['pending', 'active', 'rejected', 'maintenance'], true), function ($query) use ($status) {
                 $query->where('status', $status);
             })
             ->when($search !== '', function ($query) use ($search) {
@@ -44,6 +44,7 @@ class DestinationController extends Controller
             'pending' => Destination::query()->where('status', 'pending')->count(),
             'active' => Destination::query()->where('status', 'active')->count(),
             'rejected' => Destination::query()->where('status', 'rejected')->count(),
+            'maintenance' => Destination::query()->where('status', 'maintenance')->count(),
         ];
 
         return view('admin.destinations.index', compact('destinations', 'status', 'search', 'counts'));

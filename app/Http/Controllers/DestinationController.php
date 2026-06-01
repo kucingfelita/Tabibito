@@ -63,7 +63,7 @@ class DestinationController extends Controller
 
     public function show(Destination $destination): View
     {
-        abort_unless($destination->status === 'active', 404);
+        abort_unless($destination->isBookable(), 404);
 
         $destination->load(['tags', 'images', 'coverImage', 'slideImages', 'tickets']);
         $destination->loadAvg('transactions', 'rating');
@@ -79,7 +79,7 @@ class DestinationController extends Controller
 
     public function loadMoreReviews(Request $request, Destination $destination)
     {
-        abort_unless($destination->status === 'active', 404);
+        abort_unless($destination->isBookable(), 404);
 
         $reviews = $destination->transactions()
             ->whereNotNull('rating')

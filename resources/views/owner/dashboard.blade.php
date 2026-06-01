@@ -64,6 +64,42 @@
         </div>
     </div>
 
+    <!-- Export Transaksi -->
+    <div class="mb-10 bg-white rounded-[2.5rem] p-6 md:p-8 border border-slate-100 shadow-xl shadow-slate-200/30">
+        <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+            <div>
+                <h2 class="text-lg font-black text-slate-900 tracking-tight flex items-center gap-2">
+                    <i class="fa-solid fa-file-csv text-emerald-500"></i> Export Laporan Transaksi
+                </h2>
+                <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mt-1">Unduh CSV untuk laporan pajak atau administrasi</p>
+            </div>
+            <form method="GET" action="{{ route('owner.transactions.export') }}" class="flex flex-col sm:flex-row flex-wrap gap-3 items-end">
+                <div>
+                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Dari</label>
+                    <input type="date" name="from" class="bg-slate-50 border border-slate-100 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-800">
+                </div>
+                <div>
+                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Sampai</label>
+                    <input type="date" name="to" class="bg-slate-50 border border-slate-100 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-800">
+                </div>
+                <div>
+                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Status</label>
+                    <select name="status" class="bg-slate-50 border border-slate-100 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-800 min-w-[140px]">
+                        <option value="all">Semua</option>
+                        <option value="settlement">Lunas</option>
+                        <option value="used">Sudah Scan</option>
+                        <option value="pending">Pending</option>
+                        <option value="expire">Kedaluwarsa</option>
+                        <option value="cancelled">Dibatalkan</option>
+                    </select>
+                </div>
+                <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-6 py-2.5 rounded-xl text-xs uppercase tracking-wider shadow-md shadow-emerald-200 flex items-center gap-2">
+                    <i class="fa-solid fa-download"></i> Unduh CSV
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- Revenue Chart Section -->
     <div class="bg-white rounded-[2.5rem] p-8 md:p-10 border border-slate-100 shadow-xl shadow-slate-200/30">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10 pb-6 border-b border-slate-50">

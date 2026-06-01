@@ -156,6 +156,12 @@
                                         <i class="fa-solid fa-circle-xmark text-[8px]"></i> Ditolak
                                     </span>
                                 @endif
+
+                                @if($wd->status === 'rejected' && $wd->reject_reason)
+                                    <p class="text-[10px] text-rose-700 font-semibold mt-2 max-w-xs text-right sm:text-right">
+                                        <span class="font-black uppercase tracking-wider text-rose-500">Alasan:</span> {{ $wd->reject_reason }}
+                                    </p>
+                                @endif
                                 
                                 <p class="text-[10px] text-slate-400 font-bold tracking-tight mt-1">{{ strtoupper($wd->ewallet_or_bank_name) }} • {{ $wd->account_number }}</p>
                             </div>

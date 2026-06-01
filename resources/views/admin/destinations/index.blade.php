@@ -22,7 +22,7 @@
 
     <!-- Filter tabs -->
     <div class="flex flex-wrap gap-2 mb-6">
-        @foreach(['all' => 'Semua', 'pending' => 'Pending', 'active' => 'Aktif', 'rejected' => 'Ditolak'] as $key => $label)
+        @foreach(['all' => 'Semua', 'pending' => 'Pending', 'active' => 'Aktif', 'maintenance' => 'Perawatan', 'rejected' => 'Ditolak'] as $key => $label)
             <a href="{{ route('admin.destinations.index', array_filter(['status' => $key !== 'all' ? $key : null, 'q' => $search ?: null])) }}"
                class="px-4 py-2 rounded-xl text-xs font-extrabold uppercase tracking-wider transition-all
                       {{ $status === $key ? 'bg-primary-600 text-white shadow-md' : 'bg-white text-slate-600 border border-slate-100 hover:bg-slate-50' }}">
@@ -60,9 +60,15 @@
                     <span class="absolute top-3 left-3 px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider
                         @if($destination->status === 'active') bg-emerald-500 text-white
                         @elseif($destination->status === 'pending') bg-amber-500 text-white
+                        @elseif($destination->status === 'maintenance') bg-slate-500 text-white
                         @elseif($destination->status === 'rejected') bg-rose-500 text-white
                         @else bg-slate-500 text-white @endif">
-                        {{ $destination->status === 'active' ? 'Aktif' : ($destination->status === 'pending' ? 'Pending' : 'Ditolak') }}
+                        @if($destination->status === 'active') Aktif
+                        @elseif($destination->status === 'pending') Pending
+                        @elseif($destination->status === 'maintenance') Perawatan
+                        @elseif($destination->status === 'rejected') Ditolak
+                        @else {{ $destination->status }}
+                        @endif
                     </span>
                 </div>
 
@@ -104,12 +110,11 @@
                                     <i class="fa-solid fa-check"></i>
                                 </button>
                             </form>
-                            <form method="POST" action="{{ route('admin.destinations.reject', $destination) }}">
-                                @csrf @method('PATCH')
-                                <button type="submit" class="bg-rose-50 hover:bg-rose-100 text-rose-600 font-extrabold px-3 py-3 rounded-xl text-xs border border-rose-100" title="Tolak">
-                                    <i class="fa-solid fa-xmark"></i>
-                                </button>
-                            </form>
+                            <button type="button"
+                                    onclick="openRejectDestinationModal(@js(route('admin.destinations.reject', $destination)), @js($destination->name))"
+                                    class="bg-rose-50 hover:bg-rose-100 text-rose-600 font-extrabold px-3 py-3 rounded-xl text-xs border border-rose-100" title="Tolak">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
                         @endif
                     </div>
                 </div>
@@ -124,4 +129,8 @@
 
     <div class="mt-8">{{ $destinations->links() }}</div>
 </div>
+
+@push('modals')
+    @include('admin.partials.reject-destination-modal')
+@endpush
 @endsection

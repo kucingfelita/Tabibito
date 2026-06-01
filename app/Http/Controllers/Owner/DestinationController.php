@@ -98,6 +98,7 @@ class DestinationController extends Controller
 
             if (! $wasActive) {
                 $updateData['status'] = 'pending';
+                $updateData['rejection_reason'] = null;
             }
 
             $destination->update($updateData);
@@ -172,6 +173,25 @@ class DestinationController extends Controller
         $destination->delete();
 
         return back()->with('success', 'Destinasi berhasil dihapus.');
+    }
+
+    public function toggleMaintenance(Destination $destination): RedirectResponse
+    {
+        abort_unless((int) $destination->user_id === (int) auth()->id(), 403);
+
+        if ($destination->status === 'active') {
+            $destination->update(['status' => 'maintenance']);
+
+            return back()->with('success', 'Destinasi dimatikan sementara (mode perawatan). Tidak bisa dipesan traveler.');
+        }
+
+        if ($destination->status === 'maintenance') {
+            $destination->update(['status' => 'active']);
+
+            return back()->with('success', 'Destinasi kembali dibuka untuk pemesanan.');
+        }
+
+        return back()->withErrors(['error' => 'Mode perawatan hanya untuk destinasi yang sudah aktif.']);
     }
 
     private function compressAndStoreImage(UploadedFile $file): string

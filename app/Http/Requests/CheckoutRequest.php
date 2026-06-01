@@ -41,8 +41,8 @@ class CheckoutRequest extends FormRequest
 
             $ticket->loadMissing('destination');
 
-            if ($ticket->destination?->status !== 'active') {
-                $validator->errors()->add('booking_date', 'Destinasi wisata ini belum tersedia untuk pemesanan.');
+            if (! $ticket->destination?->isBookable()) {
+                $validator->errors()->add('booking_date', 'Destinasi wisata ini sedang tidak tersedia untuk pemesanan.');
 
                 return;
             }

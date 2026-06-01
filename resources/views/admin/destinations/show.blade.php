@@ -47,8 +47,15 @@
                 <span class="inline-flex self-start px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider mb-3
                     @if($destination->status === 'active') bg-emerald-500
                     @elseif($destination->status === 'pending') bg-amber-500
-                    @else bg-rose-500 @endif">
-                    {{ $destination->status === 'active' ? 'Aktif' : ($destination->status === 'pending' ? 'Menunggu Persetujuan' : 'Ditolak') }}
+                    @elseif($destination->status === 'maintenance') bg-slate-500
+                    @elseif($destination->status === 'rejected') bg-rose-500
+                    @else bg-slate-600 @endif">
+                    @if($destination->status === 'active') Aktif
+                    @elseif($destination->status === 'pending') Menunggu Persetujuan
+                    @elseif($destination->status === 'maintenance') Mode Perawatan
+                    @elseif($destination->status === 'rejected') Ditolak
+                    @else {{ $destination->status }}
+                    @endif
                 </span>
                 <h1 class="text-2xl md:text-3xl font-black tracking-tight leading-tight">{{ $destination->name }}</h1>
                 <p class="text-sm text-slate-300 font-semibold mt-2 flex items-center gap-2">
@@ -67,17 +74,23 @@
                                 <i class="fa-solid fa-check mr-1"></i> Setujui Destinasi
                             </button>
                         </form>
-                        <form method="POST" action="{{ route('admin.destinations.reject', $destination) }}">
-                            @csrf @method('PATCH')
-                            <button type="submit" class="bg-white/10 hover:bg-white/20 text-white font-extrabold px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider border border-white/20">
-                                Tolak
-                            </button>
-                        </form>
+                        <button type="button"
+                                onclick="openRejectDestinationModal(@js(route('admin.destinations.reject', $destination)), @js($destination->name))"
+                                class="bg-white/10 hover:bg-white/20 text-white font-extrabold px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider border border-white/20">
+                            Tolak
+                        </button>
                     </div>
                 @endif
             </div>
         </div>
     </div>
+
+    @if($destination->status === 'rejected' && $destination->rejection_reason)
+        <div class="mb-6 rounded-2xl bg-rose-50 border border-rose-100 px-5 py-4">
+            <p class="text-[9px] font-black text-rose-500 uppercase tracking-widest">Alasan penolakan</p>
+            <p class="text-sm font-semibold text-rose-900 mt-1">{{ $destination->rejection_reason }}</p>
+        </div>
+    @endif
 
     <!-- Stats row -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -232,4 +245,8 @@
         </div>
     </div>
 </div>
+
+@push('modals')
+    @include('admin.partials.reject-destination-modal')
+@endpush
 @endsection

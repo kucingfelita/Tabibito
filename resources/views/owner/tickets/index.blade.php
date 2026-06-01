@@ -127,10 +127,13 @@
                                 @php $destStatus = $ticket->destination->status ?? 'pending'; @endphp
                                 <span class="px-2.5 py-1 rounded-lg font-extrabold text-[10px] uppercase tracking-wider border flex items-center gap-1.5 shrink-0
                                     @if($destStatus === 'active') bg-emerald-50 text-emerald-600 border-emerald-100
+                                    @elseif($destStatus === 'maintenance') bg-slate-100 text-slate-600 border-slate-200
                                     @elseif($destStatus === 'rejected') bg-rose-50 text-rose-600 border-rose-100
                                     @else bg-amber-50 text-amber-600 border-amber-100 @endif">
                                     @if($destStatus === 'active')
                                         <i class="fa-solid fa-circle-check text-[8px]"></i> Siap Dijual
+                                    @elseif($destStatus === 'maintenance')
+                                        <i class="fa-solid fa-pause text-[8px]"></i> Perawatan
                                     @elseif($destStatus === 'rejected')
                                         <i class="fa-solid fa-circle-xmark text-[8px]"></i> Belum Publik
                                     @else

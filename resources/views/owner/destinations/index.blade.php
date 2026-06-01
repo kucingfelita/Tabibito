@@ -226,30 +226,65 @@
                             <p class="text-xs text-slate-400 font-semibold mt-0.5 flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-rose-500"></i>{{ $destination->city }}, Jawa Tengah</p>
                         </div>
                         
-                        <!-- Status Verifikasi -->
-                        <div class="flex items-center gap-3 px-4 py-2 rounded-xl shrink-0 border
-                            @if($destination->status === 'active') bg-emerald-50 border-emerald-100
-                            @elseif($destination->status === 'rejected') bg-rose-50 border-rose-100
-                            @else bg-amber-50 border-amber-100 @endif">
-                            @if($destination->status === 'active')
-                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>
-                                <span class="text-[10px] font-black text-emerald-700 uppercase tracking-widest">Disetujui Admin</span>
-                            @elseif($destination->status === 'rejected')
-                                <span class="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0"></span>
-                                <span class="text-[10px] font-black text-rose-700 uppercase tracking-widest">Ditolak Admin</span>
-                            @else
-                                <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse shrink-0"></span>
-                                <span class="text-[10px] font-black text-amber-700 uppercase tracking-widest">Menunggu Review</span>
+                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0">
+                            <!-- Status Verifikasi -->
+                            <div class="flex items-center gap-3 px-4 py-2 rounded-xl border
+                                @if($destination->status === 'active') bg-emerald-50 border-emerald-100
+                                @elseif($destination->status === 'rejected') bg-rose-50 border-rose-100
+                                @elseif($destination->status === 'maintenance') bg-slate-100 border-slate-200
+                                @else bg-amber-50 border-amber-100 @endif">
+                                @if($destination->status === 'active')
+                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>
+                                    <span class="text-[10px] font-black text-emerald-700 uppercase tracking-widest">Disetujui Admin</span>
+                                @elseif($destination->status === 'rejected')
+                                    <span class="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0"></span>
+                                    <span class="text-[10px] font-black text-rose-700 uppercase tracking-widest">Ditolak Admin</span>
+                                @elseif($destination->status === 'maintenance')
+                                    <span class="w-2.5 h-2.5 rounded-full bg-slate-500 shrink-0"></span>
+                                    <span class="text-[10px] font-black text-slate-700 uppercase tracking-widest">Mode Perawatan</span>
+                                @else
+                                    <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse shrink-0"></span>
+                                    <span class="text-[10px] font-black text-amber-700 uppercase tracking-widest">Menunggu Review</span>
+                                @endif
+                            </div>
+                            @if(in_array($destination->status, ['active', 'maintenance'], true))
+                                <form method="POST" action="{{ route('owner.destinations.maintenance', $destination) }}"
+                                      onsubmit="return confirm(@js($destination->status === 'active' ? 'Matikan pemesanan sementara? Destinasi tidak tampil untuk traveler.' : 'Buka kembali destinasi untuk pemesanan?'));">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit"
+                                            class="px-4 py-2 rounded-xl text-[10px] font-extrabold uppercase tracking-wider border transition-all
+                                            {{ $destination->status === 'maintenance' ? 'bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
+                                        @if($destination->status === 'maintenance')
+                                            <i class="fa-solid fa-play mr-1"></i> Buka Pemesanan
+                                        @else
+                                            <i class="fa-solid fa-pause mr-1"></i> Mode Perawatan
+                                        @endif
+                                    </button>
+                                </form>
                             @endif
                         </div>
                     </div>
+
+                    @if($destination->status === 'maintenance')
+                        <div class="mb-6 rounded-2xl bg-slate-50 border border-slate-200 px-5 py-4 text-sm text-slate-700 relative z-10">
+                            <p class="font-extrabold flex items-center gap-2"><i class="fa-solid fa-screwdriver-wrench text-slate-500"></i> Destinasi sedang ditutup sementara</p>
+                            <p class="text-xs text-slate-500 font-semibold mt-1">Traveler tidak bisa memesan tiket sampai Anda menekan <strong>Buka Pemesanan</strong>.</p>
+                        </div>
+                    @endif
 
                     @if($destination->status === 'rejected')
                         <div class="mb-6 rounded-2xl bg-rose-50 border border-rose-100 px-5 py-4 text-sm text-rose-800 relative z-10">
                             <p class="font-extrabold flex items-center gap-2">
                                 <i class="fa-solid fa-circle-xmark"></i> Pengajuan ditolak administrator
                             </p>
-                            <p class="text-xs text-rose-700/90 font-semibold mt-1">Perbaiki data destinasi di bawah, lalu simpan untuk mengajukan ulang verifikasi.</p>
+                            @if($destination->rejection_reason)
+                                <div class="mt-3 p-3 rounded-xl bg-white/80 border border-rose-100">
+                                    <p class="text-[9px] font-black text-rose-500 uppercase tracking-widest mb-1">Alasan dari admin</p>
+                                    <p class="text-sm font-semibold text-rose-900">{{ $destination->rejection_reason }}</p>
+                                </div>
+                            @endif
+                            <p class="text-xs text-rose-700/90 font-semibold mt-3">Perbaiki data di bawah, lalu tekan <strong>Simpan dan Ajukan Ulang</strong>. Pemberitahuan juga dikirim ke email Anda.</p>
                         </div>
                     @endif
 

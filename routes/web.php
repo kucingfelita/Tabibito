@@ -10,6 +10,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MidtransWebhookController;
 use App\Http\Controllers\Owner\DashboardController as OwnerDashboardController;
 use App\Http\Controllers\Owner\DestinationController as OwnerDestinationController;
+use App\Http\Controllers\Owner\TransactionExportController;
 use App\Http\Controllers\Owner\EmployeeController;
 use App\Http\Controllers\Owner\OwnerRegisterController;
 use App\Http\Controllers\Owner\ScanHistoryController;
@@ -100,7 +101,9 @@ Route::prefix('owner')
             Route::get('/destinations', [OwnerDestinationController::class, 'index'])->name('destinations.index');
             Route::post('/destinations', [OwnerDestinationController::class, 'store'])->name('destinations.store');
             Route::put('/destinations/{destination}', [OwnerDestinationController::class, 'update'])->name('destinations.update');
+            Route::patch('/destinations/{destination}/maintenance', [OwnerDestinationController::class, 'toggleMaintenance'])->name('destinations.maintenance');
             Route::delete('/destinations/{destination}', [OwnerDestinationController::class, 'destroy'])->name('destinations.destroy');
+            Route::get('/transactions/export', TransactionExportController::class)->name('transactions.export');
             Route::get('/tickets', [OwnerTicketController::class, 'index'])->name('tickets.index');
             Route::post('/tickets', [OwnerTicketController::class, 'store'])->name('tickets.store');
             Route::put('/tickets/{ticket}', [OwnerTicketController::class, 'update'])->name('tickets.update');

@@ -14,6 +14,7 @@ class Withdrawal extends Model
         'ewallet_or_bank_name',
         'account_number',
         'status',
+        'reject_reason',
         'reference_no',
     ];
 

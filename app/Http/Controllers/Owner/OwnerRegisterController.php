@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Owner;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendOwnerPartnerWelcomeMailJob;
 use App\Models\User;
 use App\Models\Destination;
 use App\Models\DestinationImage;
@@ -119,7 +120,10 @@ class OwnerRegisterController extends Controller
           return redirect()->route('owner.register.step1');
        }
 
-       DB::transaction(function () use ($request, $step1Data) {
+       $registeredUser = null;
+       $registeredDestination = null;
+
+       DB::transaction(function () use ($request, $step1Data, &$registeredUser, &$registeredDestination) {
           $user = User::create([
              'username' => $step1Data['username'],
              'email' => $step1Data['email'],
@@ -180,7 +184,14 @@ class OwnerRegisterController extends Controller
           if (!empty($tagIds)) {
              $destination->tags()->sync($tagIds);
           }
+
+          $registeredUser = $user;
+          $registeredDestination = $destination;
        });
+
+       if ($registeredUser && $registeredDestination) {
+          SendOwnerPartnerWelcomeMailJob::dispatch($registeredUser, $registeredDestination);
+       }
 
        session()->forget('owner_register');
 

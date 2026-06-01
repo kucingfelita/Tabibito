@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendDestinationApprovedMailJob;
+use App\Jobs\SendDestinationRejectedMailJob;
 use App\Models\Destination;
 use App\Models\Transaction;
 use App\Models\User;
@@ -39,17 +41,33 @@ class DashboardController extends Controller
 
     public function approveDestination(Destination $destination): RedirectResponse
     {
-        $destination->update(['status' => 'active']);
+        $destination->update([
+            'status' => 'active',
+            'rejection_reason' => null,
+        ]);
         $destination->owner()->update(['tipe_user' => User::TYPE_OWNER]);
 
-        return back()->with('success', 'Destinasi berhasil di-approve.');
+        SendDestinationApprovedMailJob::dispatch($destination->fresh());
+
+        return back()->with('success', 'Destinasi berhasil di-approve. Email pemberitahuan telah dikirim ke owner.');
     }
 
-    public function rejectDestination(Destination $destination): RedirectResponse
+    public function rejectDestination(Request $request, Destination $destination): RedirectResponse
     {
-        $destination->update(['status' => 'rejected']);
+        $validated = $request->validate([
+            'rejection_reason' => ['required', 'string', 'min:10', 'max:500'],
+        ]);
 
-        return back()->with('success', 'Destinasi ditolak.');
+        $reason = $validated['rejection_reason'];
+
+        $destination->update([
+            'status' => 'rejected',
+            'rejection_reason' => $reason,
+        ]);
+
+        SendDestinationRejectedMailJob::dispatch($destination->fresh(), $reason);
+
+        return back()->with('success', 'Destinasi ditolak. Email pemberitahuan telah dikirim ke owner.');
     }
 
     public function approveWithdrawal(Withdrawal $withdrawal): RedirectResponse
@@ -81,11 +99,11 @@ class DashboardController extends Controller
             return back()->withErrors(['withdrawal' => 'Withdrawal ini sudah diproses.']);
         }
 
-        $request->validate([
-            'reject_reason' => ['nullable', 'string', 'max:500'],
+        $validated = $request->validate([
+            'reject_reason' => ['required', 'string', 'min:10', 'max:500'],
         ]);
 
-        DB::transaction(function () use ($withdrawal) {
+        DB::transaction(function () use ($withdrawal, $validated) {
             $locked = Withdrawal::query()->lockForUpdate()->findOrFail($withdrawal->id);
 
             if ($locked->status !== 'pending') {
@@ -93,7 +111,10 @@ class DashboardController extends Controller
             }
 
             $gross = $locked->gross_amount;
-            $locked->update(['status' => 'rejected']);
+            $locked->update([
+                'status' => 'rejected',
+                'reject_reason' => $validated['reject_reason'],
+            ]);
 
             $locked->user()->lockForUpdate()->first()?->increment('balance', $gross);
         });

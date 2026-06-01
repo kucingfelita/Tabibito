@@ -20,7 +20,13 @@ class Destination extends Model
         'open_time',
         'close_time',
         'status',
+        'rejection_reason',
     ];
+
+    public function isBookable(): bool
+    {
+        return $this->status === 'active';
+    }
 
     public function owner(): BelongsTo
     {

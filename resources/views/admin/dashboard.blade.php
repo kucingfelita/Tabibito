@@ -109,13 +109,11 @@
                             </form>
                             
                             <!-- Reject -->
-                            <form method="POST" action="{{ route('admin.destinations.reject', $destination) }}">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="bg-rose-50 hover:bg-rose-100 text-rose-600 font-extrabold px-4 py-2.5 rounded-xl transition-all text-[10px] uppercase tracking-wider active:scale-95 flex items-center gap-1">
-                                    <i class="fa-solid fa-circle-xmark text-xs"></i> Tolak
-                                </button>
-                            </form>
+                            <button type="button"
+                                    onclick="openRejectDestinationModal(@js(route('admin.destinations.reject', $destination)), @js($destination->name))"
+                                    class="bg-rose-50 hover:bg-rose-100 text-rose-600 font-extrabold px-4 py-2.5 rounded-xl transition-all text-[10px] uppercase tracking-wider active:scale-95 flex items-center gap-1">
+                                <i class="fa-solid fa-circle-xmark text-xs"></i> Tolak
+                            </button>
                         </div>
                     </div>
                 @empty
@@ -150,10 +148,14 @@
                                     <i class="fa-solid fa-circle-check text-xs"></i> Setujui
                                 </button>
                             </form>
-                            <form method="POST" action="{{ route('admin.withdrawals.reject', $withdrawal) }}" onsubmit="return confirm('Tolak pencairan ini? Saldo owner akan dikembalikan.');">
+                            <form method="POST" action="{{ route('admin.withdrawals.reject', $withdrawal) }}"
+                                  class="flex flex-col gap-2 items-stretch sm:items-end"
+                                  onsubmit="return confirm('Tolak pencairan ini? Saldo owner akan dikembalikan.');">
                                 @csrf
                                 @method('PATCH')
-                                <button type="submit" class="bg-rose-50 hover:bg-rose-100 text-rose-600 font-extrabold px-5 py-2.5 rounded-xl transition-all text-[10px] uppercase tracking-wider border border-rose-100 flex items-center gap-1.5">
+                                <textarea name="reject_reason" required minlength="10" maxlength="500" rows="2" placeholder="Alasan penolakan (min. 10 karakter)"
+                                          class="w-full sm:w-56 text-[10px] rounded-xl border border-rose-100 bg-white px-3 py-2 font-semibold text-slate-700 resize-none"></textarea>
+                                <button type="submit" class="bg-rose-50 hover:bg-rose-100 text-rose-600 font-extrabold px-5 py-2.5 rounded-xl transition-all text-[10px] uppercase tracking-wider border border-rose-100 flex items-center justify-center gap-1.5">
                                     <i class="fa-solid fa-xmark text-xs"></i> Tolak
                                 </button>
                             </form>
@@ -231,4 +233,8 @@
         </div>
     </div>
 </div>
+
+@push('modals')
+    @include('admin.partials.reject-destination-modal')
+@endpush
 @endsection

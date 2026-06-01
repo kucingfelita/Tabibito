@@ -11,7 +11,7 @@ class TicketController extends Controller
    {
       $ticket->load(['destination.tags', 'destination.images']);
 
-      abort_unless($ticket->destination?->status === 'active', 404);
+      abort_unless($ticket->destination?->isBookable(), 404);
 
       return view('tickets.show', compact('ticket'));
    }
