@@ -124,8 +124,18 @@
                                     <p class="text-[9px] font-black text-primary-600 uppercase tracking-widest">{{ $ticket->destination->name }}</p>
                                     <h4 class="font-black text-slate-900 text-base mt-0.5 leading-snug">{{ $ticket->name }}</h4>
                                 </div>
-                                <span class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-600 font-extrabold text-[10px] uppercase tracking-wider border border-emerald-100 flex items-center gap-1.5 shrink-0">
-                                    <i class="fa-solid fa-circle-check text-[8px] animate-pulse"></i> Aktif
+                                @php $destStatus = $ticket->destination->status ?? 'pending'; @endphp
+                                <span class="px-2.5 py-1 rounded-lg font-extrabold text-[10px] uppercase tracking-wider border flex items-center gap-1.5 shrink-0
+                                    @if($destStatus === 'active') bg-emerald-50 text-emerald-600 border-emerald-100
+                                    @elseif($destStatus === 'rejected') bg-rose-50 text-rose-600 border-rose-100
+                                    @else bg-amber-50 text-amber-600 border-amber-100 @endif">
+                                    @if($destStatus === 'active')
+                                        <i class="fa-solid fa-circle-check text-[8px]"></i> Siap Dijual
+                                    @elseif($destStatus === 'rejected')
+                                        <i class="fa-solid fa-circle-xmark text-[8px]"></i> Belum Publik
+                                    @else
+                                        <i class="fa-solid fa-hourglass-half text-[8px]"></i> Menunggu Verifikasi
+                                    @endif
                                 </span>
                             </div>
 

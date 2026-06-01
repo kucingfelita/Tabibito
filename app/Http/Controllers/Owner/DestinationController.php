@@ -84,6 +84,7 @@ class DestinationController extends Controller
             abort_unless((int) $destination->user_id === (int) auth()->id(), 403);
 
             $wasActive = $destination->status === 'active';
+            $wasRejected = $destination->status === 'rejected';
 
             $updateData = [
                 'name' => $request->input('name'),
@@ -134,9 +135,11 @@ class DestinationController extends Controller
                 }
             }
 
-            $message = $wasActive
-                ? 'Destinasi berhasil diperbarui dan tetap aktif di katalog.'
-                : 'Destinasi berhasil diperbarui dan menunggu verifikasi admin.';
+            $message = match (true) {
+                $wasActive => 'Destinasi berhasil diperbarui dan tetap aktif di katalog.',
+                $wasRejected => 'Pengajuan ulang berhasil dikirim. Menunggu verifikasi admin.',
+                default => 'Destinasi berhasil diperbarui dan menunggu verifikasi admin.',
+            };
 
             return back()->with('success', $message);
         } catch (\Throwable $e) {

@@ -18,11 +18,17 @@ class CheckoutController extends Controller
 {
     public function show(Ticket $ticket): View
     {
+        $ticket->loadMissing('destination');
+        abort_unless($ticket->destination?->status === 'active', 404);
+
         return view('checkout.show', compact('ticket'));
     }
 
     public function quotaCheck(Ticket $ticket, Request $request): \Illuminate\Http\JsonResponse
     {
+        $ticket->loadMissing('destination');
+        abort_unless($ticket->destination?->status === 'active', 404);
+
         $date = $request->query('date');
         if (!$date) {
             return response()->json(['available' => $ticket->daily_quota]);
@@ -33,6 +39,9 @@ class CheckoutController extends Controller
 
     public function quotasMonth(Ticket $ticket, Request $request): \Illuminate\Http\JsonResponse
     {
+        $ticket->loadMissing('destination');
+        abort_unless($ticket->destination?->status === 'active', 404);
+
         $year = $request->integer('year', now()->year);
         $month = $request->integer('month', now()->month);
 
@@ -116,6 +125,9 @@ class CheckoutController extends Controller
         MidtransService $midtransService,
         TransactionPaymentService $paymentService,
     ): RedirectResponse {
+        $ticket->loadMissing('destination');
+        abort_unless($ticket->destination?->status === 'active', 404);
+
         $payload = $request->validated();
 
         $transaction = DB::transaction(function () use ($ticket, $payload, $paymentService) {

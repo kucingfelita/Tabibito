@@ -39,6 +39,14 @@ class CheckoutRequest extends FormRequest
                 return;
             }
 
+            $ticket->loadMissing('destination');
+
+            if ($ticket->destination?->status !== 'active') {
+                $validator->errors()->add('booking_date', 'Destinasi wisata ini belum tersedia untuk pemesanan.');
+
+                return;
+            }
+
             $available = $ticket->getAvailableQuota($bookingDate);
 
             if ($available <= 0) {

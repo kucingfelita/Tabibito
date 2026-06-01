@@ -160,7 +160,8 @@
                 @else
                 <div class="flex items-center gap-6">
                     @if(auth()->user()->tipe_user === \App\Models\User::TYPE_ADMIN)
-                        <a href="{{ route('admin.dashboard') }}" class="text-[15px] font-semibold nav-link-hover {{ request()->routeIs('admin.dashboard') ? 'text-primary-600 nav-link-active' : 'text-slate-600 hover:text-primary-600' }} transition-colors">Dashboard Admin</a>
+                        <a href="{{ route('admin.dashboard') }}" class="text-[15px] font-semibold nav-link-hover {{ request()->routeIs('admin.dashboard') ? 'text-primary-600 nav-link-active' : 'text-slate-600 hover:text-primary-600' }} transition-colors">Dashboard</a>
+                        <a href="{{ route('admin.destinations.index') }}" class="text-[15px] font-semibold nav-link-hover {{ request()->routeIs('admin.destinations.*') ? 'text-primary-600 nav-link-active' : 'text-slate-600 hover:text-primary-600' }} transition-colors">Destinasi</a>
                     @elseif(auth()->user()->tipe_user === \App\Models\User::TYPE_OWNER)
                         <a href="{{ route('owner.dashboard') }}" class="text-[15px] font-semibold nav-link-hover {{ request()->routeIs('owner.dashboard') ? 'text-primary-600 nav-link-active' : 'text-slate-600 hover:text-primary-600' }} transition-colors">Dashboard Owner</a>
                     @elseif(auth()->user()->tipe_user === \App\Models\User::TYPE_EMPLOYEE)
@@ -293,6 +294,11 @@
                                     <a href="{{ auth()->user()->tipe_user === 1 ? route('admin.dashboard') : route('owner.dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-primary-600 hover:bg-primary-50 font-bold border-t border-slate-50 mt-1 pt-4">
                                         <i class="fa-solid fa-chart-line"></i> Dashboard {{ auth()->user()->tipe_user === 1 ? 'Admin' : 'Owner' }}
                                     </a>
+                                    @if(auth()->user()->tipe_user === \App\Models\User::TYPE_ADMIN)
+                                        <a href="{{ route('admin.destinations.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-primary-50 font-medium">
+                                            <i class="fa-solid fa-map-location-dot"></i> Kelola Destinasi
+                                        </a>
+                                    @endif
                                 @endif
                             @endif
                             <form method="POST" action="{{ route('logout') }}">

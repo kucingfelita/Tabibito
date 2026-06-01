@@ -16,7 +16,11 @@ class DashboardController extends Controller
 {
     public function index(): View
     {
-        $pendingDestinations = Destination::query()->where('status', 'pending')->latest()->get();
+        $pendingDestinations = Destination::query()
+            ->with('owner:id,name,email')
+            ->where('status', 'pending')
+            ->latest()
+            ->get();
         $pendingWithdrawals = Withdrawal::query()->where('status', 'pending')->latest()->get();
         $users = User::query()->latest()->take(8)->get();
         $latestTransactions = Transaction::query()->with('user:id,name', 'ticket:id,name')->latest()->take(8)->get();

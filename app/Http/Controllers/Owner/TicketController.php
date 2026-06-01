@@ -21,7 +21,7 @@ class TicketController extends Controller
 
         $tickets = Ticket::query()
             ->whereHas('destination', fn ($q) => $q->where('user_id', $ownerId))
-            ->with('destination:id,name')
+            ->with('destination:id,name,status')
             ->latest()
             ->paginate(10);
 

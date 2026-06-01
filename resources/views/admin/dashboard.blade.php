@@ -15,6 +15,27 @@
         </div>
     </div>
 
+    @include('admin.partials.nav')
+
+    @if(session('success'))
+        <div class="mb-6 rounded-2xl bg-emerald-50 border border-emerald-100 text-emerald-800 px-5 py-4 text-sm font-semibold">
+            <i class="fa-solid fa-circle-check mr-1"></i> {{ session('success') }}
+        </div>
+    @endif
+
+    <!-- Quick link -->
+    <a href="{{ route('admin.destinations.index') }}"
+       class="mb-8 flex items-center justify-between gap-4 bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 text-white rounded-[2rem] p-6 md:p-8 shadow-lg shadow-primary-200/50 transition-all group">
+        <div>
+            <p class="text-[10px] font-black uppercase tracking-widest text-primary-100">Kelola Semua Destinasi</p>
+            <h2 class="text-xl font-black mt-1">Rangkuman Destinasi & Data Pemilik</h2>
+            <p class="text-sm text-primary-100/90 font-semibold mt-1">Lihat lengkap isi destinasi, paket tiket, galeri, dan statistik penjualan</p>
+        </div>
+        <span class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
+            <i class="fa-solid fa-arrow-right text-lg"></i>
+        </span>
+    </a>
+
     <!-- Statistics Cards -->
     <div class="grid gap-6 md:grid-cols-3 mb-10">
         <!-- Card 1: Total Users -->
@@ -40,7 +61,8 @@
         </div>
 
         <!-- Card 3: Active Destinations -->
-        <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/20 group hover:border-amber-300 transition-all relative overflow-hidden">
+        <a href="{{ route('admin.destinations.index', ['status' => 'active']) }}"
+           class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/20 group hover:border-amber-300 transition-all relative overflow-hidden block">
             <div class="absolute top-0 right-0 w-16 h-16 bg-amber-50 rounded-bl-full opacity-40"></div>
             <div class="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600 mb-6 group-hover:scale-110 transition-transform">
                 <i class="fa-solid fa-umbrella-beach text-lg"></i>
@@ -48,7 +70,7 @@
             <p class="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-1">Destinasi Wisata Aktif</p>
             <h3 class="text-3xl font-black text-slate-900 tracking-tight">{{ number_format($stats['active_destinations']) }}</h3>
             <p class="text-[10px] text-slate-400 font-bold mt-2"><i class="fa-solid fa-map-pin mr-1 text-amber-500"></i>Telah Disetujui & Siap Dipesan</p>
-        </div>
+        </a>
     </div>
 
     <!-- Action Queues Grid (Verification & Withdrawals) -->
@@ -56,15 +78,24 @@
         
         <!-- Destination Verifications -->
         <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 p-6 md:p-8 space-y-6">
-            <h2 class="text-lg font-black text-slate-900 tracking-tight flex items-center gap-2"><i class="fa-solid fa-clipboard-check text-primary-500"></i> Antrean Verifikasi Destinasi</h2>
+            <div class="flex items-center justify-between gap-3">
+                <h2 class="text-lg font-black text-slate-900 tracking-tight flex items-center gap-2"><i class="fa-solid fa-clipboard-check text-primary-500"></i> Antrean Verifikasi Destinasi</h2>
+                <a href="{{ route('admin.destinations.index', ['status' => 'pending']) }}" class="text-[10px] font-extrabold text-primary-600 uppercase tracking-wider hover:underline shrink-0">Lihat semua</a>
+            </div>
             
             <div class="space-y-4 max-h-[350px] overflow-y-auto pr-1">
                 @forelse($pendingDestinations as $destination)
                     <div class="rounded-2xl border border-slate-100 p-4.5 bg-slate-50/50 hover:bg-slate-50 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div>
+                        <div class="min-w-0 flex-1">
                             <span class="px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 text-[8px] font-black uppercase tracking-wider border border-amber-100">Review</span>
                             <h4 class="font-extrabold text-slate-800 text-sm mt-1.5 leading-snug">{{ $destination->name }}</h4>
                             <p class="text-[10px] text-slate-400 font-semibold mt-0.5 flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-rose-500"></i>{{ $destination->city }}</p>
+                            @if($destination->owner)
+                                <p class="text-[10px] text-slate-500 font-semibold mt-1"><i class="fa-solid fa-user text-primary-500 mr-1"></i>{{ $destination->owner->name }} · {{ $destination->owner->email }}</p>
+                            @endif
+                            <a href="{{ route('admin.destinations.show', $destination) }}" class="inline-flex items-center gap-1 mt-2 text-[10px] font-extrabold text-primary-600 uppercase tracking-wider hover:underline">
+                                <i class="fa-solid fa-eye"></i> Detail lengkap
+                            </a>
                         </div>
                         
                         <div class="flex gap-2 shrink-0">

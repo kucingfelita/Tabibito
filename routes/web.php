@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\DestinationController as AdminDestinationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ContactController;
@@ -117,6 +118,8 @@ Route::prefix('admin')
     ->middleware(['auth', 'user.type:1'])
     ->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/destinations', [AdminDestinationController::class, 'index'])->name('destinations.index');
+        Route::get('/destinations/{destination}', [AdminDestinationController::class, 'show'])->name('destinations.show');
         Route::patch('/destinations/{destination}/approve', [AdminDashboardController::class, 'approveDestination'])->name('destinations.approve');
         Route::patch('/destinations/{destination}/reject', [AdminDashboardController::class, 'rejectDestination'])->name('destinations.reject');
         Route::patch('/withdrawals/{withdrawal}/approve', [AdminDashboardController::class, 'approveWithdrawal'])->name('withdrawals.approve');

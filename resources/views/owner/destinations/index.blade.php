@@ -227,16 +227,31 @@
                         </div>
                         
                         <!-- Status Verifikasi -->
-                        <div class="flex items-center gap-3 bg-slate-50 border border-slate-100 px-4 py-2 rounded-xl shrink-0">
+                        <div class="flex items-center gap-3 px-4 py-2 rounded-xl shrink-0 border
+                            @if($destination->status === 'active') bg-emerald-50 border-emerald-100
+                            @elseif($destination->status === 'rejected') bg-rose-50 border-rose-100
+                            @else bg-amber-50 border-amber-100 @endif">
                             @if($destination->status === 'active')
                                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>
                                 <span class="text-[10px] font-black text-emerald-700 uppercase tracking-widest">Disetujui Admin</span>
+                            @elseif($destination->status === 'rejected')
+                                <span class="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0"></span>
+                                <span class="text-[10px] font-black text-rose-700 uppercase tracking-widest">Ditolak Admin</span>
                             @else
                                 <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse shrink-0"></span>
-                                <span class="text-[10px] font-black text-amber-700 uppercase tracking-widest">Pending Review</span>
+                                <span class="text-[10px] font-black text-amber-700 uppercase tracking-widest">Menunggu Review</span>
                             @endif
                         </div>
                     </div>
+
+                    @if($destination->status === 'rejected')
+                        <div class="mb-6 rounded-2xl bg-rose-50 border border-rose-100 px-5 py-4 text-sm text-rose-800 relative z-10">
+                            <p class="font-extrabold flex items-center gap-2">
+                                <i class="fa-solid fa-circle-xmark"></i> Pengajuan ditolak administrator
+                            </p>
+                            <p class="text-xs text-rose-700/90 font-semibold mt-1">Perbaiki data destinasi di bawah, lalu simpan untuk mengajukan ulang verifikasi.</p>
+                        </div>
+                    @endif
 
                     <!-- Update Form -->
                     <form method="POST" action="{{ route('owner.destinations.update', $destination) }}" enctype="multipart/form-data" class="space-y-6 relative z-10" id="update-destination-form">
@@ -421,7 +436,12 @@
                         <!-- Aksi Tombol -->
                         <div class="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-end gap-4">
                             <button type="submit" class="w-full sm:w-auto bg-primary-600 hover:bg-primary-700 text-white font-extrabold px-10 py-4 rounded-2xl shadow-lg shadow-primary-600/20 transition-all transform hover:-translate-y-1 active:translate-y-0 text-xs uppercase tracking-wider flex items-center justify-center gap-2">
-                                Simpan Perubahan <i class="fa-solid fa-cloud-arrow-up text-sm ml-1"></i>
+                                @if($destination->status === 'rejected')
+                                    Simpan dan Ajukan Ulang
+                                @else
+                                    Simpan Perubahan
+                                @endif
+                                <i class="fa-solid fa-cloud-arrow-up text-sm ml-1"></i>
                             </button>
                         </div>
                     </form>

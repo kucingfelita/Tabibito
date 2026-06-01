@@ -2,15 +2,15 @@
 
 @section('content')
 <div class="max-w-4xl mx-auto px-4 py-12">
-    <!-- Header Card -->
-    <div class="bg-gradient-to-r from-emerald-900 via-slate-800 to-primary-950 rounded-[2.5rem] p-8 md:p-12 shadow-xl text-white mb-10 relative overflow-hidden">
-        <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-emerald-500/10 rounded-full blur-2xl"></div>
-        <div class="absolute -top-10 -right-10 w-40 h-40 bg-primary-500/10 rounded-full blur-2xl"></div>
+    <!-- Header Card (selaras dengan halaman Syarat & Ketentuan) -->
+    <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-primary-950 rounded-[2.5rem] p-8 md:p-12 shadow-xl text-white mb-10 relative overflow-hidden">
+        <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-primary-500/10 rounded-full blur-2xl"></div>
+        <div class="absolute -top-10 -right-10 w-40 h-40 bg-secondary-500/10 rounded-full blur-2xl"></div>
 
         <div class="relative z-10 space-y-4">
-            <span class="px-3.5 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-300 text-xs font-black uppercase tracking-widest border border-emerald-500/20">Perlindungan Data</span>
-            <h1 class="text-3xl md:text-5xl font-black tracking-tight leading-tight">Kebijakan Privasi</h1>
-            <p class="text-slate-400 text-xs md:text-sm font-semibold max-w-2xl leading-relaxed">
+            <span class="px-3.5 py-1.5 rounded-xl bg-primary-500/20 text-primary-300 text-xs font-black uppercase tracking-widest border border-primary-500/20">Perlindungan Data</span>
+            <h1 class="text-3xl md:text-5xl font-black tracking-tight leading-tight text-white">Kebijakan Privasi</h1>
+            <p class="text-slate-300 text-xs md:text-sm font-semibold max-w-2xl leading-relaxed">
                 Dokumen ini menjelaskan bagaimana Tabibito Jawa Tengah mengumpulkan, menggunakan, menyimpan, dan melindungi data pribadi Anda saat menggunakan platform pemesanan tiket wisata kami.
             </p>
         </div>
@@ -22,7 +22,7 @@
 
             <section class="group">
                 <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-3">
-                    <span class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm font-extrabold shadow-sm">01</span>
+                    <span class="w-9 h-9 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center text-sm font-extrabold shadow-sm group-hover:scale-110 transition-transform">01</span>
                     Pendahuluan & Ruang Lingkup
                 </h2>
                 <div class="text-slate-600 leading-relaxed space-y-3 pl-12">
@@ -40,7 +40,7 @@
 
             <section class="group">
                 <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-3">
-                    <span class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm font-extrabold shadow-sm">02</span>
+                    <span class="w-9 h-9 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center text-sm font-extrabold shadow-sm group-hover:scale-110 transition-transform">02</span>
                     Definisi Data Pribadi
                 </h2>
                 <div class="text-slate-600 leading-relaxed space-y-3 pl-12">
@@ -60,7 +60,7 @@
 
             <section class="group">
                 <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-3">
-                    <span class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm font-extrabold shadow-sm">03</span>
+                    <span class="w-9 h-9 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center text-sm font-extrabold shadow-sm group-hover:scale-110 transition-transform">03</span>
                     Informasi yang Kami Kumpulkan
                 </h2>
                 <div class="text-slate-600 leading-relaxed space-y-3 pl-12">
@@ -78,7 +78,7 @@
 
             <section class="group">
                 <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-3">
-                    <span class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm font-extrabold shadow-sm">04</span>
+                    <span class="w-9 h-9 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center text-sm font-extrabold shadow-sm group-hover:scale-110 transition-transform">04</span>
                     Tujuan Penggunaan Data
                 </h2>
                 <div class="text-slate-600 leading-relaxed space-y-3 pl-12">
@@ -98,7 +98,7 @@
 
             <section class="group">
                 <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-3">
-                    <span class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm font-extrabold shadow-sm">05</span>
+                    <span class="w-9 h-9 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center text-sm font-extrabold shadow-sm group-hover:scale-110 transition-transform">05</span>
                     Pembagian Data kepada Pihak Ketiga
                 </h2>
                 <div class="text-slate-600 leading-relaxed space-y-3 pl-12">
@@ -117,7 +117,7 @@
 
             <section class="group">
                 <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-3">
-                    <span class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm font-extrabold shadow-sm">06</span>
+                    <span class="w-9 h-9 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center text-sm font-extrabold shadow-sm group-hover:scale-110 transition-transform">06</span>
                     Cookie & Teknologi Pelacakan
                 </h2>
                 <div class="text-slate-600 leading-relaxed space-y-3 pl-12">
@@ -129,7 +129,7 @@
 
             <section class="group">
                 <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-3">
-                    <span class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm font-extrabold shadow-sm">07</span>
+                    <span class="w-9 h-9 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center text-sm font-extrabold shadow-sm group-hover:scale-110 transition-transform">07</span>
                     Keamanan & Enkripsi Data
                 </h2>
                 <div class="text-slate-600 leading-relaxed space-y-3 pl-12">
@@ -144,7 +144,7 @@
 
             <section class="group">
                 <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-3">
-                    <span class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm font-extrabold shadow-sm">08</span>
+                    <span class="w-9 h-9 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center text-sm font-extrabold shadow-sm group-hover:scale-110 transition-transform">08</span>
                     Hak Anda atas Data Pribadi
                 </h2>
                 <div class="text-slate-600 leading-relaxed space-y-3 pl-12">
@@ -161,7 +161,7 @@
 
             <section class="group">
                 <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-3">
-                    <span class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm font-extrabold shadow-sm">09</span>
+                    <span class="w-9 h-9 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center text-sm font-extrabold shadow-sm group-hover:scale-110 transition-transform">09</span>
                     Retensi & Penyimpanan Data
                 </h2>
                 <div class="text-slate-600 leading-relaxed space-y-3 pl-12">
@@ -176,7 +176,7 @@
 
             <section class="group">
                 <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-3">
-                    <span class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm font-extrabold shadow-sm">10</span>
+                    <span class="w-9 h-9 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center text-sm font-extrabold shadow-sm group-hover:scale-110 transition-transform">10</span>
                     Privasi Anak & Pengguna di Bawah Umur
                 </h2>
                 <div class="text-slate-600 leading-relaxed space-y-3 pl-12">
@@ -188,7 +188,7 @@
 
             <section class="group">
                 <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-3">
-                    <span class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm font-extrabold shadow-sm">11</span>
+                    <span class="w-9 h-9 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center text-sm font-extrabold shadow-sm group-hover:scale-110 transition-transform">11</span>
                     Perubahan Kebijakan Privasi
                 </h2>
                 <div class="text-slate-600 leading-relaxed space-y-3 pl-12">
@@ -200,7 +200,7 @@
 
             <section class="group">
                 <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-3">
-                    <span class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm font-extrabold shadow-sm">12</span>
+                    <span class="w-9 h-9 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center text-sm font-extrabold shadow-sm group-hover:scale-110 transition-transform">12</span>
                     Kontak & Pengaduan
                 </h2>
                 <div class="text-slate-600 leading-relaxed space-y-3 pl-12">
