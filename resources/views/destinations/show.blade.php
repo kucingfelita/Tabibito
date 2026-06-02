@@ -30,13 +30,13 @@
         </a>
     </div>
 
-    <div class="grid gap-10 lg:grid-cols-[1.8fr_1fr] px-4 md:px-0">
+    <div class="grid gap-8 lg:gap-10 lg:grid-cols-[1.8fr_1fr] min-w-0">
         <!-- Main Content -->
         <div class="space-y-10">
             <!-- Hero Section / Slider -->
             <div class="bg-white rounded-[2.5rem] overflow-hidden shadow-sm border border-slate-100/80">
                 <div class="relative">
-                    <div class="swiper hero-swiper h-80 md:h-[480px]">
+                    <div class="swiper hero-swiper h-56 sm:h-80 md:h-[480px]">
                         <div class="swiper-wrapper">
                             @php
                                 $allImages = collect();
@@ -73,17 +73,17 @@
                     
                     <!-- Gradient Overlay -->
                     <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent pointer-events-none z-[5]"></div>
-                    <div class="absolute bottom-8 left-8 right-8 z-10 pointer-events-none">
+                    <div class="absolute bottom-4 left-4 right-4 sm:bottom-8 sm:left-8 sm:right-8 z-10 pointer-events-none">
                         <div class="flex flex-wrap gap-2 mb-3">
                             @foreach($destination->tags as $tag)
                                 <span class="px-3 py-1 rounded-lg bg-white/20 backdrop-blur-md border border-white/20 text-[10px] font-extrabold text-white uppercase tracking-wider">{{ $tag->name }}</span>
                             @endforeach
                         </div>
-                        <h1 class="text-3xl md:text-5xl font-black text-white leading-tight tracking-tight">{{ $destination->name }}</h1>
+                        <h1 class="text-2xl sm:text-3xl md:text-5xl font-black text-white leading-tight tracking-tight">{{ $destination->name }}</h1>
                     </div>
                 </div>
                 
-                <div class="p-8 md:p-10">
+                <div class="p-5 sm:p-8 md:p-10">
                     <div class="flex flex-wrap items-center gap-6 mb-8 text-xs text-slate-500 font-bold uppercase tracking-wider">
                         <div class="flex items-center gap-2">
                             <div class="w-9 h-9 rounded-xl bg-primary-50 flex items-center justify-center text-primary-600 shadow-sm shadow-primary-100">
@@ -132,8 +132,8 @@
                 <h2 class="text-xl font-bold text-slate-900 tracking-tight mb-6 flex items-center gap-2"><i class="fa-solid fa-ticket text-primary-500"></i> Pilihan Tiket & Kategori</h2>
                 <div class="grid gap-6">
                     @foreach($destination->tickets as $index => $ticket)
-                        <div class="ticket-card {{ $index >= 5 ? 'hidden' : '' }} bg-white rounded-[2rem] border border-slate-100/80 p-6 md:p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div class="ticket-card {{ $index >= 5 ? 'hidden' : '' }} bg-white rounded-2xl md:rounded-[2rem] border border-slate-100/80 p-5 sm:p-6 md:p-8 shadow-sm hover:shadow-xl md:hover:-translate-y-1 transition-all duration-300">
+                            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
                                 <div class="flex-1">
                                     <div class="flex items-center gap-3 mb-4">
                                         <div class="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center text-primary-600 font-black">
@@ -147,14 +147,14 @@
                                         <span class="px-3 py-1 rounded-lg bg-emerald-50 text-[10px] font-bold text-emerald-600 flex items-center gap-1.5"><i class="fa-solid fa-circle-check"></i> Instan Konfirmasi</span>
                                     </div>
                                 </div>
-                                <div class="shrink-0 flex md:flex-col items-center md:items-end justify-between md:justify-center gap-4 pt-6 md:pt-0 border-t md:border-t-0 md:border-l border-slate-100 md:pl-8">
+                                <div class="shrink-0 flex flex-col sm:flex-row md:flex-col items-stretch sm:items-center md:items-end justify-between md:justify-center gap-4 pt-4 md:pt-0 border-t md:border-t-0 md:border-l border-slate-100 md:pl-8 w-full">
                                     <div class="text-left md:text-right">
                                         <p class="text-[9px] text-slate-400 font-extrabold uppercase tracking-widest mb-1">Harga Tiket</p>
-                                        <p class="text-2xl font-black text-primary-600">
+                                        <p class="text-xl sm:text-2xl font-black text-primary-600">
                                             <span class="text-xs font-medium">Rp</span> {{ number_format($ticket->price, 0, ',', '.') }}
                                         </p>
                                     </div>
-                                    <a href="{{ route('tickets.show', $ticket) }}" class="btn-premium bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 text-white px-6 py-3.5 rounded-xl text-xs font-bold shadow-md shadow-primary-200 transition-all">
+                                    <a href="{{ route('tickets.show', $ticket) }}" class="btn-premium w-full md:w-auto text-center bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 text-white px-6 py-3.5 rounded-xl text-xs font-bold shadow-md shadow-primary-200 transition-all">
                                         Pesan Sekarang
                                     </a>
                                 </div>
@@ -220,9 +220,9 @@
 
         <!-- Sidebar Info -->
         <aside class="space-y-8">
-            <div class="sticky top-24 space-y-8">
+            <div class="lg:sticky lg:top-24 space-y-6 lg:space-y-8">
                 <!-- Owner Info -->
-                <div class="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
+                <div class="bg-white rounded-2xl md:rounded-3xl border border-slate-100 p-5 sm:p-8 shadow-sm">
                     <h2 class="text-lg font-bold text-slate-900 tracking-tight mb-6">Informasi Kontak Pengelola</h2>
                     <div class="flex items-center gap-4 mb-8">
                         <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-primary-600 to-primary-500 flex items-center justify-center font-bold text-white uppercase shadow-sm">

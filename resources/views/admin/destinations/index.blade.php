@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 md:px-6">
-    <div class="mb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+<div class="max-w-7xl mx-auto w-full min-w-0 px-0 sm:px-2 md:px-6">
+    <div class="mb-6 md:mb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
         <div>
-            <h1 class="text-3xl font-black text-slate-900 tracking-tight">Rangkuman Destinasi Wisata</h1>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Rangkuman Destinasi Wisata</h1>
             <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mt-1">Lihat pemilik, status, tiket, dan detail lengkap setiap destinasi</p>
         </div>
         <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-primary-600 transition-colors">
@@ -21,7 +21,7 @@
     @endif
 
     <!-- Filter tabs -->
-    <div class="flex flex-wrap gap-2 mb-6">
+    <div class="mobile-scroll-tabs mb-6">
         @foreach(['all' => 'Semua', 'pending' => 'Pending', 'active' => 'Aktif', 'maintenance' => 'Perawatan', 'rejected' => 'Ditolak'] as $key => $label)
             <a href="{{ route('admin.destinations.index', array_filter(['status' => $key !== 'all' ? $key : null, 'q' => $search ?: null])) }}"
                class="px-4 py-2 rounded-xl text-xs font-extrabold uppercase tracking-wider transition-all
@@ -42,7 +42,7 @@
             <input type="search" name="q" value="{{ $search }}" placeholder="Cari nama destinasi, kota, alamat, atau nama owner..."
                    class="w-full bg-white border border-slate-100 rounded-2xl pl-11 pr-4 py-3.5 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none">
         </div>
-        <button type="submit" class="bg-slate-900 hover:bg-slate-800 text-white font-extrabold px-6 py-3.5 rounded-2xl text-xs uppercase tracking-wider">Cari</button>
+        <button type="submit" class="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white font-extrabold px-6 py-3.5 rounded-2xl text-xs uppercase tracking-wider">Cari</button>
     </form>
 
     <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">

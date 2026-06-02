@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-3xl mx-auto px-4 md:px-0">
+<div class="max-w-3xl mx-auto w-full min-w-0">
     <!-- Breadcrumbs -->
     <nav class="mb-8 flex items-center gap-2 text-sm">
         <a href="{{ route('home') }}" class="text-slate-400 hover:text-primary-600 transition-colors font-medium">Beranda</a>
@@ -10,7 +10,7 @@
     </nav>
 
     <!-- Profile Header Card -->
-    <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm relative overflow-hidden mb-8 text-center md:text-left md:flex md:items-center md:justify-between gap-6">
+    <div class="bg-white rounded-2xl md:rounded-[2.5rem] p-5 sm:p-8 border border-slate-100 shadow-sm relative overflow-hidden mb-6 md:mb-8 text-center md:text-left md:flex md:items-center md:justify-between gap-6">
         <!-- Ambient shapes in background -->
         <div class="absolute top-0 right-0 w-32 h-32 bg-primary-50 rounded-full -mr-16 -mt-16 opacity-40"></div>
         <div class="absolute -bottom-10 -left-10 w-28 h-28 bg-secondary-50 rounded-full opacity-40"></div>

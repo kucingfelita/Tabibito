@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Destination;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class TransactionExportController extends Controller
@@ -44,8 +45,9 @@ class TransactionExportController extends Controller
 
             fputcsv($handle, [
                 'Order ID',
-                'Tanggal Pesanan',
+                'Tanggal & Jam Pesanan',
                 'Tanggal Kunjungan',
+                'Waktu Scan Masuk',
                 'Destinasi',
                 'Paket Tiket',
                 'Jumlah Tiket',
@@ -55,17 +57,32 @@ class TransactionExportController extends Controller
                 'Email Pembeli',
             ], ';');
 
-            $query->chunk(200, function ($rows) use ($handle) {
+            $tz = config('app.timezone', 'Asia/Jakarta');
+
+            $query->chunk(200, function ($rows) use ($handle, $tz) {
                 foreach ($rows as $trx) {
+                    $orderedAt = $trx->created_at
+                        ? Carbon::parse($trx->created_at)->timezone($tz)->format('d/m/Y H:i')
+                        : '';
+
+                    $visitDate = $trx->booking_date
+                        ? Carbon::parse($trx->booking_date)->format('d/m/Y')
+                        : '';
+
+                    $scannedAt = ($trx->status === 'used' && $trx->updated_at)
+                        ? Carbon::parse($trx->updated_at)->timezone($tz)->format('d/m/Y H:i')
+                        : '';
+
                     fputcsv($handle, [
                         $trx->order_id,
-                        $trx->created_at?->format('Y-m-d H:i'),
-                        $trx->booking_date,
+                        $orderedAt,
+                        $visitDate,
+                        $scannedAt,
                         $trx->ticket?->destination?->name ?? '',
                         $trx->ticket?->name ?? '',
                         $trx->qty,
                         number_format((float) $trx->total_price, 0, '', ''),
-                        $trx->status,
+                        $this->statusLabel($trx->status),
                         $trx->user?->name ?? '',
                         $trx->user?->email ?? '',
                     ], ';');
@@ -76,5 +93,17 @@ class TransactionExportController extends Controller
         }, $filename, [
             'Content-Type' => 'text/csv; charset=UTF-8',
         ]);
+    }
+
+    private function statusLabel(string $status): string
+    {
+        return match ($status) {
+            'pending' => 'Menunggu Bayar',
+            'settlement' => 'Lunas (belum scan)',
+            'used' => 'Sudah Scan',
+            'expire' => 'Kedaluwarsa',
+            'cancelled' => 'Dibatalkan',
+            default => $status,
+        };
     }
 }

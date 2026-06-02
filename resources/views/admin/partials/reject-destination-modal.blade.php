@@ -1,13 +1,13 @@
 {{-- Modal tolak destinasi: konfirmasi + alasan wajib (fixed ke viewport, tengah layar) --}}
 <div id="reject-destination-modal"
-     class="fixed inset-0 z-[200] hidden items-center justify-center p-4 sm:p-6"
+     class="modal-root hidden items-center justify-center p-4 sm:p-6"
      role="dialog"
      aria-modal="true"
      aria-labelledby="reject-destination-title"
      aria-hidden="true">
-    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" data-reject-modal-close></div>
+    <div class="modal-root-backdrop bg-slate-900/60 backdrop-blur-sm" data-reject-modal-close></div>
 
-    <div class="relative z-10 bg-white rounded-[2rem] border border-slate-100 shadow-2xl w-full max-w-md p-6 md:p-8 mx-auto">
+    <div class="modal-root-panel bg-white rounded-[2rem] border border-slate-100 shadow-2xl w-full max-w-md p-6 md:p-8 mx-auto">
         <button type="button" class="absolute top-4 right-4 w-9 h-9 rounded-xl bg-slate-50 text-slate-500 hover:bg-slate-100 flex items-center justify-center" data-reject-modal-close aria-label="Tutup">
             <i class="fa-solid fa-xmark"></i>
         </button>
@@ -51,6 +51,10 @@
     const nameEl = document.getElementById('reject-destination-name');
     const reasonEl = document.getElementById('rejection_reason');
     if (!modal || !form) return;
+
+    if (modal.parentElement !== document.body) {
+        document.body.appendChild(modal);
+    }
 
     window.openRejectDestinationModal = function (actionUrl, destinationName) {
         form.action = actionUrl;

@@ -2,7 +2,7 @@
 
 @section('content')
     <!-- Hero Section - Premium Overhaul -->
-    <section class="relative rounded-[2rem] md:rounded-[3rem] overflow-hidden bg-slate-900 min-h-[460px] md:min-h-[580px] flex items-center px-6 md:px-16 py-12 md:py-24 shadow-2xl shadow-slate-950/20">
+    <section class="relative rounded-2xl sm:rounded-[2rem] md:rounded-[3rem] overflow-hidden bg-slate-900 min-h-[320px] sm:min-h-[400px] md:min-h-[580px] flex items-center px-4 sm:px-6 md:px-16 py-10 md:py-24 shadow-2xl shadow-slate-950/20">
         <!-- Background Image with Overlay -->
         <div class="absolute inset-0 z-0">
             <img src="{{ asset('assets/images/hero.webp') }}" alt="Keindahan Alam dan Pariwisata Jawa Tengah - Tabibito Jateng" fetchpriority="high" loading="eager" class="w-full h-full object-cover opacity-50 scale-105 animate-[pulse_8s_infinite]">
@@ -14,7 +14,7 @@
             <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/10 backdrop-blur-md border border-primary-400/20 text-primary-200 text-xs font-bold uppercase tracking-widest mb-6">
                 <i class="fa-solid fa-compass animate-spin" style="animation-duration: 6s;"></i> Jelajahi Jawa Tengah
             </span>
-            <h1 class="text-4xl md:text-7xl font-extrabold text-white leading-[1.1] tracking-tight mb-6">
+            <h1 class="text-3xl sm:text-4xl md:text-7xl font-extrabold text-white leading-[1.1] tracking-tight mb-4 md:mb-6">
                 Pintu Gerbang <br class="hidden md:inline">
                 Petualangan <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-400">Jawa Tengah</span>
             </h1>
@@ -23,8 +23,8 @@
     </section>
 
     <!-- Traveloka Style Search Widget Widget (Overlapping) -->
-    <section class="relative z-20 -mt-16 md:-mt-24 px-4 md:px-10 max-w-6xl mx-auto">
-        <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-xl shadow-slate-200/60">
+    <section class="relative z-20 -mt-10 sm:-mt-16 md:-mt-24 px-0 sm:px-4 md:px-10 max-w-6xl mx-auto w-full min-w-0">
+        <div class="bg-white rounded-2xl sm:rounded-3xl border border-slate-100 p-4 sm:p-6 md:p-8 shadow-xl shadow-slate-200/60">
             <div class="flex items-center gap-3 border-b border-slate-100 pb-4 mb-6">
                 <div class="w-8 h-8 rounded-lg bg-primary-50 text-primary-600 flex items-center justify-center">
                     <i class="fa-solid fa-magnifying-glass"></i>
@@ -35,7 +35,7 @@
                 </div>
             </div>
 
-            <form action="{{ route('destinations.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <form action="{{ route('destinations.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6">
                 <!-- Search Query Input -->
                 <div class="space-y-2">
                     <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest"><i class="fa-solid fa-map-location-dot text-primary-500 mr-1.5"></i> Nama Destinasi</label>

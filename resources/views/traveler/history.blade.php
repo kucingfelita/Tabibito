@@ -44,32 +44,10 @@
     }
 
     @media (max-width: 767px) {
-        .boarding-pass::before, .boarding-pass::after {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: #F8FAFC;
-            border-radius: 50%;
-            top: 60%;
-            z-index: 10;
-            border: 1px solid #f1f5f9;
-        }
-        .boarding-pass::before {
-            left: -10px;
-            box-shadow: inset -4px 0 6px -4px rgba(0,0,0,0.05);
-        }
-        .boarding-pass::after {
-            right: -10px;
-            box-shadow: inset 4px 0 6px -4px rgba(0,0,0,0.05);
-        }
+        .boarding-pass::before,
+        .boarding-pass::after,
         .boarding-divider {
-            position: absolute;
-            top: 60%;
-            left: 12px;
-            right: 12px;
-            border-top: 2px dashed #cbd5e1;
-            transform: translateY(9px);
+            display: none;
         }
     }
 
@@ -87,47 +65,47 @@
 @endpush
 
 @section('content')
-<div class="max-w-5xl mx-auto px-4 md:px-0" x-data="{ activeTab: 'all', showZoomModal: false, zoomQrToken: '', zoomTrxOrder: '' }">
+<div class="max-w-5xl mx-auto w-full min-w-0 px-0 sm:px-2 md:px-0" x-data="{ activeTab: 'all', showZoomModal: false, zoomQrToken: '', zoomTrxOrder: '' }">
     <!-- Header Title Area -->
-    <div class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div class="mb-6 md:mb-10 flex flex-col gap-4">
         <div>
-            <h1 class="text-3xl font-black text-slate-900">Riwayat Pesanan</h1>
-            <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mt-1 flex items-center gap-1.5">
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900">Riwayat Pesanan</h1>
+            <p class="text-[10px] sm:text-xs text-slate-400 font-bold uppercase tracking-wider mt-1 flex items-center gap-1.5">
                 <i class="fa-solid fa-receipt text-primary-500"></i> Panel Tiket & Transaksi Anda
             </p>
         </div>
-        <div class="bg-amber-50 border border-amber-100 rounded-2xl px-5 py-3 text-xs text-amber-800 max-w-md font-semibold leading-relaxed">
+        <div class="bg-amber-50 border border-amber-100 rounded-2xl px-4 py-3 text-[11px] sm:text-xs text-amber-800 w-full font-semibold leading-relaxed">
             <i class="fa-solid fa-triangle-exclamation text-amber-500 mr-1.5 animate-pulse"></i>
             Tiket yang melewati tanggal kunjungan atau hangus tidak dapat di-refund/dikembalikan.
         </div>
     </div>
 
     <!-- Interactive Navigation Tabs -->
-    <div class="mb-8 overflow-x-auto custom-scrollbar flex gap-2 pb-2.5 border-b border-slate-100">
+    <div class="mb-6 md:mb-8 mobile-scroll-tabs border-b border-slate-100">
         <button @click="activeTab = 'all'" 
                 :class="activeTab === 'all' ? 'bg-primary-600 text-white shadow-lg shadow-primary-200' : 'bg-white hover:bg-slate-50 text-slate-600 border border-slate-100'"
-                class="px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-all duration-300 shrink-0">
-            <i class="fa-solid fa-border-all mr-1.5"></i> Semua
+                class="px-3.5 sm:px-5 py-2.5 sm:py-3 rounded-2xl text-[10px] sm:text-xs font-black uppercase tracking-wider transition-all duration-300 shrink-0 whitespace-nowrap">
+            <i class="fa-solid fa-border-all mr-1"></i> Semua
         </button>
         <button @click="activeTab = 'pending'" 
                 :class="activeTab === 'pending' ? 'bg-amber-500 text-white shadow-lg shadow-amber-200' : 'bg-white hover:bg-slate-50 text-slate-600 border border-slate-100'"
-                class="px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-all duration-300 shrink-0">
-            <i class="fa-solid fa-hourglass-half mr-1.5"></i> Menunggu Bayar
+                class="px-3.5 sm:px-5 py-2.5 sm:py-3 rounded-2xl text-[10px] sm:text-xs font-black uppercase tracking-wider transition-all duration-300 shrink-0 whitespace-nowrap">
+            <i class="fa-solid fa-hourglass-half mr-1"></i> Bayar
         </button>
         <button @click="activeTab = 'active'" 
                 :class="activeTab === 'active' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200' : 'bg-white hover:bg-slate-50 text-slate-600 border border-slate-100'"
-                class="px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-all duration-300 shrink-0">
-            <i class="fa-solid fa-ticket mr-1.5"></i> Tiket Aktif
+                class="px-3.5 sm:px-5 py-2.5 sm:py-3 rounded-2xl text-[10px] sm:text-xs font-black uppercase tracking-wider transition-all duration-300 shrink-0 whitespace-nowrap">
+            <i class="fa-solid fa-ticket mr-1"></i> Aktif
         </button>
         <button @click="activeTab = 'completed'" 
                 :class="activeTab === 'completed' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'bg-white hover:bg-slate-50 text-slate-600 border border-slate-100'"
-                class="px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-all duration-300 shrink-0">
-            <i class="fa-solid fa-circle-check mr-1.5"></i> Selesai
+                class="px-3.5 sm:px-5 py-2.5 sm:py-3 rounded-2xl text-[10px] sm:text-xs font-black uppercase tracking-wider transition-all duration-300 shrink-0 whitespace-nowrap">
+            <i class="fa-solid fa-circle-check mr-1"></i> Selesai
         </button>
         <button @click="activeTab = 'expired'" 
                 :class="activeTab === 'expired' ? 'bg-rose-600 text-white shadow-lg shadow-rose-200' : 'bg-white hover:bg-slate-50 text-slate-600 border border-slate-100'"
-                class="px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-all duration-300 shrink-0">
-            <i class="fa-solid fa-ban mr-1.5"></i> Kedaluwarsa/Batal
+                class="px-3.5 sm:px-5 py-2.5 sm:py-3 rounded-2xl text-[10px] sm:text-xs font-black uppercase tracking-wider transition-all duration-300 shrink-0 whitespace-nowrap">
+            <i class="fa-solid fa-ban mr-1"></i> Batal
         </button>
     </div>
 
@@ -150,17 +128,17 @@
                  x-transition:enter="transition ease-out duration-300"
                  x-transition:enter-start="opacity-0 translate-y-4"
                  x-transition:enter-end="opacity-100 translate-y-0"
-                 class="boarding-pass p-6 md:p-8">
+                 class="boarding-pass p-4 sm:p-6 md:p-8">
                 
                 <!-- Layout Divider dotted (Visible on MD and larger) -->
                 <div class="boarding-divider"></div>
 
-                <div class="grid md:grid-cols-[1.6fr_0.7fr] gap-6 md:gap-10">
+                <div class="grid grid-cols-1 md:grid-cols-[1.6fr_0.7fr] gap-4 md:gap-10">
                     
                     <!-- Left Section: Boarding Details -->
                     <div class="space-y-6">
                         <!-- Top status line -->
-                        <div class="flex flex-wrap items-center gap-2.5">
+                        <div class="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2">
                             @if($trx->status === 'pending')
                                 <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-600 text-[10px] font-black uppercase tracking-wider pulse-amber">
                                     <i class="fa-solid fa-spinner animate-spin text-[8px]"></i> Menunggu Pembayaran
@@ -179,7 +157,7 @@
                                 </span>
                             @endif
 
-                            <span class="text-[10px] font-bold text-slate-400">Order ID: <span class="font-mono text-slate-600">{{ $trx->order_id }}</span></span>
+                            <span class="text-[10px] font-bold text-slate-400 break-all">Order ID: <span class="font-mono text-slate-600">{{ $trx->order_id }}</span></span>
                         </div>
 
                         <!-- Ticket branding & destinations -->
@@ -198,7 +176,7 @@
                             </div>
                             <div>
                                 <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Boarding Pass Wisata</p>
-                                <h3 class="text-xl font-black text-slate-900 leading-tight mt-0.5">{{ $trx->ticket->destination->name }}</h3>
+                                <h3 class="text-lg sm:text-xl font-black text-slate-900 leading-tight mt-0.5 break-words">{{ $trx->ticket->destination->name }}</h3>
                                 <p class="text-xs text-slate-400 font-bold flex items-center gap-1 mt-1">
                                     <i class="fa-solid fa-location-dot text-rose-500"></i> {{ $trx->ticket->destination->city }}
                                 </p>
@@ -206,7 +184,7 @@
                         </div>
 
                         <!-- Technical parameters in card body -->
-                        <div class="grid grid-cols-2 md:grid-cols-3 gap-y-4 gap-x-2 pt-2 text-xs">
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-y-3 gap-x-2 pt-2 text-xs">
                             <div>
                                 <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Tipe Tiket</p>
                                 <p class="font-extrabold text-slate-700">{{ $trx->ticket->name }}</p>
@@ -221,7 +199,7 @@
                             </div>
                             <div>
                                 <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Pemegang Tiket</p>
-                                <p class="font-extrabold text-slate-700 truncate max-w-[150px]">{{ $trx->user->name }}</p>
+                                <p class="font-extrabold text-slate-700 break-words">{{ $trx->user->name }}</p>
                             </div>
                             <div>
                                 <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Total Pembayaran</p>
@@ -231,19 +209,19 @@
 
                         <!-- Action controls if pending -->
                         @if($trx->status === 'pending')
-                            <div class="pt-4 border-t border-slate-50 flex flex-wrap gap-2.5">
+                            <div class="pt-4 border-t border-slate-50 flex flex-col sm:flex-row gap-2.5">
                                 @if(!$trx->isPaymentWindowExpired())
-                                    <a href="{{ route('checkout.resume', ['order_id' => $trx->order_id]) }}" class="bg-amber-500 hover:bg-amber-600 text-white font-black px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider shadow-md shadow-amber-500/20 transition-all flex items-center gap-1.5">
+                                    <a href="{{ route('checkout.resume', ['order_id' => $trx->order_id]) }}" class="w-full sm:w-auto text-center bg-amber-500 hover:bg-amber-600 text-white font-black px-5 py-3 rounded-xl text-xs uppercase tracking-wider shadow-md shadow-amber-500/20 transition-all flex items-center justify-center gap-1.5">
                                         <i class="fa-solid fa-credit-card"></i> Lanjutkan Bayar
                                     </a>
                                 @else
-                                    <p class="text-[10px] font-bold text-rose-600 bg-rose-50 border border-rose-100 px-4 py-2.5 rounded-xl">
+                                    <p class="w-full text-[10px] font-bold text-rose-600 bg-rose-50 border border-rose-100 px-4 py-2.5 rounded-xl leading-relaxed">
                                         <i class="fa-solid fa-clock mr-1"></i> Batas pembayaran {{ \App\Models\Transaction::paymentTimeoutLabel() }} telah habis. Pesanan dibatalkan otomatis.
                                     </p>
                                 @endif
-                                <form method="POST" action="{{ route('history.cancel', $trx) }}" class="inline cancel-form">
+                                <form method="POST" action="{{ route('history.cancel', $trx) }}" class="w-full sm:w-auto cancel-form">
                                     @csrf
-                                    <button type="button" onclick="confirmCancel(this)" class="bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all">
+                                    <button type="button" onclick="confirmCancel(this)" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold px-5 py-3 rounded-xl text-xs uppercase tracking-wider transition-all">
                                         Batalkan Pesanan
                                     </button>
                                 </form>
@@ -252,7 +230,7 @@
                     </div>
 
                     <!-- Right Section: Stub/Ticket validation status -->
-                    <div class="flex flex-col justify-center items-center text-center md:border-l md:border-dashed md:border-slate-100 md:pl-6 pt-6 md:pt-0">
+                    <div class="flex flex-col justify-center items-center text-center border-t border-dashed border-slate-200 md:border-t-0 md:border-l md:border-dashed md:border-slate-100 md:pl-6 pt-6 md:pt-0">
                         @if($trx->status === 'settlement' && $trx->qr_code_token)
                             @if($trx->is_expired)
                                 <!-- Expired Boarding pass stub -->
@@ -270,7 +248,9 @@
                                          @click="zoomQrToken = '{{ $trx->qr_code_token }}'; zoomTrxOrder = '{{ $trx->order_id }}'; showZoomModal = true"
                                          title="Klik untuk memperbesar">
                                         <div class="p-1 bg-white inline-block">
+                                            <div class="max-w-[140px] sm:max-w-none mx-auto [&_svg]:w-full [&_svg]:h-auto">
                                             {!! QrCode::size(120)->generate($trx->qr_code_token) !!}
+                                            </div>
                                         </div>
                                     </div>
                                     <p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider mb-1 text-center">Scan Barcode untuk Masuk</p>
@@ -435,7 +415,7 @@
                 <!-- Zoomed QR Code Wrapper -->
                 <div class="bg-white p-4 rounded-3xl border border-slate-100 shadow-inner mb-6 inline-block">
                     <img :src="'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(zoomQrToken)" 
-                         class="w-64 h-64 mx-auto block rounded-2xl" 
+                         class="w-full max-w-[min(16rem,70vw)] h-auto aspect-square mx-auto block rounded-2xl" 
                          alt="QR Code">
                 </div>
                 
@@ -457,13 +437,16 @@
             text: "Kapasitas tiket akan dikembalikan, dan seluruh transaksi untuk pesanan ini akan dibatalkan.",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#rose-600',
-            confirmButtonText: 'Ya, Batalkan!',
+            confirmButtonColor: '#e11d48',
             cancelButtonColor: '#475569',
+            confirmButtonText: 'Ya, Batalkan!',
             cancelButtonText: 'Kembali',
+            reverseButtons: true,
             customClass: {
-                popup: 'rounded-3xl border border-slate-100 shadow-xl'
-            }
+                popup: 'rounded-3xl border border-slate-100 shadow-xl',
+                confirmButton: 'rounded-xl font-bold px-5 py-2.5 shadow-md',
+                cancelButton: 'rounded-xl font-bold px-5 py-2.5',
+            },
         }).then((result) => {
             if (result.isConfirmed) {
                 button.closest('form').submit();

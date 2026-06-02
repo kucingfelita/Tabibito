@@ -64,8 +64,15 @@
             box-shadow: 0 12px 20px -3px rgba(14, 140, 233, 0.25), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
 
-        @media (max-width: 639px) {
-            .main-content { padding: 16px 16px; }
+        @media (max-width: 767px) {
+            .main-content {
+                padding: 12px 12px 28px;
+                min-width: 0;
+            }
+            .main-content > * {
+                min-width: 0;
+                max-width: 100%;
+            }
         }
 
         /* Shimmer Loading Animations */
@@ -132,7 +139,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     @stack('styles')
 </head>
-<body class="bg-[#F8FAFC] text-slate-900 font-sans antialiased min-h-screen flex flex-col">
+<body class="bg-[#F8FAFC] text-slate-900 font-sans antialiased min-h-screen flex flex-col overflow-x-hidden">
     <!-- Premium Navigation -->
     <nav class="sticky top-0 z-50 glass-nav border-b border-slate-100" x-data="{ navOpen: false }">
         <div class="mx-auto flex max-w-7xl items-center justify-between px-4 h-16 md:h-20">
@@ -144,7 +151,7 @@
                     </svg>
                 </div>
                 <div class="flex flex-col">
-                    <span class="text-xl md:text-2xl font-bold bg-gradient-to-r from-slate-900 via-primary-700 to-primary-600 bg-clip-text text-transparent tracking-tight">Tabibito<span class="text-secondary-500">.</span></span>
+                    <span class="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-slate-900 via-primary-700 to-primary-600 bg-clip-text text-transparent tracking-tight">Tabibito<span class="text-secondary-500">.</span></span>
                     <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest -mt-1">Jateng Ticket</span>
                 </div>
             </a>
@@ -247,8 +254,8 @@
         </div>
         
         <!-- Mobile Menu -->
-        <div x-show="navOpen" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" class="md:hidden bg-white border-t border-slate-100 shadow-xl overflow-hidden">
-            <div class="px-4 py-6 space-y-4">
+        <div x-show="navOpen" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" class="md:hidden bg-white border-t border-slate-100 shadow-xl overflow-hidden max-h-[calc(100dvh-4rem)] overflow-y-auto">
+            <div class="px-4 py-6 space-y-4 pb-8">
                 @if(auth()->guest() || auth()->user()->tipe_user === \App\Models\User::TYPE_USER)
                 <div class="grid gap-2 pb-4 border-b border-slate-100">
                     <a href="{{ route('home') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl {{ request()->routeIs('home') ? 'bg-primary-50 text-primary-700 font-bold' : 'text-slate-600 hover:bg-slate-50' }}">Beranda</a>
@@ -421,9 +428,9 @@
 
                     <!-- Form State -->
                     <div x-show="!success">
-                        <form @submit.prevent="subscribe()" class="flex gap-2">
-                            <input type="email" x-model="email" placeholder="Alamat email Anda" @keydown="error = ''" class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all" :class="error ? 'border-red-500/50 focus:ring-red-500' : 'border-slate-700'" required>
-                            <button type="submit" :disabled="loading" class="bg-primary-600 hover:bg-primary-700 disabled:opacity-50 text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all hover:scale-105 active:scale-95">
+                        <form @submit.prevent="subscribe()" class="flex flex-col sm:flex-row gap-2">
+                            <input type="email" x-model="email" placeholder="Alamat email Anda" @keydown="error = ''" class="w-full flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all" :class="error ? 'border-red-500/50 focus:ring-red-500' : 'border-slate-700'" required>
+                            <button type="submit" :disabled="loading" class="w-full sm:w-auto shrink-0 bg-primary-600 hover:bg-primary-700 disabled:opacity-50 text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all sm:hover:scale-105 active:scale-95 flex items-center justify-center">
                                 <i x-show="!loading" class="fa-solid fa-paper-plane"></i>
                                 <i x-show="loading" x-cloak class="fa-solid fa-spinner fa-spin"></i>
                             </button>

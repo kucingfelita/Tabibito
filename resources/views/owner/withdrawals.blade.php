@@ -1,17 +1,17 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 md:px-6">
+<div class="max-w-7xl mx-auto w-full min-w-0 px-0 sm:px-2 md:px-6">
     <!-- Header -->
-    <div class="mb-8">
-        <h1 class="text-3xl font-black text-slate-900 tracking-tight">Pencairan Dana</h1>
+    <div class="mb-6 md:mb-8">
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Pencairan Dana</h1>
         <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mt-1">Tarik saldo pendapatan tempat wisata Anda ke rekening bank resmi Anda</p>
     </div>
 
     @include('owner.partials.nav')
 
     <!-- Main Grid -->
-    <div class="grid gap-10 lg:grid-cols-[1.2fr_1.8fr] mt-8 items-start">
+    <div class="grid gap-8 lg:gap-10 lg:grid-cols-[1.2fr_1.8fr] mt-6 lg:mt-8 items-start">
         
         <!-- Action / Request Box -->
         <div class="space-y-6">

@@ -43,7 +43,7 @@
                 @endif
                 <div class="absolute inset-0 bg-gradient-to-r from-slate-900/80 to-transparent"></div>
             </div>
-            <div class="p-8 md:p-10 relative z-10 flex flex-col justify-center">
+            <div class="p-8 md:p-10 relative z-[1] flex flex-col justify-center">
                 <span class="inline-flex self-start px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider mb-3
                     @if($destination->status === 'active') bg-emerald-500
                     @elseif($destination->status === 'pending') bg-amber-500

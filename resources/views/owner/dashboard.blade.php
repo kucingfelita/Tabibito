@@ -1,16 +1,16 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 md:px-6">
+<div class="max-w-7xl mx-auto w-full min-w-0 px-0 sm:px-2 md:px-6">
     <!-- Welcome Header Banner -->
-    <div class="mb-10 bg-slate-900 rounded-[2.5rem] p-8 md:p-10 text-white relative overflow-hidden shadow-xl shadow-slate-950/10">
+    <div class="mb-8 md:mb-10 bg-slate-900 rounded-2xl md:rounded-[2.5rem] p-6 sm:p-8 md:p-10 text-white relative overflow-hidden shadow-xl shadow-slate-950/10">
         <!-- Abstract gradient overlays -->
         <div class="absolute top-0 right-0 w-44 h-44 bg-white/5 rounded-full -mr-16 -mt-16 pointer-events-none"></div>
         <div class="absolute -bottom-10 -left-10 w-36 h-36 bg-primary-500/10 rounded-full blur-2xl pointer-events-none"></div>
         
         <div class="relative z-10 space-y-2">
             <span class="px-3 py-1 rounded-full bg-white/10 text-primary-300 text-[10px] font-black uppercase tracking-wider">Mitra Wisata Terverifikasi</span>
-            <h1 class="text-3xl md:text-4xl font-black tracking-tight mt-2">Selamat Datang, {{ auth()->user()->name }}!</h1>
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight mt-2 break-words">Selamat Datang, {{ auth()->user()->name }}!</h1>
             <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Berikut adalah ringkasan performa penjualan tiket tempat wisata Anda.</p>
         </div>
     </div>
@@ -20,7 +20,7 @@
     <!-- Stats Grid -->
     <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-10">
         <!-- Stat Card 1: Tiket Terjual -->
-        <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/20 group hover:border-primary-300 transition-all relative overflow-hidden">
+        <div class="bg-white p-5 sm:p-8 rounded-2xl md:rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/20 group hover:border-primary-300 transition-all relative overflow-hidden">
             <div class="absolute top-0 right-0 w-16 h-16 bg-primary-50 rounded-bl-full opacity-40"></div>
             <div class="w-12 h-12 rounded-2xl bg-primary-50 flex items-center justify-center text-primary-600 mb-6 group-hover:scale-110 transition-transform">
                 <i class="fa-solid fa-ticket text-lg"></i>
@@ -31,7 +31,7 @@
         </div>
 
         <!-- Stat Card 2: Total Pendapatan -->
-        <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/20 group hover:border-emerald-300 transition-all relative overflow-hidden">
+        <div class="bg-white p-5 sm:p-8 rounded-2xl md:rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/20 group hover:border-emerald-300 transition-all relative overflow-hidden">
             <div class="absolute top-0 right-0 w-16 h-16 bg-emerald-50 rounded-bl-full opacity-40"></div>
             <div class="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 mb-6 group-hover:scale-110 transition-transform">
                 <i class="fa-solid fa-money-bill-trend-up text-lg"></i>
@@ -42,7 +42,7 @@
         </div>
 
         <!-- Stat Card 3: Sisa Kuota Hari Ini -->
-        <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/20 group hover:border-amber-300 transition-all relative overflow-hidden">
+        <div class="bg-white p-5 sm:p-8 rounded-2xl md:rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/20 group hover:border-amber-300 transition-all relative overflow-hidden">
             <div class="absolute top-0 right-0 w-16 h-16 bg-amber-50 rounded-bl-full opacity-40"></div>
             <div class="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600 mb-6 group-hover:scale-110 transition-transform">
                 <i class="fa-solid fa-users-viewfinder text-lg"></i>
@@ -53,7 +53,7 @@
         </div>
 
         <!-- Stat Card 4: Withdrawal Pending -->
-        <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/20 group hover:border-rose-300 transition-all relative overflow-hidden">
+        <div class="bg-white p-5 sm:p-8 rounded-2xl md:rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/20 group hover:border-rose-300 transition-all relative overflow-hidden">
             <div class="absolute top-0 right-0 w-16 h-16 bg-rose-50 rounded-bl-full opacity-40"></div>
             <div class="w-12 h-12 rounded-2xl bg-rose-50 flex items-center justify-center text-rose-600 mb-6 group-hover:scale-110 transition-transform">
                 <i class="fa-solid fa-clock-rotate-left text-lg"></i>
@@ -65,7 +65,7 @@
     </div>
 
     <!-- Export Transaksi -->
-    <div class="mb-10 bg-white rounded-[2.5rem] p-6 md:p-8 border border-slate-100 shadow-xl shadow-slate-200/30">
+    <div class="mb-8 md:mb-10 bg-white rounded-2xl md:rounded-[2.5rem] p-4 sm:p-6 md:p-8 border border-slate-100 shadow-xl shadow-slate-200/30">
         <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
             <div>
                 <h2 class="text-lg font-black text-slate-900 tracking-tight flex items-center gap-2">
@@ -73,18 +73,18 @@
                 </h2>
                 <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mt-1">Unduh CSV untuk laporan pajak atau administrasi</p>
             </div>
-            <form method="GET" action="{{ route('owner.transactions.export') }}" class="flex flex-col sm:flex-row flex-wrap gap-3 items-end">
-                <div>
+            <form method="GET" action="{{ route('owner.transactions.export') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-row flex-wrap gap-3 items-end w-full">
+                <div class="w-full sm:w-auto">
                     <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Dari</label>
-                    <input type="date" name="from" class="bg-slate-50 border border-slate-100 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-800">
+                    <input type="date" name="from" class="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-800">
                 </div>
-                <div>
+                <div class="w-full sm:w-auto">
                     <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Sampai</label>
-                    <input type="date" name="to" class="bg-slate-50 border border-slate-100 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-800">
+                    <input type="date" name="to" class="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-800">
                 </div>
-                <div>
+                <div class="w-full sm:w-auto sm:col-span-2 lg:col-span-1">
                     <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Status</label>
-                    <select name="status" class="bg-slate-50 border border-slate-100 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-800 min-w-[140px]">
+                    <select name="status" class="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-800 sm:min-w-[140px]">
                         <option value="all">Semua</option>
                         <option value="settlement">Lunas</option>
                         <option value="used">Sudah Scan</option>
@@ -93,7 +93,7 @@
                         <option value="cancelled">Dibatalkan</option>
                     </select>
                 </div>
-                <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-6 py-2.5 rounded-xl text-xs uppercase tracking-wider shadow-md shadow-emerald-200 flex items-center gap-2">
+                <button type="submit" class="w-full sm:w-auto col-span-1 sm:col-span-2 lg:col-span-1 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-6 py-3 sm:py-2.5 rounded-xl text-xs uppercase tracking-wider shadow-md shadow-emerald-200 flex items-center justify-center gap-2">
                     <i class="fa-solid fa-download"></i> Unduh CSV
                 </button>
             </form>

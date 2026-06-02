@@ -82,7 +82,7 @@
 
 @section('content')
     <!-- Breadcrumbs -->
-    <nav class="mb-8 flex items-center gap-2 text-sm px-4 md:px-0">
+    <nav class="mb-6 md:mb-8 flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs sm:text-sm px-0 md:px-0">
         <a href="{{ route('home') }}" class="text-slate-400 hover:text-primary-600 transition-colors font-medium">Beranda</a>
         <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         <a href="{{ route('destinations.index') }}" class="text-slate-400 hover:text-primary-600 transition-colors font-medium">Eksplor Wisata</a>
@@ -91,60 +91,60 @@
     </nav>
 
     <!-- Step Progress Bar -->
-    <div class="mb-10 bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-sm mx-4 md:mx-0">
+    <div class="mb-8 md:mb-10 bg-white rounded-2xl md:rounded-3xl border border-slate-100 p-4 sm:p-6 md:p-8 shadow-sm">
         <div class="max-w-4xl mx-auto">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 md:gap-8">
                 <!-- Step 1 -->
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-sm shadow-sm shrink-0 border border-emerald-100">
+                <div class="flex items-center gap-2 sm:gap-3 justify-center sm:justify-start">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-sm shadow-sm shrink-0 border border-emerald-100">
                         <i class="fa-solid fa-check text-xs"></i>
                     </div>
-                    <div>
+                    <div class="min-w-0 hidden sm:block">
                         <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Langkah 1</p>
                         <p class="text-xs md:text-sm font-bold text-slate-700">Pilih Wisata</p>
                     </div>
                 </div>
                 
                 <!-- Step 2 -->
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl bg-primary-600 text-white flex items-center justify-center font-bold text-sm shadow-lg shadow-primary-200 shrink-0">
+                <div class="flex items-center gap-2 sm:gap-3 justify-center sm:justify-start">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-primary-600 text-white flex items-center justify-center font-bold text-sm shadow-lg shadow-primary-200 shrink-0">
                         2
                     </div>
-                    <div>
+                    <div class="min-w-0 hidden sm:block">
                         <p class="text-[10px] text-primary-500 font-bold uppercase tracking-widest">Langkah 2</p>
-                        <p class="text-xs md:text-sm font-black text-slate-900">Isi Data & Tanggal</p>
+                        <p class="text-xs md:text-sm font-black text-slate-900">Isi Data</p>
                     </div>
                 </div>
                 
                 <!-- Step 3 -->
-                <div class="flex items-center gap-3 opacity-50 md:opacity-60">
-                    <div class="w-10 h-10 rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center font-bold text-sm shrink-0 border border-slate-200/50">
+                <div class="flex items-center gap-2 sm:gap-3 opacity-50 md:opacity-60 justify-center sm:justify-start">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center font-bold text-sm shrink-0 border border-slate-200/50">
                         3
                     </div>
-                    <div>
+                    <div class="min-w-0 hidden sm:block">
                         <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Langkah 3</p>
-                        <p class="text-xs md:text-sm font-semibold text-slate-600">Pembayaran</p>
+                        <p class="text-xs md:text-sm font-semibold text-slate-600">Bayar</p>
                     </div>
                 </div>
                 
                 <!-- Step 4 -->
-                <div class="flex items-center gap-3 opacity-50 md:opacity-60">
-                    <div class="w-10 h-10 rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center font-bold text-sm shrink-0 border border-slate-200/50">
+                <div class="flex items-center gap-2 sm:gap-3 opacity-50 md:opacity-60 justify-center sm:justify-start">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center font-bold text-sm shrink-0 border border-slate-200/50">
                         4
                     </div>
-                    <div>
+                    <div class="min-w-0 hidden sm:block">
                         <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Langkah 4</p>
-                        <p class="text-xs md:text-sm font-semibold text-slate-600">Tiket Terbit</p>
+                        <p class="text-xs md:text-sm font-semibold text-slate-600">Tiket</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="grid gap-8 lg:grid-cols-[1.6fr_1fr] px-4 md:px-0 items-start">
+    <div class="grid gap-6 lg:gap-8 lg:grid-cols-[1.6fr_1fr] items-start min-w-0">
         <!-- Checkout Form -->
-        <div class="space-y-8">
-            <div class="bg-white rounded-[2.5rem] p-8 md:p-10 border border-slate-100 shadow-sm relative overflow-hidden">
+        <div class="space-y-6 lg:space-y-8 min-w-0">
+            <div class="bg-white rounded-2xl md:rounded-[2.5rem] p-5 sm:p-8 md:p-10 border border-slate-100 shadow-sm relative overflow-hidden">
                 <!-- Sparkle Decors -->
                 <div class="absolute top-0 right-0 w-32 h-32 bg-primary-50 rounded-full -mr-16 -mt-16 opacity-40"></div>
                 
@@ -261,8 +261,8 @@
         </div>
 
         <!-- Sticky Summary Sidebar -->
-        <aside class="space-y-8">
-            <div class="sticky top-28 space-y-6">
+        <aside class="space-y-8 min-w-0">
+            <div class="lg:sticky lg:top-28 space-y-6">
                 <!-- Summary Card -->
                 <div class="bg-white rounded-[2rem] border border-slate-100 p-6 md:p-8 shadow-sm overflow-hidden relative">
                     <!-- Elegant light-blue circle shape in bg -->

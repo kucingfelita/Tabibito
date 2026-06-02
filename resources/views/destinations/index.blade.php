@@ -8,7 +8,7 @@
         <span class="text-slate-900 font-bold">Eksplor Wisata Jawa Tengah</span>
     </nav>
 
-    <div class="grid gap-10 lg:grid-cols-4 px-4 md:px-0" x-data="{ filterOpen: false }">
+    <div class="grid gap-8 lg:gap-10 lg:grid-cols-4 min-w-0" x-data="{ filterOpen: false }">
         <!-- Filter Sidebar -->
         <aside :class="filterOpen ? 'fixed inset-0 z-50 flex justify-end lg:static lg:block lg:col-span-1' : 'hidden lg:block lg:col-span-1'" class="transition-all duration-300">
             <!-- Backdrop for mobile -->
