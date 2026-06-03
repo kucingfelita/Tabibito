@@ -143,11 +143,11 @@
                                     </div>
                                     <p class="text-slate-500 text-xs md:text-sm leading-relaxed mb-4 font-semibold">{{ $ticket->benefit }}</p>
                                     <div class="flex flex-wrap gap-3">
-                                        <span class="px-3 py-1 rounded-lg bg-slate-50 text-[10px] font-bold text-slate-500 flex items-center gap-1.5"><i class="fa-solid fa-users"></i> Kuota Kuota: {{ $ticket->daily_quota }} / hari</span>
+                                        <span class="px-3 py-1 rounded-lg bg-slate-50 text-[10px] font-bold text-slate-500 flex items-center gap-1.5"><i class="fa-solid fa-users"></i> Kuota: {{ $ticket->daily_quota }} / hari</span>
                                         <span class="px-3 py-1 rounded-lg bg-emerald-50 text-[10px] font-bold text-emerald-600 flex items-center gap-1.5"><i class="fa-solid fa-circle-check"></i> Instan Konfirmasi</span>
                                     </div>
                                 </div>
-                                <div class="shrink-0 flex flex-col sm:flex-row md:flex-col items-stretch sm:items-center md:items-end justify-between md:justify-center gap-4 pt-4 md:pt-0 border-t md:border-t-0 md:border-l border-slate-100 md:pl-8 w-full">
+                                <div class="shrink-0 flex flex-col sm:flex-row md:flex-col items-stretch sm:items-center md:items-end justify-between md:justify-center gap-4 pt-4 md:pt-0 border-t md:border-t-0 md:border-l border-slate-100 md:pl-8 w-full md:w-auto">
                                     <div class="text-left md:text-right">
                                         <p class="text-[9px] text-slate-400 font-extrabold uppercase tracking-widest mb-1">Harga Tiket</p>
                                         <p class="text-xl sm:text-2xl font-black text-primary-600">
